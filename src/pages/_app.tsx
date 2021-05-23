@@ -13,6 +13,9 @@ import '../assets/css/custom.css'
 
 const client = createClient({
   url: GRAPHQL_ENDPOINT,
+  fetchOptions: {
+    credentials: 'include',
+  },
 })
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (

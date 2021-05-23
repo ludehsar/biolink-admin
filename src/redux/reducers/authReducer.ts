@@ -1,13 +1,14 @@
+import { User } from '../../generated/graphql'
 import { AUTH_LOADING, AUTH_LOGIN, AUTH_LOGOUT } from '../actions/authAction'
 
 interface AuthAction {
   type: string
-  payload: any
+  payload: User | null
 }
 
 export interface AuthState {
   loading: boolean
-  user: any
+  user: User | null
 }
 
 const initialState = {
@@ -15,7 +16,7 @@ const initialState = {
   user: null,
 }
 
-export default (state: AuthState = initialState, { type, payload }: AuthAction): AuthState => {
+const authReducer = (state: AuthState = initialState, { type, payload }: AuthAction): AuthState => {
   switch (type) {
     // Set loading
     case AUTH_LOADING:
@@ -44,3 +45,5 @@ export default (state: AuthState = initialState, { type, payload }: AuthAction):
       return state
   }
 }
+
+export default authReducer

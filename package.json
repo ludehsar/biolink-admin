@@ -7,7 +7,8 @@
     "start": "next start",
     "postinstall": "husky install",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
-    "lint": "eslint --ext js,jsx,ts,tsx --fix"
+    "lint": "eslint --ext js,jsx,ts,tsx --fix",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
@@ -24,6 +25,10 @@
     "urql": "^2.0.3"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.21.4",
+    "@graphql-codegen/typescript": "1.22.0",
+    "@graphql-codegen/typescript-operations": "1.17.16",
+    "@graphql-codegen/typescript-urql": "^2.0.6",
     "@types/node": "^12.12.21",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",

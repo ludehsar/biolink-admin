@@ -19,7 +19,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, placeholder, className, 
     <FormGroup {...{ className }}>
       <Label for={field.name}>{label}</Label>
       <Input {...field} {...props} id={field.name} {...{ placeholder }} invalid={!!error} />
-      {error && <FormFeedback invalid={!!error}>{error}</FormFeedback>}
+      {error && <FormFeedback invalid="true">{error}</FormFeedback>}
     </FormGroup>
   )
 }

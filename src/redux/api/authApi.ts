@@ -1,11 +1,9 @@
-export const getCurrentAdminUser = async () => {
-  return null
+import { User } from '../../generated/graphql'
+
+export const loginCurrentAdminUser = (user: User): User => {
+  return user
 }
 
-export const authenticateUser = async () => {
-  return null
-}
-
-export const logoutUser = async () => {
+export const logoutUser = (): null => {
   return null
 }

@@ -2,11 +2,24 @@ import React from 'react'
 import { NextPage } from 'next'
 import { Col, Card, Button, CardBody, Form, Row } from 'reactstrap'
 import { Formik } from 'formik'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 
 import AuthLayout from '../../layouts/Auth.layout'
 import InputField from '../../components/InputField/InputField'
+import { LoginInput, useLoginMutation, User } from '../../generated/graphql'
+import { toErrorMap } from '../../utils/toErrorMap'
+import { AUTH_LOGIN_REQUESTED } from '../../redux/actions/authAction'
+import { useRouter } from 'next/router'
 
-const LoginPage: NextPage = () => {
+interface LoginPageProps {
+  loginCurrentUser: (user: User) => void
+}
+
+const LoginPage: NextPage<LoginPageProps> = ({ loginCurrentUser }) => {
+  const [, register] = useLoginMutation()
+  const router = useRouter()
+
   return (
     <AuthLayout>
       <Col lg="5" md="7">
@@ -14,12 +27,19 @@ const LoginPage: NextPage = () => {
           <CardBody className="px-lg-5 py-lg-5">
             <h3 className="text-center mb-4">Sign in to get access</h3>
             <Formik
-              initialValues={{ email: '', password: '' }}
-              onSubmit={(values, { setSubmitting }) => {
-                setTimeout(() => {
-                  alert(JSON.stringify(values, null, 2))
-                  setSubmitting(false)
-                }, 400)
+              initialValues={{ email: '', password: '' } as LoginInput}
+              onSubmit={async (values, { setSubmitting, setErrors }) => {
+                const response = await register({ options: values })
+
+                if (response.error) {
+                  // TODO: Global error handling
+                } else if (response.data?.login.errors) {
+                  setErrors(toErrorMap(response.data.login.errors))
+                } else if (response.data?.login.user) {
+                  loginCurrentUser(response.data.login.user)
+                  router.push('/')
+                }
+                setSubmitting(false)
               }}
             >
               {({ isSubmitting, handleSubmit }) => (
@@ -66,4 +86,12 @@ const LoginPage: NextPage = () => {
   )
 }
 
-export default LoginPage
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): {
+  loginCurrentUser: (user: User) => void
+} => ({
+  loginCurrentUser: (user: User) => dispatch({ type: AUTH_LOGIN_REQUESTED, payload: user }),
+})
+
+export default connect(null, mapDispatchToProps)(LoginPage)
