@@ -10,9 +10,12 @@
     "lint": "eslint --ext js,jsx,ts,tsx --fix"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
     "next": "latest",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
+    "reactstrap": "^8.9.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.21",
