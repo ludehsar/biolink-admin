@@ -4,6 +4,7 @@ import { Container } from 'reactstrap'
 import AdminNavbar from '../components/Navbar/AdminNavbar'
 import AdminSidebar from '../components/Sidebar/AdminSidebar'
 import AdminFooter from '../components/Footer/AdminFooter'
+import { FRONTEND_APP_NAME } from '../config/app'
 
 const AdminLayout: React.FC = ({ children }) => {
   return (
@@ -16,7 +17,7 @@ const AdminLayout: React.FC = ({ children }) => {
         }}
       />
       <div className="main-content">
-        <AdminNavbar brandText={'Stashee'} />
+        <AdminNavbar brandText={FRONTEND_APP_NAME} />
         {children}
         <Container fluid>
           <AdminFooter />
