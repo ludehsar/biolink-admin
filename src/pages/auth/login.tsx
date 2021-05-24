@@ -4,6 +4,7 @@ import { Col, Card, Button, CardBody, Form, Row } from 'reactstrap'
 import { Formik } from 'formik'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { withUrqlClient } from 'next-urql'
 
 import AuthLayout from '../../layouts/Auth.layout'
 import InputField from '../../components/InputField/InputField'
@@ -16,6 +17,7 @@ import {
 } from '../../redux/actions/authAction'
 import { useRouter } from 'next/router'
 import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
+import { createUrqlClient } from '../../utils/createUrqlClient'
 
 interface LoginPageProps {
   loginCurrentUser: (user: User) => void
@@ -121,4 +123,4 @@ const mapDispatchToProps = (
   addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
 })
 
-export default connect(null, mapDispatchToProps)(LoginPage)
+export default withUrqlClient(createUrqlClient)(connect(null, mapDispatchToProps)(LoginPage))
