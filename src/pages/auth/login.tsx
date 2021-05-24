@@ -7,16 +7,29 @@ import { Dispatch } from 'redux'
 
 import AuthLayout from '../../layouts/Auth.layout'
 import InputField from '../../components/InputField/InputField'
-import { LoginInput, useLoginMutation, User } from '../../generated/graphql'
+import { ErrorResponse, LoginInput, useLoginMutation, User } from '../../generated/graphql'
 import { toErrorMap } from '../../utils/toErrorMap'
-import { AUTH_LOGIN_REQUESTED } from '../../redux/actions/authAction'
+import {
+  AUTH_LOADING_REQUESTED,
+  AUTH_LOGIN_REQUESTED,
+  AUTH_LOGOUT_REQUESTED,
+} from '../../redux/actions/authAction'
 import { useRouter } from 'next/router'
+import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 
 interface LoginPageProps {
   loginCurrentUser: (user: User) => void
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
+  addErrors: (errors: ErrorResponse[]) => void
 }
 
-const LoginPage: NextPage<LoginPageProps> = ({ loginCurrentUser }) => {
+const LoginPage: NextPage<LoginPageProps> = ({
+  loginCurrentUser,
+  startAuthenticationProcess,
+  logoutCurrentUser,
+  addErrors,
+}) => {
   const [, register] = useLoginMutation()
   const router = useRouter()
 
@@ -29,15 +42,23 @@ const LoginPage: NextPage<LoginPageProps> = ({ loginCurrentUser }) => {
             <Formik
               initialValues={{ email: '', password: '' } as LoginInput}
               onSubmit={async (values, { setSubmitting, setErrors }) => {
+                startAuthenticationProcess()
                 const response = await register({ options: values })
 
-                if (response.error) {
-                  // TODO: Global error handling
-                } else if (response.data?.login.errors) {
+                if (response.data?.login.errors) {
                   setErrors(toErrorMap(response.data.login.errors))
+                  logoutCurrentUser()
                 } else if (response.data?.login.user) {
                   loginCurrentUser(response.data.login.user)
                   router.push('/')
+                } else {
+                  addErrors([
+                    {
+                      errorCode: 10000,
+                      message: 'Something went wrong!',
+                    },
+                  ])
+                  logoutCurrentUser()
                 }
                 setSubmitting(false)
               }}
@@ -90,8 +111,14 @@ const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
   loginCurrentUser: (user: User) => void
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
+  addErrors: (errors: ErrorResponse[]) => void
 } => ({
+  startAuthenticationProcess: () => dispatch({ type: AUTH_LOADING_REQUESTED }),
   loginCurrentUser: (user: User) => dispatch({ type: AUTH_LOGIN_REQUESTED, payload: user }),
+  logoutCurrentUser: () => dispatch({ type: AUTH_LOGOUT_REQUESTED }),
+  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
 })
 
 export default connect(null, mapDispatchToProps)(LoginPage)

@@ -41,6 +41,7 @@ const authReducer = (state: AuthState = initialState, { type, payload }: AuthAct
         loading: false,
       }
 
+    // Return default state
     default:
       return state
   }

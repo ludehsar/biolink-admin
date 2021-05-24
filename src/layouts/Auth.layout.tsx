@@ -2,6 +2,7 @@ import React from 'react'
 import { Col, Container, Row } from 'reactstrap'
 
 import AuthFooter from '../components/Footer/AuthFooter'
+import ErrorAlert from '../components/Header/ErrorAlert'
 
 const AuthLayout: React.FC = ({ children }) => {
   React.useEffect(() => {
@@ -14,6 +15,7 @@ const AuthLayout: React.FC = ({ children }) => {
   return (
     <>
       <div className="main-content">
+        <ErrorAlert />
         <div className="header bg-gradient-info py-7 py-lg-8">
           <Container>
             <div className="header-body text-center mb-7">
