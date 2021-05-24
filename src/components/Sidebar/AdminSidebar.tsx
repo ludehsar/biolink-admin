@@ -18,6 +18,10 @@ import {
 import Link from 'next/link'
 
 import AdminNavLink from '../NavLink/AdminNavLink'
+import { connect, RootStateOrAny } from 'react-redux'
+import { useLogoutMutation, User } from '../../generated/graphql'
+import { Dispatch } from 'redux'
+import { AUTH_LOADING_REQUESTED, AUTH_LOGOUT_REQUESTED } from '../../redux/actions/authAction'
 
 export interface AdminSidebarProps {
   logo: {
@@ -25,6 +29,9 @@ export interface AdminSidebarProps {
     imgSrc: string
     imgAlt: string
   }
+  user: User
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
 }
 
 interface ILink {
@@ -53,14 +60,20 @@ const links: ILink[] = [
   },
 ]
 
-const AdminSidebar: React.FC<AdminSidebarProps> = (props) => {
+const AdminSidebar: React.FC<AdminSidebarProps> = ({
+  logo,
+  user,
+  startAuthenticationProcess,
+  logoutCurrentUser,
+}) => {
+  const [{ fetching }, logout] = useLogoutMutation()
+
   const [collapseOpen, setCollapseOpen] = useState(false)
 
   const toggleCollapse = (): void => {
     setCollapseOpen((data) => !data)
   }
 
-  const { logo } = props
   let navbarBrandProps
   if (logo && logo.link) {
     navbarBrandProps = {
@@ -91,7 +104,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = (props) => {
             <DropdownToggle nav>
               <Media className="align-items-center">
                 <span className="avatar avatar-sm rounded-circle">
-                  <img alt="..." src="/img/theme/team-1-800x800.jpg" />
+                  <img
+                    alt="User profile"
+                    src={`https://ui-avatars.com/api/?name=${user?.name || 'User Name'}`}
+                  />
                 </span>
               </Media>
             </DropdownToggle>
@@ -124,10 +140,25 @@ const AdminSidebar: React.FC<AdminSidebarProps> = (props) => {
                 </DropdownItem>
               </Link>
               <DropdownItem divider />
-              <Link href="#pablo">
-                <DropdownItem onClick={(e) => e.preventDefault()}>
-                  <i className="ni ni-user-run" />
-                  <span>Logout</span>
+              <Link href="#logout">
+                <DropdownItem
+                  onClick={async () => {
+                    startAuthenticationProcess()
+                    await logout() // Send logout request via graphql
+                    logoutCurrentUser() // Remove user state from the client
+                  }}
+                >
+                  {fetching ? (
+                    <>
+                      <i className="fa fa-spinner fa-spin"></i>
+                      <span>Logging out</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="ni ni-user-run" />
+                      <span>Logout</span>
+                    </>
+                  )}
                 </DropdownItem>
               </Link>
             </DropdownMenu>
@@ -201,4 +232,22 @@ const AdminSidebar: React.FC<AdminSidebarProps> = (props) => {
   )
 }
 
-export default AdminSidebar
+const mapStateToProps = (
+  state: RootStateOrAny
+): {
+  user: User
+} => ({
+  user: state.authReducer.user,
+})
+
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): {
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
+} => ({
+  startAuthenticationProcess: () => dispatch({ type: AUTH_LOADING_REQUESTED }),
+  logoutCurrentUser: () => dispatch({ type: AUTH_LOGOUT_REQUESTED }),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminSidebar)

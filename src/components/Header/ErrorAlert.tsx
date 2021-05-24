@@ -18,7 +18,11 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ errors }) => (
   </>
 )
 
-const mapStateToProps = (state: RootStateOrAny): ErrorAlertProps => ({
+const mapStateToProps = (
+  state: RootStateOrAny
+): {
+  errors: ErrorResponse[]
+} => ({
   errors: state.errorReducer.errors,
 })
 

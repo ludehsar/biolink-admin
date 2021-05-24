@@ -1,16 +1,51 @@
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Col, Container, Row } from 'reactstrap'
+import { Dispatch } from 'redux'
 
 import AuthFooter from '../components/Footer/AuthFooter'
 import ErrorAlert from '../components/Header/ErrorAlert'
+import { useMeQuery, User } from '../generated/graphql'
+import {
+  AUTH_LOADING_REQUESTED,
+  AUTH_LOGIN_REQUESTED,
+  AUTH_LOGOUT_REQUESTED,
+} from '../redux/actions/authAction'
 
-const AuthLayout: React.FC = ({ children }) => {
-  React.useEffect(() => {
+interface AuthLayoutProps {
+  loginCurrentUser: (user: User) => void
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
+}
+
+const AuthLayout: React.FC<AuthLayoutProps> = ({
+  children,
+  loginCurrentUser,
+  startAuthenticationProcess,
+  logoutCurrentUser,
+}) => {
+  const [{ data, fetching }] = useMeQuery()
+  const router = useRouter()
+
+  useEffect(() => {
     document.body.classList.add('bg-default')
     return () => {
       document.body.classList.remove('bg-default')
     }
   }, [])
+
+  useEffect(() => {
+    if (!fetching) {
+      startAuthenticationProcess()
+      if (data?.me) {
+        loginCurrentUser(data.me)
+        router.replace('/')
+      } else {
+        logoutCurrentUser()
+      }
+    }
+  }, [data?.me, fetching, loginCurrentUser, logoutCurrentUser, router, startAuthenticationProcess])
 
   return (
     <>
@@ -49,4 +84,16 @@ const AuthLayout: React.FC = ({ children }) => {
   )
 }
 
-export default AuthLayout
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): {
+  loginCurrentUser: (user: User) => void
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
+} => ({
+  startAuthenticationProcess: () => dispatch({ type: AUTH_LOADING_REQUESTED }),
+  loginCurrentUser: (user: User) => dispatch({ type: AUTH_LOGIN_REQUESTED, payload: user }),
+  logoutCurrentUser: () => dispatch({ type: AUTH_LOGOUT_REQUESTED }),
+})
+
+export default connect(null, mapDispatchToProps)(AuthLayout)

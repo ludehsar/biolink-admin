@@ -30,7 +30,7 @@ const LoginPage: NextPage<LoginPageProps> = ({
   logoutCurrentUser,
   addErrors,
 }) => {
-  const [, register] = useLoginMutation()
+  const [, login] = useLoginMutation()
   const router = useRouter()
 
   return (
@@ -43,7 +43,7 @@ const LoginPage: NextPage<LoginPageProps> = ({
               initialValues={{ email: '', password: '' } as LoginInput}
               onSubmit={async (values, { setSubmitting, setErrors }) => {
                 startAuthenticationProcess()
-                const response = await register({ options: values })
+                const response = await login({ options: values })
 
                 if (response.data?.login.errors) {
                   setErrors(toErrorMap(response.data.login.errors))

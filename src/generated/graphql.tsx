@@ -148,7 +148,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   login: UserResponse;
   sendForgotPasswordEmail: BooleanResponse;
-  verifyForgotPassword: BooleanResponse;
+  logout: BooleanResponse;
 };
 
 
@@ -159,12 +159,6 @@ export type MutationLoginArgs = {
 
 export type MutationSendForgotPasswordEmailArgs = {
   options: EmailInput;
-};
-
-
-export type MutationVerifyForgotPasswordArgs = {
-  forgotPasswordCode: Scalars['String'];
-  options: LoginInput;
 };
 
 export type Plan = {
@@ -315,6 +309,11 @@ export type Verification = {
   category?: Maybe<Category>;
 };
 
+export type CurrentUserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'email' | 'name'>
+);
+
 export type LoginMutationVariables = Exact<{
   options: LoginInput;
 }>;
@@ -329,12 +328,44 @@ export type LoginMutation = (
       & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
     )>>, user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
+      & CurrentUserFragment
     )> }
   ) }
 );
 
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & { logout: (
+    { __typename?: 'BooleanResponse' }
+    & Pick<BooleanResponse, 'executed'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & CurrentUserFragment
+  )> }
+);
+
+export const CurrentUserFragmentDoc = gql`
+    fragment CurrentUser on User {
+  id
+  email
+  name
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
   login(options: $options) {
@@ -344,13 +375,39 @@ export const LoginDocument = gql`
       message
     }
     user {
-      id
-      email
+      ...CurrentUser
     }
+  }
+}
+    ${CurrentUserFragmentDoc}`;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout {
+    errors {
+      errorCode
+      field
+      message
+    }
+    executed
   }
 }
     `;
 
-export function useLoginMutation() {
-  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+export function useLogoutMutation() {
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...CurrentUser
+  }
+}
+    ${CurrentUserFragmentDoc}`;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };

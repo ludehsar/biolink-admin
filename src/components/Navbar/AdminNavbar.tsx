@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import { connect, RootStateOrAny } from 'react-redux'
 import {
   Container,
   DropdownItem,
@@ -10,14 +11,24 @@ import {
   Navbar,
   UncontrolledDropdown,
 } from 'reactstrap'
+import { Dispatch } from 'redux'
+import { useLogoutMutation, User } from '../../generated/graphql'
+import { AUTH_LOADING_REQUESTED, AUTH_LOGOUT_REQUESTED } from '../../redux/actions/authAction'
 
 export interface AdminNavbarProps {
   brandText: string
+  user: User
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
 }
 
-const AdminNavbar: React.FC<AdminNavbarProps> = (props) => {
-  const { brandText } = props
-
+const AdminNavbar: React.FC<AdminNavbarProps> = ({
+  brandText,
+  user,
+  startAuthenticationProcess,
+  logoutCurrentUser,
+}) => {
+  const [{ fetching }, logout] = useLogoutMutation()
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -32,10 +43,15 @@ const AdminNavbar: React.FC<AdminNavbarProps> = (props) => {
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
-                    <img alt="profile" src="/img/theme/team-4-800x800.jpg" />
+                    <img
+                      alt="profile"
+                      src={`https://ui-avatars.com/api/?name=${user?.name || 'User Name'}`}
+                    />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
-                    <span className="mb-0 text-sm font-weight-bold">Jessica Jones</span>
+                    <span className="mb-0 text-sm font-weight-bold">
+                      {user?.name || 'User Name'}
+                    </span>
                   </Media>
                 </Media>
               </DropdownToggle>
@@ -68,10 +84,25 @@ const AdminNavbar: React.FC<AdminNavbarProps> = (props) => {
                   </DropdownItem>
                 </Link>
                 <DropdownItem divider />
-                <Link href="#pablo">
-                  <DropdownItem onClick={(e) => e.preventDefault()}>
-                    <i className="ni ni-user-run" />
-                    <span>Logout</span>
+                <Link href="#logout">
+                  <DropdownItem
+                    onClick={async () => {
+                      startAuthenticationProcess()
+                      await logout() // Send logout request via graphql
+                      logoutCurrentUser() // Remove user state from the client
+                    }}
+                  >
+                    {fetching ? (
+                      <>
+                        <i className="fa fa-spinner fa-spin"></i>
+                        <span>Logging out</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="ni ni-user-run" />
+                        <span>Logout</span>
+                      </>
+                    )}
                   </DropdownItem>
                 </Link>
               </DropdownMenu>
@@ -83,4 +114,22 @@ const AdminNavbar: React.FC<AdminNavbarProps> = (props) => {
   )
 }
 
-export default AdminNavbar
+const mapStateToProps = (
+  state: RootStateOrAny
+): {
+  user: User
+} => ({
+  user: state.authReducer.user,
+})
+
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): {
+  startAuthenticationProcess: () => void
+  logoutCurrentUser: () => void
+} => ({
+  startAuthenticationProcess: () => dispatch({ type: AUTH_LOADING_REQUESTED }),
+  logoutCurrentUser: () => dispatch({ type: AUTH_LOGOUT_REQUESTED }),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminNavbar)
