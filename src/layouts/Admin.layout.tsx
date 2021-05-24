@@ -5,7 +5,6 @@ import AdminNavbar from '../components/Navbar/AdminNavbar'
 import AdminSidebar from '../components/Sidebar/AdminSidebar'
 import AdminFooter from '../components/Footer/AdminFooter'
 import { FRONTEND_APP_NAME } from '../config/app'
-import ErrorAlert from '../components/Header/ErrorAlert'
 import { useMeQuery, User } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { connect } from 'react-redux'
@@ -15,6 +14,8 @@ import {
   AUTH_LOGIN_REQUESTED,
   AUTH_LOGOUT_REQUESTED,
 } from '../redux/actions/authAction'
+import InfoAlert from '../components/Header/InfoAlert'
+import Loading from '../components/Loading/Loading'
 
 interface AdminLayoutProps {
   loginCurrentUser: (user: User) => void
@@ -36,8 +37,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     if (!fetching) {
       startAuthenticationProcess()
       if (!data?.me) {
+        router.replace('/auth/login')
         logoutCurrentUser()
-        router.push('/auth/login')
       } else {
         loginCurrentUser(data.me)
       }
@@ -46,21 +47,27 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
 
   return (
     <>
-      <AdminSidebar
-        logo={{
-          link: '/',
-          imgSrc: '/img/brand/logo.png',
-          imgAlt: 'Logo',
-        }}
-      />
-      <div className="main-content">
-        <AdminNavbar brandText={FRONTEND_APP_NAME} />
-        <ErrorAlert />
-        {children}
-        <Container fluid>
-          <AdminFooter />
-        </Container>
-      </div>
+      {fetching || !data?.me ? (
+        <Loading />
+      ) : (
+        <>
+          <AdminSidebar
+            logo={{
+              link: '/',
+              imgSrc: '/img/brand/logo.png',
+              imgAlt: 'Logo',
+            }}
+          />
+          <div className="main-content">
+            <AdminNavbar brandText={FRONTEND_APP_NAME} />
+            <InfoAlert />
+            {children}
+            <Container fluid>
+              <AdminFooter />
+            </Container>
+          </div>
+        </>
+      )}
     </>
   )
 }

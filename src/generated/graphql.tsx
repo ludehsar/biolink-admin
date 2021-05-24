@@ -314,6 +314,28 @@ export type CurrentUserFragment = (
   & Pick<User, 'id' | 'email' | 'name'>
 );
 
+export type ReceivedErrorsFragment = (
+  { __typename?: 'ErrorResponse' }
+  & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+);
+
+export type SendForgotPasswordEmailMutationVariables = Exact<{
+  options: EmailInput;
+}>;
+
+
+export type SendForgotPasswordEmailMutation = (
+  { __typename?: 'Mutation' }
+  & { sendForgotPasswordEmail: (
+    { __typename?: 'BooleanResponse' }
+    & Pick<BooleanResponse, 'executed'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   options: LoginInput;
 }>;
@@ -325,7 +347,7 @@ export type LoginMutation = (
     { __typename?: 'UserResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
-      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+      & ReceivedErrorsFragment
     )>>, user?: Maybe<(
       { __typename?: 'User' }
       & CurrentUserFragment
@@ -343,7 +365,7 @@ export type LogoutMutation = (
     & Pick<BooleanResponse, 'executed'>
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
-      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+      & ReceivedErrorsFragment
     )>> }
   ) }
 );
@@ -366,20 +388,40 @@ export const CurrentUserFragmentDoc = gql`
   name
 }
     `;
+export const ReceivedErrorsFragmentDoc = gql`
+    fragment ReceivedErrors on ErrorResponse {
+  errorCode
+  field
+  message
+}
+    `;
+export const SendForgotPasswordEmailDocument = gql`
+    mutation SendForgotPasswordEmail($options: EmailInput!) {
+  sendForgotPasswordEmail(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    executed
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useSendForgotPasswordEmailMutation() {
+  return Urql.useMutation<SendForgotPasswordEmailMutation, SendForgotPasswordEmailMutationVariables>(SendForgotPasswordEmailDocument);
+};
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
   login(options: $options) {
     errors {
-      errorCode
-      field
-      message
+      ...ReceivedErrors
     }
     user {
       ...CurrentUser
     }
   }
 }
-    ${CurrentUserFragmentDoc}`;
+    ${ReceivedErrorsFragmentDoc}
+${CurrentUserFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -388,14 +430,12 @@ export const LogoutDocument = gql`
     mutation Logout {
   logout {
     errors {
-      errorCode
-      field
-      message
+      ...ReceivedErrors
     }
     executed
   }
 }
-    `;
+    ${ReceivedErrorsFragmentDoc}`;
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);

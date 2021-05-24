@@ -5,7 +5,8 @@ import { Col, Container, Row } from 'reactstrap'
 import { Dispatch } from 'redux'
 
 import AuthFooter from '../components/Footer/AuthFooter'
-import ErrorAlert from '../components/Header/ErrorAlert'
+import InfoAlert from '../components/Header/InfoAlert'
+import Loading from '../components/Loading/Loading'
 import { useMeQuery, User } from '../generated/graphql'
 import {
   AUTH_LOADING_REQUESTED,
@@ -39,8 +40,8 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
     if (!fetching) {
       startAuthenticationProcess()
       if (data?.me) {
-        loginCurrentUser(data.me)
         router.replace('/')
+        loginCurrentUser(data.me)
       } else {
         logoutCurrentUser()
       }
@@ -49,37 +50,43 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
 
   return (
     <>
-      <div className="main-content">
-        <ErrorAlert />
-        <div className="header bg-gradient-info py-7 py-lg-8">
-          <Container>
-            <div className="header-body text-center mb-7">
-              <Row className="justify-content-center">
-                <Col lg="5" md="6">
-                  <h1 className="text-white">Welcome back!</h1>
-                </Col>
-              </Row>
+      {fetching || data?.me ? (
+        <Loading textColor={'white'} />
+      ) : (
+        <>
+          <div className="main-content">
+            <InfoAlert />
+            <div className="header bg-gradient-info py-7 py-lg-8">
+              <Container>
+                <div className="header-body text-center mb-7">
+                  <Row className="justify-content-center">
+                    <Col lg="5" md="6">
+                      <h1 className="text-white">Welcome back!</h1>
+                    </Col>
+                  </Row>
+                </div>
+              </Container>
+              <div className="separator separator-bottom separator-skew zindex-100">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="none"
+                  version="1.1"
+                  viewBox="0 0 2560 100"
+                  x="0"
+                  y="0"
+                >
+                  <polygon className="fill-default" points="2560 0 2560 100 0 100" />
+                </svg>
+              </div>
             </div>
-          </Container>
-          <div className="separator separator-bottom separator-skew zindex-100">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              version="1.1"
-              viewBox="0 0 2560 100"
-              x="0"
-              y="0"
-            >
-              <polygon className="fill-default" points="2560 0 2560 100 0 100" />
-            </svg>
+            {/* Page content */}
+            <Container className="mt--8 pb-5">
+              <Row className="justify-content-center">{children}</Row>
+            </Container>
           </div>
-        </div>
-        {/* Page content */}
-        <Container className="mt--8 pb-5">
-          <Row className="justify-content-center">{children}</Row>
-        </Container>
-      </div>
-      <AuthFooter />
+          <AuthFooter />
+        </>
+      )}
     </>
   )
 }

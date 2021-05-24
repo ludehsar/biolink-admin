@@ -1,9 +1,7 @@
 mutation Logout {
   logout {
     errors {
-      errorCode
-      field
-      message
+      ...ReceivedErrors
     }
     executed
   }
