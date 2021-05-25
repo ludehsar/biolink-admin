@@ -54,7 +54,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
           <AdminSidebar
             logo={{
               link: '/',
-              imgSrc: '/img/brand/logo.png',
+              imgSrc: '/img/logo.png',
               imgAlt: 'Logo',
             }}
           />
