@@ -14,12 +14,24 @@ export type Scalars = {
   Float: number;
 };
 
+export type AdminRole = {
+  __typename?: 'AdminRole';
+  id?: Maybe<Scalars['Int']>;
+  roleName?: Maybe<Scalars['String']>;
+  roleDescription?: Maybe<Scalars['String']>;
+  roleSettings?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type Billing = {
   __typename?: 'Billing';
   type?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
+  address1?: Maybe<Scalars['String']>;
+  address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   zip?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
@@ -37,11 +49,10 @@ export type Biolink = {
   settings?: Maybe<BiolinkSettings>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
   links?: Maybe<Array<Link>>;
-  trackLinks?: Maybe<Array<TrackLink>>;
   category?: Maybe<Category>;
-  verification?: Maybe<Verification>;
 };
 
 export type BiolinkSettings = {
@@ -76,25 +87,42 @@ export type BiolinkSettings = {
   enableSensitiveContentWarning?: Maybe<Scalars['Boolean']>;
 };
 
-export type BooleanResponse = {
-  __typename?: 'BooleanResponse';
-  errors?: Maybe<Array<ErrorResponse>>;
-  executed?: Maybe<Scalars['Boolean']>;
-};
-
 export type Category = {
   __typename?: 'Category';
   id?: Maybe<Scalars['Int']>;
   categoryName?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
 };
 
 export type Code = {
   __typename?: 'Code';
+  id?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
   discount?: Maybe<Scalars['String']>;
   quantity?: Maybe<Scalars['String']>;
   expireDate?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
+};
+
+export type ConnectionArgs = {
+  /** Paginate before created at timestamp as opaque cursor */
+  before?: Maybe<Scalars['String']>;
+  /** Paginate after created at timestamp as opaque cursor */
+  after?: Maybe<Scalars['String']>;
+  /** Search query */
+  query?: Maybe<Scalars['String']>;
+  /** Paginate first */
+  first?: Maybe<Scalars['Float']>;
+};
+
+export type DefaultResponse = {
+  __typename?: 'DefaultResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
 };
 
 export type Domain = {
@@ -106,7 +134,6 @@ export type Domain = {
   enabledStatus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
 };
 
 export type EmailInput = {
@@ -124,19 +151,19 @@ export type Link = {
   __typename?: 'Link';
   id: Scalars['String'];
   linkType?: Maybe<Scalars['String']>;
+  linkTitle?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   shortenedUrl?: Maybe<Scalars['String']>;
-  clicks?: Maybe<Scalars['Int']>;
   order?: Maybe<Scalars['Int']>;
   startDate?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['String']>;
-  /** @deprecated Status currently is disabled */
-  status?: Maybe<Scalars['String']>;
+  enablePasswordProtection?: Maybe<Scalars['Boolean']>;
+  note?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
   biolink?: Maybe<Biolink>;
-  trackLinks?: Maybe<TrackLink>;
 };
 
 export type LoginInput = {
@@ -147,8 +174,8 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   login: UserResponse;
-  sendForgotPasswordEmail: BooleanResponse;
-  logout: BooleanResponse;
+  sendForgotPasswordEmail: DefaultResponse;
+  logout: DefaultResponse;
 };
 
 
@@ -159,6 +186,32 @@ export type MutationLoginArgs = {
 
 export type MutationSendForgotPasswordEmailArgs = {
   options: EmailInput;
+};
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']>;
+};
+
+export type Payment = {
+  __typename?: 'Payment';
+  id?: Maybe<Scalars['String']>;
+  clientIp?: Maybe<Scalars['String']>;
+  stripePaymentCreatedAt?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  methodType?: Maybe<Scalars['String']>;
+  cardBrand?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  cvcCheck?: Maybe<Scalars['String']>;
+  expMonth?: Maybe<Scalars['String']>;
+  expYear?: Maybe<Scalars['String']>;
+  funding?: Maybe<Scalars['String']>;
+  cardId?: Maybe<Scalars['String']>;
+  last4?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
 };
 
 export type Plan = {
@@ -172,6 +225,9 @@ export type Plan = {
   settings?: Maybe<PlanSettings>;
   enabledStatus?: Maybe<Scalars['String']>;
   visibilityStatus?: Maybe<Scalars['Boolean']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
 };
 
 export type PlanSettings = {
@@ -179,27 +235,34 @@ export type PlanSettings = {
   totalBiolinksLimit?: Maybe<Scalars['Int']>;
   totalLinksLimit?: Maybe<Scalars['Int']>;
   totalCustomDomainLimit?: Maybe<Scalars['Int']>;
-  customBackHalfEnabled?: Maybe<Scalars['String']>;
-  noAdsEnabled?: Maybe<Scalars['String']>;
-  removableBrandingEnabled?: Maybe<Scalars['String']>;
-  customFooterBrandingEnabled?: Maybe<Scalars['String']>;
-  coloredLinksEnabled?: Maybe<Scalars['String']>;
-  googleAnalyticsEnabled?: Maybe<Scalars['String']>;
-  facebookPixelEnabled?: Maybe<Scalars['String']>;
-  customBackgroundEnabled?: Maybe<Scalars['String']>;
-  verifiedCheckmarkEnabled?: Maybe<Scalars['String']>;
-  linksSchedulingEnabled?: Maybe<Scalars['String']>;
-  seoEnabled?: Maybe<Scalars['String']>;
-  socialEnabled?: Maybe<Scalars['String']>;
-  utmParametersEnabled?: Maybe<Scalars['String']>;
-  passwordProtectionEnabled?: Maybe<Scalars['String']>;
-  sensitiveContentWarningEnabled?: Maybe<Scalars['String']>;
-  leapLinkEnabled?: Maybe<Scalars['String']>;
+  darkModeEnabled?: Maybe<Scalars['Boolean']>;
+  addedToDirectoryEnabled?: Maybe<Scalars['Boolean']>;
+  customBackHalfEnabled?: Maybe<Scalars['Boolean']>;
+  noAdsEnabled?: Maybe<Scalars['Boolean']>;
+  removableBrandingEnabled?: Maybe<Scalars['Boolean']>;
+  customFooterBrandingEnabled?: Maybe<Scalars['Boolean']>;
+  coloredLinksEnabled?: Maybe<Scalars['Boolean']>;
+  googleAnalyticsEnabled?: Maybe<Scalars['Boolean']>;
+  facebookPixelEnabled?: Maybe<Scalars['Boolean']>;
+  verifiedCheckmarkEnabled?: Maybe<Scalars['Boolean']>;
+  linksSchedulingEnabled?: Maybe<Scalars['Boolean']>;
+  seoEnabled?: Maybe<Scalars['Boolean']>;
+  socialEnabled?: Maybe<Scalars['Boolean']>;
+  utmParametersEnabled?: Maybe<Scalars['Boolean']>;
+  passwordProtectionEnabled?: Maybe<Scalars['Boolean']>;
+  sensitiveContentWarningEnabled?: Maybe<Scalars['Boolean']>;
+  leapLinkEnabled?: Maybe<Scalars['Boolean']>;
 };
 
 export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
+  getAllUsers?: Maybe<UserConnection>;
+};
+
+
+export type QueryGetAllUsersArgs = {
+  options: ConnectionArgs;
 };
 
 export type Referral = {
@@ -219,30 +282,11 @@ export type SocialMediaProps = {
   link?: Maybe<Scalars['String']>;
 };
 
-export type TrackLink = {
-  __typename?: 'TrackLink';
-  id?: Maybe<Scalars['String']>;
-  countryCode?: Maybe<Scalars['String']>;
-  cityName?: Maybe<Scalars['String']>;
-  osName?: Maybe<Scalars['String']>;
-  browserName?: Maybe<Scalars['String']>;
-  referer?: Maybe<Scalars['String']>;
-  deviceType?: Maybe<Scalars['String']>;
-  browserLanguage?: Maybe<Scalars['String']>;
-  utmSource?: Maybe<Scalars['String']>;
-  utmMedium?: Maybe<Scalars['String']>;
-  utmCampaign?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  link?: Maybe<Link>;
-  biolink?: Maybe<Biolink>;
-};
-
 export type User = {
   __typename?: 'User';
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   emailVerifiedAt?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
   billing?: Maybe<Billing>;
   accountStatus?: Maybe<Scalars['String']>;
   planExpirationDate?: Maybe<Scalars['String']>;
@@ -255,13 +299,30 @@ export type User = {
   totalLogin?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
   biolinks?: Maybe<Array<Biolink>>;
   domains?: Maybe<Array<Domain>>;
   activities?: Maybe<Array<UserLogs>>;
   links?: Maybe<Array<Link>>;
   plan?: Maybe<Plan>;
+  payments?: Maybe<Array<Payment>>;
   codes?: Maybe<Array<Code>>;
   referrals?: Maybe<Array<Referral>>;
+  adminRole?: Maybe<AdminRole>;
+};
+
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<UserEdge>>;
+  errors?: Maybe<Array<ErrorResponse>>;
+};
+
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  node: User;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type UserLogs = {
@@ -285,33 +346,14 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
-export type Verification = {
-  __typename?: 'Verification';
-  id?: Maybe<Scalars['String']>;
-  verificationStatus?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  mobileNumber?: Maybe<Scalars['String']>;
-  workNumber?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  websiteLink?: Maybe<Scalars['String']>;
-  instagramUrl?: Maybe<Scalars['String']>;
-  twitterUrl?: Maybe<Scalars['String']>;
-  linkedinUrl?: Maybe<Scalars['String']>;
-  photoIdUrl?: Maybe<Scalars['String']>;
-  businessDocumentUrl?: Maybe<Scalars['String']>;
-  otherDocumentsUrl?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
-  biolink?: Maybe<Biolink>;
-  category?: Maybe<Category>;
-};
-
 export type CurrentUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'email' | 'name'>
+  & Pick<User, 'id' | 'email'>
+);
+
+export type PageInfoFragment = (
+  { __typename?: 'PageInfo' }
+  & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
 );
 
 export type ReceivedErrorsFragment = (
@@ -327,8 +369,7 @@ export type SendForgotPasswordEmailMutationVariables = Exact<{
 export type SendForgotPasswordEmailMutation = (
   { __typename?: 'Mutation' }
   & { sendForgotPasswordEmail: (
-    { __typename?: 'BooleanResponse' }
-    & Pick<BooleanResponse, 'executed'>
+    { __typename?: 'DefaultResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
@@ -361,13 +402,45 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & { logout: (
-    { __typename?: 'BooleanResponse' }
-    & Pick<BooleanResponse, 'executed'>
+    { __typename?: 'DefaultResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
     )>> }
   ) }
+);
+
+export type GetAllUsersQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllUsersQuery = (
+  { __typename?: 'Query' }
+  & { getAllUsers?: Maybe<(
+    { __typename?: 'UserConnection' }
+    & { pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'UserEdge' }
+      & Pick<UserEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email' | 'accountStatus' | 'lastIPAddress' | 'country'>
+        & { billing?: Maybe<(
+          { __typename?: 'Billing' }
+          & Pick<Billing, 'name' | 'type'>
+        )>, plan?: Maybe<(
+          { __typename?: 'Plan' }
+          & Pick<Plan, 'name'>
+        )> }
+      ) }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  )> }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -385,7 +458,14 @@ export const CurrentUserFragmentDoc = gql`
     fragment CurrentUser on User {
   id
   email
-  name
+}
+    `;
+export const PageInfoFragmentDoc = gql`
+    fragment PageInfo on PageInfo {
+  hasNextPage
+  hasPreviousPage
+  startCursor
+  endCursor
 }
     `;
 export const ReceivedErrorsFragmentDoc = gql`
@@ -401,7 +481,6 @@ export const SendForgotPasswordEmailDocument = gql`
     errors {
       ...ReceivedErrors
     }
-    executed
   }
 }
     ${ReceivedErrorsFragmentDoc}`;
@@ -432,13 +511,46 @@ export const LogoutDocument = gql`
     errors {
       ...ReceivedErrors
     }
-    executed
   }
 }
     ${ReceivedErrorsFragmentDoc}`;
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const GetAllUsersDocument = gql`
+    query GetAllUsers($options: ConnectionArgs!) {
+  getAllUsers(options: $options) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        email
+        billing {
+          name
+          type
+        }
+        accountStatus
+        plan {
+          name
+        }
+        lastIPAddress
+        country
+      }
+      cursor
+    }
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${ReceivedErrorsFragmentDoc}`;
+
+export function useGetAllUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllUsersQuery>({ query: GetAllUsersDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

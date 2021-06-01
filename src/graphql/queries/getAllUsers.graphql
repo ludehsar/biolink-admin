@@ -1,0 +1,27 @@
+query GetAllUsers($options:ConnectionArgs!) {
+  getAllUsers(options: $options) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        email
+        billing {
+          name
+          type
+        }
+        accountStatus
+        plan {
+          name
+        }
+        lastIPAddress
+        country
+      }
+      cursor
+    }
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}

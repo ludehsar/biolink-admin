@@ -33,7 +33,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
   const router = useRouter()
 
   useEffect(() => {
-    console.log(data?.me?.name)
     if (!fetching) {
       startAuthenticationProcess()
       if (!data?.me) {

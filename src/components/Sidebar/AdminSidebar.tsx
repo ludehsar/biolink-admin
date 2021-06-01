@@ -106,7 +106,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt="User profile"
-                    src={`https://ui-avatars.com/api/?name=${user?.name || 'User Name'}`}
+                    src={`https://ui-avatars.com/api/?name=${user?.email || 'User Email'}`}
                   />
                 </span>
               </Media>

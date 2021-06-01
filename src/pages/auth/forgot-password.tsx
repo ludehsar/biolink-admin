@@ -24,7 +24,7 @@ interface ForgotPasswordPageProps {
   addInfo: (infoMessage: string) => void
 }
 
-const ForgotPasswordPage: NextPage<ForgotPasswordPageProps> = ({ addErrors, addInfo }) => {
+const ForgotPasswordPage: NextPage<ForgotPasswordPageProps> = ({ addInfo }) => {
   const [, sendForgotPasswordEmail] = useSendForgotPasswordEmailMutation()
   const router = useRouter()
 
@@ -41,16 +41,9 @@ const ForgotPasswordPage: NextPage<ForgotPasswordPageProps> = ({ addErrors, addI
 
                 if (response.data?.sendForgotPasswordEmail.errors) {
                   setErrors(toErrorMap(response.data.sendForgotPasswordEmail.errors))
-                } else if (response.data?.sendForgotPasswordEmail.executed) {
+                } else {
                   addInfo('An email with a token has been sent to your email address')
                   router.push('/')
-                } else {
-                  addErrors([
-                    {
-                      errorCode: 10000,
-                      message: 'Something went wrong!',
-                    },
-                  ])
                 }
                 setSubmitting(false)
               }}

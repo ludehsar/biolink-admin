@@ -45,12 +45,12 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({
                   <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt="profile"
-                      src={`https://ui-avatars.com/api/?name=${user?.name || 'User Name'}`}
+                      src={`https://ui-avatars.com/api/?name=${user?.email || 'User Email'}`}
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
                     <span className="mb-0 text-sm font-weight-bold">
-                      {user?.name || 'User Name'}
+                      {user?.email || 'User Email'}
                     </span>
                   </Media>
                 </Media>
