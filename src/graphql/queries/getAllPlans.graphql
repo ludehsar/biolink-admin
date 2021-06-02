@@ -1,0 +1,17 @@
+query GetAllPlans {
+  getAllPlans {
+    errors {
+      errorCode
+      field
+      message
+    }
+    plans {
+      id
+      name
+      monthlyPrice
+      annualPrice
+      enabledStatus
+      visibilityStatus
+    }
+  }
+}

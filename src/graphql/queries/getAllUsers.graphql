@@ -7,16 +7,14 @@ query GetAllUsers($options:ConnectionArgs!) {
       node {
         id
         email
-        billing {
-          name
-          type
-        }
+        emailVerifiedAt
         accountStatus
+        language
+        lastIPAddress
+        country
         plan {
           name
         }
-        lastIPAddress
-        country
       }
       cursor
     }

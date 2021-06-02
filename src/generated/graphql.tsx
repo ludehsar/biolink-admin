@@ -96,6 +96,19 @@ export type Category = {
   deletedAt?: Maybe<Scalars['String']>;
 };
 
+export type CategoryConnection = {
+  __typename?: 'CategoryConnection';
+  pageInfo: PageInfo;
+  edges: Array<CategoryEdge>;
+};
+
+export type CategoryEdge = {
+  __typename?: 'CategoryEdge';
+  node: Category;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
+};
+
 export type Code = {
   __typename?: 'Code';
   id?: Maybe<Scalars['String']>;
@@ -230,6 +243,12 @@ export type Plan = {
   deletedAt?: Maybe<Scalars['String']>;
 };
 
+export type PlanResponse = {
+  __typename?: 'PlanResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  plans?: Maybe<Array<Plan>>;
+};
+
 export type PlanSettings = {
   __typename?: 'PlanSettings';
   totalBiolinksLimit?: Maybe<Scalars['Int']>;
@@ -257,7 +276,14 @@ export type PlanSettings = {
 export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
+  getAllCategories?: Maybe<CategoryConnection>;
+  getAllPlans: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
+};
+
+
+export type QueryGetAllCategoriesArgs = {
+  options: ConnectionArgs;
 };
 
 
@@ -410,6 +436,46 @@ export type LogoutMutation = (
   ) }
 );
 
+export type GetAlLCategoriesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAlLCategoriesQuery = (
+  { __typename?: 'Query' }
+  & { getAllCategories?: Maybe<(
+    { __typename?: 'CategoryConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
+    ), edges: Array<(
+      { __typename?: 'CategoryEdge' }
+      & Pick<CategoryEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Category' }
+        & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      ) }
+    )> }
+  )> }
+);
+
+export type GetAllPlansQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllPlansQuery = (
+  { __typename?: 'Query' }
+  & { getAllPlans: (
+    { __typename?: 'PlanResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+    )>>, plans?: Maybe<Array<(
+      { __typename?: 'Plan' }
+      & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'annualPrice' | 'enabledStatus' | 'visibilityStatus'>
+    )>> }
+  ) }
+);
+
 export type GetAllUsersQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -427,11 +493,8 @@ export type GetAllUsersQuery = (
       & Pick<UserEdge, 'cursor'>
       & { node: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'email' | 'accountStatus' | 'lastIPAddress' | 'country'>
-        & { billing?: Maybe<(
-          { __typename?: 'Billing' }
-          & Pick<Billing, 'name' | 'type'>
-        )>, plan?: Maybe<(
+        & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'accountStatus' | 'language' | 'lastIPAddress' | 'country'>
+        & { plan?: Maybe<(
           { __typename?: 'Plan' }
           & Pick<Plan, 'name'>
         )> }
@@ -518,6 +581,55 @@ export const LogoutDocument = gql`
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
+export const GetAlLCategoriesDocument = gql`
+    query GetAlLCategories($options: ConnectionArgs!) {
+  getAllCategories(options: $options) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        id
+        categoryName
+        createdAt
+        updatedAt
+        deletedAt
+      }
+      cursor
+    }
+  }
+}
+    `;
+
+export function useGetAlLCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAlLCategoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAlLCategoriesQuery>({ query: GetAlLCategoriesDocument, ...options });
+};
+export const GetAllPlansDocument = gql`
+    query GetAllPlans {
+  getAllPlans {
+    errors {
+      errorCode
+      field
+      message
+    }
+    plans {
+      id
+      name
+      monthlyPrice
+      annualPrice
+      enabledStatus
+      visibilityStatus
+    }
+  }
+}
+    `;
+
+export function useGetAllPlansQuery(options: Omit<Urql.UseQueryArgs<GetAllPlansQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllPlansQuery>({ query: GetAllPlansDocument, ...options });
+};
 export const GetAllUsersDocument = gql`
     query GetAllUsers($options: ConnectionArgs!) {
   getAllUsers(options: $options) {
@@ -528,16 +640,14 @@ export const GetAllUsersDocument = gql`
       node {
         id
         email
-        billing {
-          name
-          type
-        }
+        emailVerifiedAt
         accountStatus
+        language
+        lastIPAddress
+        country
         plan {
           name
         }
-        lastIPAddress
-        country
       }
       cursor
     }

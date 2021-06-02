@@ -58,6 +58,16 @@ const links: ILink[] = [
       },
     ],
   },
+  {
+    name: 'Categories',
+    href: '/categories',
+    icon: 'ni ni-books',
+  },
+  {
+    name: 'Plans',
+    href: '/plans',
+    icon: 'ni ni-tag',
+  },
 ]
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({

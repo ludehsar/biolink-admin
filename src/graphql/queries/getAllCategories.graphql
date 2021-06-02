@@ -1,0 +1,20 @@
+query GetAlLCategories($options: ConnectionArgs!) {
+  getAllCategories(options: $options) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        id
+        categoryName
+        createdAt
+        updatedAt
+        deletedAt
+      }
+      cursor
+    }
+  }
+}
