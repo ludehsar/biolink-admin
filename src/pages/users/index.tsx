@@ -87,8 +87,8 @@ const UsersIndexPage: NextPage = () => {
         newButtonLink={'/users/add'}
         columns={columns}
         data={userData}
-        hasNextPage={false}
-        hasPreviousPage={false}
+        hasNextPage={data?.getAllUsers?.pageInfo?.hasNextPage || false}
+        hasPreviousPage={data?.getAllUsers?.pageInfo?.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

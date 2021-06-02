@@ -62,8 +62,8 @@ const CategoriesIndexPage: NextPage = () => {
         newButton={true}
         columns={columns}
         data={userData}
-        hasNextPage={false}
-        hasPreviousPage={false}
+        hasNextPage={data?.getAllCategories?.pageInfo.hasNextPage || false}
+        hasPreviousPage={data?.getAllCategories?.pageInfo.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}
