@@ -302,6 +302,7 @@ export type Query = {
   getAllCategories?: Maybe<CategoryConnection>;
   getAllPlans: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
+  getAllAdmins?: Maybe<UserConnection>;
 };
 
 
@@ -311,6 +312,11 @@ export type QueryGetAllCategoriesArgs = {
 
 
 export type QueryGetAllUsersArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllAdminsArgs = {
   options: ConnectionArgs;
 };
 
@@ -492,6 +498,36 @@ export type GetAllAdminRolesQuery = (
   ) }
 );
 
+export type GetAllAdminsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllAdminsQuery = (
+  { __typename?: 'Query' }
+  & { getAllAdmins?: Maybe<(
+    { __typename?: 'UserConnection' }
+    & { pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'UserEdge' }
+      & Pick<UserEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email' | 'language' | 'lastIPAddress' | 'country'>
+        & { adminRole?: Maybe<(
+          { __typename?: 'AdminRole' }
+          & Pick<AdminRole, 'roleName'>
+        )> }
+      ) }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  )> }
+);
+
 export type GetAlLCategoriesQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -669,6 +705,36 @@ export const GetAllAdminRolesDocument = gql`
 
 export function useGetAllAdminRolesQuery(options: Omit<Urql.UseQueryArgs<GetAllAdminRolesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllAdminRolesQuery>({ query: GetAllAdminRolesDocument, ...options });
+};
+export const GetAllAdminsDocument = gql`
+    query GetAllAdmins($options: ConnectionArgs!) {
+  getAllAdmins(options: $options) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        email
+        language
+        lastIPAddress
+        country
+        adminRole {
+          roleName
+        }
+      }
+      cursor
+    }
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${ReceivedErrorsFragmentDoc}`;
+
+export function useGetAllAdminsQuery(options: Omit<Urql.UseQueryArgs<GetAllAdminsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllAdminsQuery>({ query: GetAllAdminsDocument, ...options });
 };
 export const GetAlLCategoriesDocument = gql`
     query GetAlLCategories($options: ConnectionArgs!) {

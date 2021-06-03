@@ -1,0 +1,23 @@
+query GetAllAdmins($options: ConnectionArgs!) {
+  getAllAdmins(options: $options) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        email
+        language
+        lastIPAddress
+        country
+        adminRole {
+          roleName
+        }
+      }
+      cursor
+    }
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}

@@ -56,6 +56,10 @@ const links: ILink[] = [
         name: 'Users',
         href: '/users',
       },
+      {
+        name: 'Admins',
+        href: '/users/admins',
+      },
     ],
   },
   {
