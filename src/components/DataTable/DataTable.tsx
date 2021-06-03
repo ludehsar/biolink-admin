@@ -14,10 +14,6 @@ import {
   Col,
   Input,
   InputGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
 } from 'reactstrap'
 import Link from 'next/link'
 
@@ -104,7 +100,6 @@ const DataTable: React.FC<DataTableProps> = ({
                       {column.name}
                     </th>
                   ))}
-                  <th scope="col" />
                 </tr>
               </thead>
               <tbody>
@@ -113,31 +108,6 @@ const DataTable: React.FC<DataTableProps> = ({
                     {columns.map((column, k2) => (
                       <td key={k2}>{d[column.selector]}</td>
                     ))}
-                    <td className="text-right">
-                      <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          href="#pablo"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                            View Details
-                          </DropdownItem>
-                          <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                            Edit
-                          </DropdownItem>
-                          <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                            Delete
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -5,7 +5,7 @@ import { withUrqlClient } from 'next-urql'
 import AdminHeader from '../../components/Header/AdminHeader'
 import AdminLayout from '../../layouts/Admin.layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
-import { Badge } from 'reactstrap'
+import { Badge, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap'
 import { useGetAllAdminsQuery } from '../../generated/graphql'
 import DataTable from '../../components/DataTable/DataTable'
 
@@ -29,6 +29,10 @@ const columns = [
   {
     name: 'Admin Role',
     selector: 'adminRole',
+  },
+  {
+    name: '',
+    selector: 'action',
   },
 ]
 
@@ -57,6 +61,28 @@ const AdminsIndexPage: NextPage = () => {
       lastIpAddress: edge.node.lastIPAddress,
       country: edge.node.country,
       adminRole: <Badge color="primary">{edge.node.adminRole?.roleName || 'Not Loaded'}</Badge>,
+      action: (
+        <UncontrolledDropdown>
+          <DropdownToggle
+            className="btn-icon-only text-light"
+            href="#pablo"
+            role="button"
+            size="sm"
+            color=""
+            onClick={(e) => e.preventDefault()}
+          >
+            <i className="fas fa-ellipsis-v" />
+          </DropdownToggle>
+          <DropdownMenu className="dropdown-menu-arrow" right>
+            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              View Details
+            </DropdownItem>
+            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              Edit
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      ),
     })) || []
 
   return (

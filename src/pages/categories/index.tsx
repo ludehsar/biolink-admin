@@ -8,6 +8,7 @@ import AdminLayout from '../../layouts/Admin.layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
 import { useGetAlLCategoriesQuery } from '../../generated/graphql'
 import DataTable from '../../components/DataTable/DataTable'
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 const columns = [
   {
@@ -25,6 +26,10 @@ const columns = [
   {
     name: 'Updated At',
     selector: 'updatedAt',
+  },
+  {
+    name: '',
+    selector: 'action',
   },
 ]
 
@@ -52,6 +57,28 @@ const CategoriesIndexPage: NextPage = () => {
       categoryName: edge.node.categoryName,
       createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).toLocaleString(),
       updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).toLocaleString(),
+      action: (
+        <UncontrolledDropdown>
+          <DropdownToggle
+            className="btn-icon-only text-light"
+            href="#pablo"
+            role="button"
+            size="sm"
+            color=""
+            onClick={(e) => e.preventDefault()}
+          >
+            <i className="fas fa-ellipsis-v" />
+          </DropdownToggle>
+          <DropdownMenu className="dropdown-menu-arrow" right>
+            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              View Details
+            </DropdownItem>
+            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              Edit
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      ),
     })) || []
 
   return (
