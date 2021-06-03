@@ -1,0 +1,14 @@
+query GetAllAdminRoles {
+  getAllAdminRoles {
+    errors {
+      ...ReceivedErrors
+    }
+    adminRoles {
+      id
+      roleName
+      roleDescription
+      createdAt
+      updatedAt
+    }
+  }
+}

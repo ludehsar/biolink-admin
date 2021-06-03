@@ -24,6 +24,12 @@ export type AdminRole = {
   updatedAt?: Maybe<Scalars['String']>;
 };
 
+export type AdminRoleResponse = {
+  __typename?: 'AdminRoleResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  adminRoles?: Maybe<Array<AdminRole>>;
+};
+
 export type Billing = {
   __typename?: 'Billing';
   type?: Maybe<Scalars['String']>;
@@ -53,6 +59,7 @@ export type Biolink = {
   user?: Maybe<User>;
   links?: Maybe<Array<Link>>;
   category?: Maybe<Category>;
+  verificationId?: Maybe<Scalars['String']>;
 };
 
 export type BiolinkSettings = {
@@ -189,6 +196,7 @@ export type Mutation = {
   login: UserResponse;
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
+  addNewUser?: Maybe<DefaultResponse>;
 };
 
 
@@ -199,6 +207,20 @@ export type MutationLoginArgs = {
 
 export type MutationSendForgotPasswordEmailArgs = {
   options: EmailInput;
+};
+
+
+export type MutationAddNewUserArgs = {
+  options: NewUserInput;
+};
+
+export type NewUserInput = {
+  email: Scalars['String'];
+  adminRoleId?: Maybe<Scalars['Float']>;
+  username: Scalars['String'];
+  displayName?: Maybe<Scalars['String']>;
+  categoryId?: Maybe<Scalars['Float']>;
+  planId?: Maybe<Scalars['Float']>;
 };
 
 export type PageInfo = {
@@ -275,6 +297,7 @@ export type PlanSettings = {
 
 export type Query = {
   __typename?: 'Query';
+  getAllAdminRoles: AdminRoleResponse;
   me?: Maybe<User>;
   getAllCategories?: Maybe<CategoryConnection>;
   getAllPlans: PlanResponse;
@@ -387,6 +410,22 @@ export type ReceivedErrorsFragment = (
   & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
 );
 
+export type AddNewUserMutationVariables = Exact<{
+  options: NewUserInput;
+}>;
+
+
+export type AddNewUserMutation = (
+  { __typename?: 'Mutation' }
+  & { addNewUser?: Maybe<(
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  )> }
+);
+
 export type SendForgotPasswordEmailMutationVariables = Exact<{
   options: EmailInput;
 }>;
@@ -432,6 +471,23 @@ export type LogoutMutation = (
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
+    )>> }
+  ) }
+);
+
+export type GetAllAdminRolesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAdminRolesQuery = (
+  { __typename?: 'Query' }
+  & { getAllAdminRoles: (
+    { __typename?: 'AdminRoleResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, adminRoles?: Maybe<Array<(
+      { __typename?: 'AdminRole' }
+      & Pick<AdminRole, 'id' | 'roleName' | 'roleDescription' | 'createdAt' | 'updatedAt'>
     )>> }
   ) }
 );
@@ -538,6 +594,19 @@ export const ReceivedErrorsFragmentDoc = gql`
   message
 }
     `;
+export const AddNewUserDocument = gql`
+    mutation AddNewUser($options: NewUserInput!) {
+  addNewUser(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useAddNewUserMutation() {
+  return Urql.useMutation<AddNewUserMutation, AddNewUserMutationVariables>(AddNewUserDocument);
+};
 export const SendForgotPasswordEmailDocument = gql`
     mutation SendForgotPasswordEmail($options: EmailInput!) {
   sendForgotPasswordEmail(options: $options) {
@@ -580,6 +649,26 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const GetAllAdminRolesDocument = gql`
+    query GetAllAdminRoles {
+  getAllAdminRoles {
+    errors {
+      ...ReceivedErrors
+    }
+    adminRoles {
+      id
+      roleName
+      roleDescription
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetAllAdminRolesQuery(options: Omit<Urql.UseQueryArgs<GetAllAdminRolesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllAdminRolesQuery>({ query: GetAllAdminRolesDocument, ...options });
 };
 export const GetAlLCategoriesDocument = gql`
     query GetAlLCategories($options: ConnectionArgs!) {

@@ -1,0 +1,7 @@
+mutation AddNewUser($options: NewUserInput!) {
+  addNewUser(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}

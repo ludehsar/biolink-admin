@@ -6,7 +6,6 @@ import AdminHeader from '../../components/Header/AdminHeader'
 import AdminLayout from '../../layouts/Admin.layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
 import {
-  Badge,
   Button,
   Card,
   CardHeader,
@@ -19,11 +18,12 @@ import {
   Table,
   UncontrolledDropdown,
 } from 'reactstrap'
-import { useGetAllPlansQuery } from '../../generated/graphql'
 import Link from 'next/link'
+import moment from 'moment'
+import { useGetAllAdminRolesQuery } from '../../generated/graphql'
 
-const PlansIndexPage: NextPage = () => {
-  const [{ data }] = useGetAllPlansQuery()
+const AdminRolesIndexPage: NextPage = () => {
+  const [{ data }] = useGetAllAdminRolesQuery()
 
   return (
     <AdminLayout>
@@ -35,7 +35,7 @@ const PlansIndexPage: NextPage = () => {
               <CardHeader className="border-0">
                 <Row>
                   <Col>
-                    <h3 className="mb-0 float-left">Plans</h3>
+                    <h3 className="mb-0 float-left">Admin Roles</h3>
                     <div className="float-right">
                       <Link href="#">
                         <Button color="primary" size="sm">
@@ -50,27 +50,21 @@ const PlansIndexPage: NextPage = () => {
                 <thead className="thead-light">
                   <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Monthly Price</th>
-                    <th scope="col">Annual Price</th>
-                    <th scope="col">Visibility Status</th>
+                    <th scope="col">Role Name</th>
+                    <th scope="col">Role Description</th>
+                    <th scope="col">Role Created At</th>
+                    <th scope="col">Role Updated At</th>
                     <th scope="col" />
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.getAllPlans.plans?.map((plan, key) => (
+                  {data?.getAllAdminRoles.adminRoles?.map((role, key) => (
                     <tr key={key}>
-                      <td>{plan.id}</td>
-                      <td>{plan.name}</td>
-                      <td>{plan.monthlyPrice}</td>
-                      <td>{plan.annualPrice}</td>
-                      <td>
-                        {plan.visibilityStatus ? (
-                          <Badge color="primary">Visible</Badge>
-                        ) : (
-                          <Badge color="danger">Not Visible</Badge>
-                        )}
-                      </td>
+                      <td>{role.id}</td>
+                      <td>{role.roleName}</td>
+                      <td>{role.roleDescription}</td>
+                      <td>{moment.unix(parseInt(role.createdAt || '') / 1000).toLocaleString()}</td>
+                      <td>{moment.unix(parseInt(role.updatedAt || '') / 1000).toLocaleString()}</td>
                       <td className="text-right">
                         <UncontrolledDropdown>
                           <DropdownToggle
@@ -105,4 +99,4 @@ const PlansIndexPage: NextPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(PlansIndexPage)
+export default withUrqlClient(createUrqlClient)(AdminRolesIndexPage)

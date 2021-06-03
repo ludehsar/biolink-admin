@@ -59,6 +59,11 @@ const links: ILink[] = [
     ],
   },
   {
+    name: 'Admin Roles',
+    href: '/admin-roles',
+    icon: 'ni ni-badge',
+  },
+  {
     name: 'Categories',
     href: '/categories',
     icon: 'ni ni-books',
