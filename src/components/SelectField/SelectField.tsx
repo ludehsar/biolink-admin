@@ -2,7 +2,7 @@ import React from 'react'
 import Select, { OptionTypeBase } from 'react-select'
 
 export interface SelectFieldProps {
-  onChange: (value: OptionTypeBase) => void
+  onChange: (value: OptionTypeBase | null) => void
   options?: OptionTypeBase[]
   value: string | number
   handleInputChange?: (newValue: string) => void

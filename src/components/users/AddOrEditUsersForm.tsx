@@ -83,7 +83,6 @@ const AddOrEditUsersForm: NextPage<AddOrEditUsersFormProps> = ({ addErrors, id, 
                 planId: variant === 'Add' ? 0 : userData?.getUser?.user?.plan?.id,
               }}
               onSubmit={async (values, { setSubmitting }) => {
-                alert(JSON.stringify(values, null, 2))
                 if (variant === 'Add') {
                   const response = await addNewUser({
                     options: {
@@ -163,7 +162,7 @@ const AddOrEditUsersForm: NextPage<AddOrEditUsersFormProps> = ({ addErrors, id, 
                             id="categoryId"
                             options={categoryOptions}
                             handleInputChange={(value) => setCategoryInput(value)}
-                            onChange={(value) => setFieldValue('categoryId', value.value)}
+                            onChange={(value) => setFieldValue('categoryId', value?.value)}
                             value={values.categoryId as number}
                           />
                         </Col>
@@ -174,7 +173,7 @@ const AddOrEditUsersForm: NextPage<AddOrEditUsersFormProps> = ({ addErrors, id, 
                           name="plan"
                           id="plan"
                           options={planOptions}
-                          onChange={(value) => setFieldValue('planId', value.value)}
+                          onChange={(value) => setFieldValue('planId', value?.value)}
                           value={values.planId as number}
                         />
                       </Col>
@@ -184,7 +183,7 @@ const AddOrEditUsersForm: NextPage<AddOrEditUsersFormProps> = ({ addErrors, id, 
                           name="adminRole"
                           id="adminRole"
                           options={adminRoleOptions}
-                          onChange={(value) => setFieldValue('adminRoleId', value.value)}
+                          onChange={(value) => setFieldValue('adminRoleId', value?.value)}
                           value={values.adminRoleId as number}
                         />
                       </Col>

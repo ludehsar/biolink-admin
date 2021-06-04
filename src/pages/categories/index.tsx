@@ -71,9 +71,6 @@ const CategoriesIndexPage: NextPage = () => {
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
             <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              View Details
-            </DropdownItem>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
               Edit
             </DropdownItem>
           </DropdownMenu>

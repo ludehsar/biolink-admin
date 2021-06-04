@@ -89,7 +89,7 @@ const AdminsIndexPage: NextPage = () => {
     <AdminLayout>
       <AdminHeader />
       <DataTable
-        title="User"
+        title="Admins"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllAdmins?.pageInfo?.hasNextPage || false}
