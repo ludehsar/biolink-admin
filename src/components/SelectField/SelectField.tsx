@@ -1,10 +1,10 @@
 import React from 'react'
-import Select from 'react-select'
+import Select, { OptionTypeBase } from 'react-select'
 
 export interface SelectFieldProps {
-  onChange: (value: string | number) => void
-  options?: any[]
-  value?: string | number
+  onChange: (value: OptionTypeBase) => void
+  options?: OptionTypeBase[]
+  value: string | number
   handleInputChange?: (newValue: string) => void
   className?: string
   name?: string
@@ -20,7 +20,10 @@ const SelectField: React.FC<SelectFieldProps> = ({
   name,
   id,
 }) => {
-  const defaultValue = (options?: any[], value?: string | number): any => {
+  const defaultValue = (
+    options: OptionTypeBase[] | undefined,
+    value: string | number
+  ): OptionTypeBase | '' | undefined => {
     return options ? options.find((option) => option.value === value) : ''
   }
 

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
+import Link from 'next/link'
 
 import AdminHeader from '../../components/Header/AdminHeader'
 import AdminLayout from '../../layouts/Admin.layout'
@@ -96,9 +97,9 @@ const UsersIndexPage: NextPage = () => {
             <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
               View Details
             </DropdownItem>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              Edit
-            </DropdownItem>
+            <Link href={'/users/edit/' + edge.node.id}>
+              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
       ),

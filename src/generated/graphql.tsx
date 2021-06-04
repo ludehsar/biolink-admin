@@ -53,13 +53,13 @@ export type Biolink = {
   location?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   settings?: Maybe<BiolinkSettings>;
+  verificationStatus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
   links?: Maybe<Array<Link>>;
   category?: Maybe<Category>;
-  verificationId?: Maybe<Scalars['String']>;
 };
 
 export type BiolinkSettings = {
@@ -156,6 +156,12 @@ export type Domain = {
   updatedAt?: Maybe<Scalars['String']>;
 };
 
+export type EditUserInput = {
+  email: Scalars['String'];
+  adminRoleId?: Maybe<Scalars['Float']>;
+  planId?: Maybe<Scalars['Float']>;
+};
+
 export type EmailInput = {
   email: Scalars['String'];
 };
@@ -197,6 +203,7 @@ export type Mutation = {
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
   addNewUser?: Maybe<DefaultResponse>;
+  editUser?: Maybe<DefaultResponse>;
 };
 
 
@@ -212,6 +219,12 @@ export type MutationSendForgotPasswordEmailArgs = {
 
 export type MutationAddNewUserArgs = {
   options: NewUserInput;
+};
+
+
+export type MutationEditUserArgs = {
+  options: EditUserInput;
+  id: Scalars['String'];
 };
 
 export type NewUserInput = {
@@ -303,6 +316,7 @@ export type Query = {
   getAllPlans: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
+  getUser?: Maybe<UserResponse>;
 };
 
 
@@ -318,6 +332,11 @@ export type QueryGetAllUsersArgs = {
 
 export type QueryGetAllAdminsArgs = {
   options: ConnectionArgs;
+};
+
+
+export type QueryGetUserArgs = {
+  id: Scalars['String'];
 };
 
 export type Referral = {
@@ -424,6 +443,23 @@ export type AddNewUserMutationVariables = Exact<{
 export type AddNewUserMutation = (
   { __typename?: 'Mutation' }
   & { addNewUser?: Maybe<(
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  )> }
+);
+
+export type EditUserMutationVariables = Exact<{
+  id: Scalars['String'];
+  options: EditUserInput;
+}>;
+
+
+export type EditUserMutation = (
+  { __typename?: 'Mutation' }
+  & { editUser?: Maybe<(
     { __typename?: 'DefaultResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
@@ -598,6 +634,44 @@ export type GetAllUsersQuery = (
   )> }
 );
 
+export type GetUserQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUserQuery = (
+  { __typename?: 'Query' }
+  & { getUser?: Maybe<(
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'accountStatus' | 'planExpirationDate' | 'planTrialDone' | 'language' | 'timezone' | 'lastIPAddress' | 'lastUserAgent' | 'country' | 'totalLogin' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      & { billing?: Maybe<(
+        { __typename?: 'Billing' }
+        & Pick<Billing, 'type' | 'name' | 'address1' | 'address2' | 'city' | 'state' | 'country' | 'zip' | 'phone'>
+      )>, biolinks?: Maybe<Array<(
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'username' | 'profilePhotoUrl' | 'displayName'>
+      )>>, activities?: Maybe<Array<(
+        { __typename?: 'UserLogs' }
+        & Pick<UserLogs, 'id' | 'ipAddress' | 'cityName' | 'countryCode' | 'browserName' | 'browserLanguage' | 'deviceType' | 'osName' | 'description' | 'createdAt'>
+      )>>, links?: Maybe<Array<(
+        { __typename?: 'Link' }
+        & Pick<Link, 'id' | 'linkType' | 'linkTitle' | 'url' | 'shortenedUrl' | 'note' | 'createdAt' | 'updatedAt'>
+      )>>, plan?: Maybe<(
+        { __typename?: 'Plan' }
+        & Pick<Plan, 'id' | 'name'>
+      )>, adminRole?: Maybe<(
+        { __typename?: 'AdminRole' }
+        & Pick<AdminRole, 'id' | 'roleName'>
+      )> }
+    )> }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -642,6 +716,19 @@ export const AddNewUserDocument = gql`
 
 export function useAddNewUserMutation() {
   return Urql.useMutation<AddNewUserMutation, AddNewUserMutationVariables>(AddNewUserDocument);
+};
+export const EditUserDocument = gql`
+    mutation EditUser($id: String!, $options: EditUserInput!) {
+  editUser(id: $id, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditUserMutation() {
+  return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
 };
 export const SendForgotPasswordEmailDocument = gql`
     mutation SendForgotPasswordEmail($options: EmailInput!) {
@@ -816,6 +903,83 @@ ${ReceivedErrorsFragmentDoc}`;
 
 export function useGetAllUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllUsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllUsersQuery>({ query: GetAllUsersDocument, ...options });
+};
+export const GetUserDocument = gql`
+    query GetUser($id: String!) {
+  getUser(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+    user {
+      id
+      email
+      emailVerifiedAt
+      billing {
+        type
+        name
+        address1
+        address2
+        city
+        state
+        country
+        zip
+        phone
+      }
+      accountStatus
+      planExpirationDate
+      planTrialDone
+      language
+      timezone
+      lastIPAddress
+      lastUserAgent
+      country
+      totalLogin
+      createdAt
+      updatedAt
+      deletedAt
+      biolinks {
+        id
+        username
+        profilePhotoUrl
+        displayName
+      }
+      activities {
+        id
+        ipAddress
+        cityName
+        countryCode
+        browserName
+        browserLanguage
+        deviceType
+        osName
+        description
+        createdAt
+      }
+      links {
+        id
+        linkType
+        linkTitle
+        url
+        shortenedUrl
+        note
+        createdAt
+        updatedAt
+      }
+      plan {
+        id
+        name
+      }
+      adminRole {
+        id
+        roleName
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

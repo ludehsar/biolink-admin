@@ -1,0 +1,71 @@
+query GetUser($id: String!) {
+  getUser(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+    user {
+      id
+      email
+      emailVerifiedAt
+      billing {
+        type
+        name
+        address1
+        address2
+        city
+        state
+        country
+        zip
+        phone
+      }
+      accountStatus
+      planExpirationDate
+      planTrialDone
+      language
+      timezone
+      lastIPAddress
+      lastUserAgent
+      country
+      totalLogin
+      createdAt
+      updatedAt
+      deletedAt
+      biolinks {
+        id
+        username
+        profilePhotoUrl
+        displayName
+      }
+      activities {
+        id
+        ipAddress
+        cityName
+        countryCode
+        browserName
+        browserLanguage
+        deviceType
+        osName
+        description
+        createdAt
+      }
+      links {
+        id
+        linkType
+        linkTitle
+        url
+        shortenedUrl
+        note
+        createdAt
+        updatedAt
+      }
+      plan {
+        id
+        name
+      }
+      adminRole {
+        id
+        roleName
+      }
+    }
+  }
+}
