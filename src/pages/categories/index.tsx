@@ -9,6 +9,7 @@ import { createUrqlClient } from '../../utils/createUrqlClient'
 import { useGetAlLCategoriesQuery } from '../../generated/graphql'
 import DataTable from '../../components/DataTable/DataTable'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import Link from 'next/link'
 
 const columns = [
   {
@@ -70,9 +71,9 @@ const CategoriesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              Edit
-            </DropdownItem>
+            <Link href={'/categories/edit/' + edge.node.id}>
+              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
       ),
@@ -84,6 +85,7 @@ const CategoriesIndexPage: NextPage = () => {
       <DataTable
         title="Categories"
         newButton={true}
+        newButtonLink="/categories/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllCategories?.pageInfo.hasNextPage || false}

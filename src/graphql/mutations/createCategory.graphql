@@ -1,0 +1,13 @@
+mutation CreateCategory($options: NewCategoryInput!) {
+  createCategory(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    category {
+      id
+      categoryName
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -116,6 +116,12 @@ export type CategoryEdge = {
   cursor: Scalars['String'];
 };
 
+export type CategoryResponse = {
+  __typename?: 'CategoryResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  category?: Maybe<Category>;
+};
+
 export type Code = {
   __typename?: 'Code';
   id?: Maybe<Scalars['String']>;
@@ -202,6 +208,8 @@ export type Mutation = {
   login: UserResponse;
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
+  createCategory?: Maybe<CategoryResponse>;
+  editCategory?: Maybe<CategoryResponse>;
   addNewUser?: Maybe<DefaultResponse>;
   editUser?: Maybe<DefaultResponse>;
 };
@@ -217,6 +225,17 @@ export type MutationSendForgotPasswordEmailArgs = {
 };
 
 
+export type MutationCreateCategoryArgs = {
+  options: NewCategoryInput;
+};
+
+
+export type MutationEditCategoryArgs = {
+  options: NewCategoryInput;
+  id: Scalars['Int'];
+};
+
+
 export type MutationAddNewUserArgs = {
   options: NewUserInput;
 };
@@ -225,6 +244,10 @@ export type MutationAddNewUserArgs = {
 export type MutationEditUserArgs = {
   options: EditUserInput;
   id: Scalars['String'];
+};
+
+export type NewCategoryInput = {
+  categoryName?: Maybe<Scalars['String']>;
 };
 
 export type NewUserInput = {
@@ -313,6 +336,7 @@ export type Query = {
   getAllAdminRoles: AdminRoleResponse;
   me?: Maybe<User>;
   getAllCategories?: Maybe<CategoryConnection>;
+  getCategory?: Maybe<CategoryResponse>;
   getAllPlans: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
@@ -322,6 +346,11 @@ export type Query = {
 
 export type QueryGetAllCategoriesArgs = {
   options: ConnectionArgs;
+};
+
+
+export type QueryGetCategoryArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -451,6 +480,45 @@ export type AddNewUserMutation = (
   )> }
 );
 
+export type CreateCategoryMutationVariables = Exact<{
+  options: NewCategoryInput;
+}>;
+
+
+export type CreateCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createCategory?: Maybe<(
+    { __typename?: 'CategoryResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, category?: Maybe<(
+      { __typename?: 'Category' }
+      & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
+    )> }
+  )> }
+);
+
+export type EditCategoryMutationVariables = Exact<{
+  id: Scalars['Int'];
+  options: NewCategoryInput;
+}>;
+
+
+export type EditCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { editCategory?: Maybe<(
+    { __typename?: 'CategoryResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, category?: Maybe<(
+      { __typename?: 'Category' }
+      & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
+    )> }
+  )> }
+);
+
 export type EditUserMutationVariables = Exact<{
   id: Scalars['String'];
   options: EditUserInput;
@@ -482,6 +550,25 @@ export type SendForgotPasswordEmailMutation = (
       & ReceivedErrorsFragment
     )>> }
   ) }
+);
+
+export type GetCategoryQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetCategoryQuery = (
+  { __typename?: 'Query' }
+  & { getCategory?: Maybe<(
+    { __typename?: 'CategoryResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+    )>>, category?: Maybe<(
+      { __typename?: 'Category' }
+      & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
+    )> }
+  )> }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -717,6 +804,44 @@ export const AddNewUserDocument = gql`
 export function useAddNewUserMutation() {
   return Urql.useMutation<AddNewUserMutation, AddNewUserMutationVariables>(AddNewUserDocument);
 };
+export const CreateCategoryDocument = gql`
+    mutation CreateCategory($options: NewCategoryInput!) {
+  createCategory(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    category {
+      id
+      categoryName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useCreateCategoryMutation() {
+  return Urql.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument);
+};
+export const EditCategoryDocument = gql`
+    mutation EditCategory($id: Int!, $options: NewCategoryInput!) {
+  editCategory(id: $id, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    category {
+      id
+      categoryName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditCategoryMutation() {
+  return Urql.useMutation<EditCategoryMutation, EditCategoryMutationVariables>(EditCategoryDocument);
+};
 export const EditUserDocument = gql`
     mutation EditUser($id: String!, $options: EditUserInput!) {
   editUser(id: $id, options: $options) {
@@ -742,6 +867,27 @@ export const SendForgotPasswordEmailDocument = gql`
 
 export function useSendForgotPasswordEmailMutation() {
   return Urql.useMutation<SendForgotPasswordEmailMutation, SendForgotPasswordEmailMutationVariables>(SendForgotPasswordEmailDocument);
+};
+export const GetCategoryDocument = gql`
+    query GetCategory($id: Int!) {
+  getCategory(id: $id) {
+    errors {
+      errorCode
+      field
+      message
+    }
+    category {
+      id
+      categoryName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+export function useGetCategoryQuery(options: Omit<Urql.UseQueryArgs<GetCategoryQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCategoryQuery>({ query: GetCategoryDocument, ...options });
 };
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
