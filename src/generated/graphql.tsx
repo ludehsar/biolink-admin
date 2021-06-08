@@ -19,15 +19,21 @@ export type AdminRole = {
   id?: Maybe<Scalars['Int']>;
   roleName?: Maybe<Scalars['String']>;
   roleDescription?: Maybe<Scalars['String']>;
-  roleSettings?: Maybe<Scalars['String']>;
+  roleSettings?: Maybe<Array<RoleSettings>>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type AdminRoleListResponse = {
+  __typename?: 'AdminRoleListResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  adminRoles?: Maybe<Array<AdminRole>>;
 };
 
 export type AdminRoleResponse = {
   __typename?: 'AdminRoleResponse';
   errors?: Maybe<Array<ErrorResponse>>;
-  adminRoles?: Maybe<Array<AdminRole>>;
+  adminRole?: Maybe<AdminRole>;
 };
 
 export type Billing = {
@@ -205,6 +211,8 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createAdminRole: AdminRoleResponse;
+  editAdminRole: AdminRoleResponse;
   login: UserResponse;
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
@@ -212,6 +220,17 @@ export type Mutation = {
   editCategory?: Maybe<CategoryResponse>;
   addNewUser?: Maybe<DefaultResponse>;
   editUser?: Maybe<DefaultResponse>;
+};
+
+
+export type MutationCreateAdminRoleArgs = {
+  options: NewAdminRoleInput;
+};
+
+
+export type MutationEditAdminRoleArgs = {
+  options: NewAdminRoleInput;
+  id: Scalars['Int'];
 };
 
 
@@ -244,6 +263,12 @@ export type MutationAddNewUserArgs = {
 export type MutationEditUserArgs = {
   options: EditUserInput;
   id: Scalars['String'];
+};
+
+export type NewAdminRoleInput = {
+  roleName: Scalars['String'];
+  roleDescription: Scalars['String'];
+  roleSettings?: Maybe<Array<RoleSettingsInput>>;
 };
 
 export type NewCategoryInput = {
@@ -333,7 +358,8 @@ export type PlanSettings = {
 
 export type Query = {
   __typename?: 'Query';
-  getAllAdminRoles: AdminRoleResponse;
+  getAllAdminRoles: AdminRoleListResponse;
+  getAdminRole: AdminRoleResponse;
   me?: Maybe<User>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
@@ -341,6 +367,11 @@ export type Query = {
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
+};
+
+
+export type QueryGetAdminRoleArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -377,6 +408,25 @@ export type Referral = {
   referredToName?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   referredBy?: Maybe<User>;
+};
+
+export type RoleSettings = {
+  __typename?: 'RoleSettings';
+  resource?: Maybe<Scalars['String']>;
+  canShowList?: Maybe<Scalars['Boolean']>;
+  canShow?: Maybe<Scalars['Boolean']>;
+  canCreate?: Maybe<Scalars['Boolean']>;
+  canEdit?: Maybe<Scalars['Boolean']>;
+  canDelete?: Maybe<Scalars['Boolean']>;
+};
+
+export type RoleSettingsInput = {
+  resource?: Maybe<Scalars['String']>;
+  canShowList?: Maybe<Scalars['Boolean']>;
+  canShow?: Maybe<Scalars['Boolean']>;
+  canCreate?: Maybe<Scalars['Boolean']>;
+  canEdit?: Maybe<Scalars['Boolean']>;
+  canDelete?: Maybe<Scalars['Boolean']>;
 };
 
 export type SocialMediaProps = {
@@ -480,6 +530,29 @@ export type AddNewUserMutation = (
   )> }
 );
 
+export type CreateAdminRoleMutationVariables = Exact<{
+  options: NewAdminRoleInput;
+}>;
+
+
+export type CreateAdminRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { createAdminRole: (
+    { __typename?: 'AdminRoleResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, adminRole?: Maybe<(
+      { __typename?: 'AdminRole' }
+      & Pick<AdminRole, 'id' | 'roleName' | 'roleDescription' | 'createdAt' | 'updatedAt'>
+      & { roleSettings?: Maybe<Array<(
+        { __typename?: 'RoleSettings' }
+        & Pick<RoleSettings, 'resource' | 'canShowList' | 'canShow' | 'canCreate' | 'canEdit' | 'canDelete'>
+      )>> }
+    )> }
+  ) }
+);
+
 export type CreateCategoryMutationVariables = Exact<{
   options: NewCategoryInput;
 }>;
@@ -497,6 +570,30 @@ export type CreateCategoryMutation = (
       & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
     )> }
   )> }
+);
+
+export type EditAdminRoleMutationVariables = Exact<{
+  id: Scalars['Int'];
+  options: NewAdminRoleInput;
+}>;
+
+
+export type EditAdminRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { editAdminRole: (
+    { __typename?: 'AdminRoleResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, adminRole?: Maybe<(
+      { __typename?: 'AdminRole' }
+      & Pick<AdminRole, 'id' | 'roleName' | 'roleDescription' | 'createdAt' | 'updatedAt'>
+      & { roleSettings?: Maybe<Array<(
+        { __typename?: 'RoleSettings' }
+        & Pick<RoleSettings, 'resource' | 'canShowList' | 'canShow' | 'canCreate' | 'canEdit' | 'canDelete'>
+      )>> }
+    )> }
+  ) }
 );
 
 export type EditCategoryMutationVariables = Exact<{
@@ -604,13 +701,36 @@ export type LogoutMutation = (
   ) }
 );
 
+export type GetAdminRoleQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetAdminRoleQuery = (
+  { __typename?: 'Query' }
+  & { getAdminRole: (
+    { __typename?: 'AdminRoleResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, adminRole?: Maybe<(
+      { __typename?: 'AdminRole' }
+      & Pick<AdminRole, 'id' | 'roleName' | 'roleDescription' | 'createdAt' | 'updatedAt'>
+      & { roleSettings?: Maybe<Array<(
+        { __typename?: 'RoleSettings' }
+        & Pick<RoleSettings, 'resource' | 'canShowList' | 'canShow' | 'canCreate' | 'canEdit' | 'canDelete'>
+      )>> }
+    )> }
+  ) }
+);
+
 export type GetAllAdminRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllAdminRolesQuery = (
   { __typename?: 'Query' }
   & { getAllAdminRoles: (
-    { __typename?: 'AdminRoleResponse' }
+    { __typename?: 'AdminRoleListResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
@@ -804,6 +924,34 @@ export const AddNewUserDocument = gql`
 export function useAddNewUserMutation() {
   return Urql.useMutation<AddNewUserMutation, AddNewUserMutationVariables>(AddNewUserDocument);
 };
+export const CreateAdminRoleDocument = gql`
+    mutation CreateAdminRole($options: NewAdminRoleInput!) {
+  createAdminRole(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    adminRole {
+      id
+      roleName
+      roleDescription
+      roleSettings {
+        resource
+        canShowList
+        canShow
+        canCreate
+        canEdit
+        canDelete
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useCreateAdminRoleMutation() {
+  return Urql.useMutation<CreateAdminRoleMutation, CreateAdminRoleMutationVariables>(CreateAdminRoleDocument);
+};
 export const CreateCategoryDocument = gql`
     mutation CreateCategory($options: NewCategoryInput!) {
   createCategory(options: $options) {
@@ -822,6 +970,34 @@ export const CreateCategoryDocument = gql`
 
 export function useCreateCategoryMutation() {
   return Urql.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument);
+};
+export const EditAdminRoleDocument = gql`
+    mutation EditAdminRole($id: Int!, $options: NewAdminRoleInput!) {
+  editAdminRole(id: $id, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    adminRole {
+      id
+      roleName
+      roleDescription
+      roleSettings {
+        resource
+        canShowList
+        canShow
+        canCreate
+        canEdit
+        canDelete
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditAdminRoleMutation() {
+  return Urql.useMutation<EditAdminRoleMutation, EditAdminRoleMutationVariables>(EditAdminRoleDocument);
 };
 export const EditCategoryDocument = gql`
     mutation EditCategory($id: Int!, $options: NewCategoryInput!) {
@@ -918,6 +1094,34 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const GetAdminRoleDocument = gql`
+    query GetAdminRole($id: Int!) {
+  getAdminRole(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+    adminRole {
+      id
+      roleName
+      roleDescription
+      roleSettings {
+        resource
+        canShowList
+        canShow
+        canCreate
+        canEdit
+        canDelete
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetAdminRoleQuery(options: Omit<Urql.UseQueryArgs<GetAdminRoleQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAdminRoleQuery>({ query: GetAdminRoleDocument, ...options });
 };
 export const GetAllAdminRolesDocument = gql`
     query GetAllAdminRoles {

@@ -1,5 +1,4 @@
 import React from 'react'
-import { NextPage } from 'next'
 import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form } from 'reactstrap'
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
@@ -21,7 +20,7 @@ interface AddOrEditUsersFormProps {
   id?: number
 }
 
-const AddOrEditCategoryForm: NextPage<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
+const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
   const [, createCategory] = useCreateCategoryMutation()
   const [, editCategory] = useEditCategoryMutation()
   const [{ data }] = useGetCategoryQuery({ variables: { id: id as number } })

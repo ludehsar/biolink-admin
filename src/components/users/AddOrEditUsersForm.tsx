@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { NextPage } from 'next'
 import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form, Label } from 'reactstrap'
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
@@ -25,7 +24,7 @@ interface AddOrEditUsersFormProps {
   id?: string
 }
 
-const AddOrEditUsersForm: NextPage<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
+const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
   const [categoryInput, setCategoryInput] = useState<string>('')
   const [, addNewUser] = useAddNewUserMutation()
   const [, editUser] = useEditUserMutation()

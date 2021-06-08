@@ -37,7 +37,7 @@ const AdminRolesIndexPage: NextPage = () => {
                   <Col>
                     <h3 className="mb-0 float-left">Admin Roles</h3>
                     <div className="float-right">
-                      <Link href="#">
+                      <Link href="/admin-roles/add">
                         <Button color="primary" size="sm">
                           Add New
                         </Button>
@@ -78,9 +78,11 @@ const AdminRolesIndexPage: NextPage = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                              Edit
-                            </DropdownItem>
+                            <Link href={'/admin-roles/edit/' + role.id}>
+                              <DropdownItem href={'/admin-roles/edit/' + role.id}>
+                                Edit
+                              </DropdownItem>
+                            </Link>
                           </DropdownMenu>
                         </UncontrolledDropdown>
                       </td>

@@ -1,0 +1,22 @@
+mutation CreateAdminRole($options: NewAdminRoleInput!) {
+  createAdminRole(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    adminRole {
+      id
+      roleName
+      roleDescription
+      roleSettings {
+        resource
+        canShowList
+        canShow
+        canCreate
+        canEdit
+        canDelete
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
