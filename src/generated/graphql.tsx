@@ -60,6 +60,10 @@ export type Biolink = {
   bio?: Maybe<Scalars['String']>;
   settings?: Maybe<BiolinkSettings>;
   verificationStatus?: Maybe<Scalars['String']>;
+  verifiedGovernmentId?: Maybe<Scalars['Boolean']>;
+  verifiedEmail?: Maybe<Scalars['Boolean']>;
+  verifiedPhoneNumber?: Maybe<Scalars['Boolean']>;
+  verifiedWorkEmail?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
@@ -84,6 +88,8 @@ export type BiolinkSettings = {
   facebookPixelId?: Maybe<Scalars['String']>;
   enableGoogleAnalytics?: Maybe<Scalars['Boolean']>;
   googleAnalyticsCode?: Maybe<Scalars['String']>;
+  enableEmailCapture?: Maybe<Scalars['Boolean']>;
+  emailCaptureId?: Maybe<Scalars['String']>;
   enableUtmParameters?: Maybe<Scalars['Boolean']>;
   utmSource?: Maybe<Scalars['String']>;
   utmMedium?: Maybe<Scalars['String']>;
@@ -218,6 +224,8 @@ export type Mutation = {
   logout: DefaultResponse;
   createCategory?: Maybe<CategoryResponse>;
   editCategory?: Maybe<CategoryResponse>;
+  createPlan: PlanResponse;
+  editPlan: PlanResponse;
   addNewUser?: Maybe<DefaultResponse>;
   editUser?: Maybe<DefaultResponse>;
 };
@@ -251,6 +259,17 @@ export type MutationCreateCategoryArgs = {
 
 export type MutationEditCategoryArgs = {
   options: NewCategoryInput;
+  id: Scalars['Int'];
+};
+
+
+export type MutationCreatePlanArgs = {
+  options: PlanInput;
+};
+
+
+export type MutationEditPlanArgs = {
+  options: PlanInput;
   id: Scalars['Int'];
 };
 
@@ -326,10 +345,46 @@ export type Plan = {
   deletedAt?: Maybe<Scalars['String']>;
 };
 
+export type PlanInput = {
+  name?: Maybe<Scalars['String']>;
+  monthlyPrice?: Maybe<Scalars['Float']>;
+  monthlyPriceStripeId?: Maybe<Scalars['String']>;
+  annualPrice?: Maybe<Scalars['Float']>;
+  annualPriceStripeId?: Maybe<Scalars['String']>;
+  visibilityStatus?: Maybe<Scalars['Boolean']>;
+  totalBiolinksLimit?: Maybe<Scalars['Int']>;
+  totalLinksLimit?: Maybe<Scalars['Int']>;
+  totalCustomDomainLimit?: Maybe<Scalars['Int']>;
+  darkModeEnabled?: Maybe<Scalars['Boolean']>;
+  addedToDirectoryEnabled?: Maybe<Scalars['Boolean']>;
+  customBackHalfEnabled?: Maybe<Scalars['Boolean']>;
+  noAdsEnabled?: Maybe<Scalars['Boolean']>;
+  removableBrandingEnabled?: Maybe<Scalars['Boolean']>;
+  customFooterBrandingEnabled?: Maybe<Scalars['Boolean']>;
+  coloredLinksEnabled?: Maybe<Scalars['Boolean']>;
+  googleAnalyticsEnabled?: Maybe<Scalars['Boolean']>;
+  facebookPixelEnabled?: Maybe<Scalars['Boolean']>;
+  emailCaptureEnabled?: Maybe<Scalars['Boolean']>;
+  verifiedCheckmarkEnabled?: Maybe<Scalars['Boolean']>;
+  linksSchedulingEnabled?: Maybe<Scalars['Boolean']>;
+  seoEnabled?: Maybe<Scalars['Boolean']>;
+  socialEnabled?: Maybe<Scalars['Boolean']>;
+  utmParametersEnabled?: Maybe<Scalars['Boolean']>;
+  passwordProtectionEnabled?: Maybe<Scalars['Boolean']>;
+  sensitiveContentWarningEnabled?: Maybe<Scalars['Boolean']>;
+  leapLinkEnabled?: Maybe<Scalars['Boolean']>;
+};
+
+export type PlanListResponse = {
+  __typename?: 'PlanListResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  plans?: Maybe<Array<Plan>>;
+};
+
 export type PlanResponse = {
   __typename?: 'PlanResponse';
   errors?: Maybe<Array<ErrorResponse>>;
-  plans?: Maybe<Array<Plan>>;
+  plan?: Maybe<Plan>;
 };
 
 export type PlanSettings = {
@@ -346,6 +401,7 @@ export type PlanSettings = {
   coloredLinksEnabled?: Maybe<Scalars['Boolean']>;
   googleAnalyticsEnabled?: Maybe<Scalars['Boolean']>;
   facebookPixelEnabled?: Maybe<Scalars['Boolean']>;
+  emailCaptureEnabled?: Maybe<Scalars['Boolean']>;
   verifiedCheckmarkEnabled?: Maybe<Scalars['Boolean']>;
   linksSchedulingEnabled?: Maybe<Scalars['Boolean']>;
   seoEnabled?: Maybe<Scalars['Boolean']>;
@@ -363,7 +419,8 @@ export type Query = {
   me?: Maybe<User>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
-  getAllPlans: PlanResponse;
+  getAllPlans: PlanListResponse;
+  getPlan: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
@@ -381,6 +438,11 @@ export type QueryGetAllCategoriesArgs = {
 
 
 export type QueryGetCategoryArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryGetPlanArgs = {
   id: Scalars['Int'];
 };
 
@@ -410,6 +472,19 @@ export type Referral = {
   referredBy?: Maybe<User>;
 };
 
+export type Report = {
+  __typename?: 'Report';
+  id: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  reportedUrl?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  reporter?: Maybe<User>;
+};
+
 export type RoleSettings = {
   __typename?: 'RoleSettings';
   resource?: Maybe<Scalars['String']>;
@@ -433,6 +508,20 @@ export type SocialMediaProps = {
   __typename?: 'SocialMediaProps';
   platform?: Maybe<Scalars['String']>;
   link?: Maybe<Scalars['String']>;
+};
+
+export type Support = {
+  __typename?: 'Support';
+  id: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  supportReply?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
 };
 
 export type User = {
@@ -461,6 +550,8 @@ export type User = {
   payments?: Maybe<Array<Payment>>;
   codes?: Maybe<Array<Code>>;
   referrals?: Maybe<Array<Referral>>;
+  reports?: Maybe<Array<Report>>;
+  supports?: Maybe<Array<Support>>;
   adminRole?: Maybe<AdminRole>;
 };
 
@@ -572,6 +663,29 @@ export type CreateCategoryMutation = (
   )> }
 );
 
+export type CreatePlanMutationVariables = Exact<{
+  options: PlanInput;
+}>;
+
+
+export type CreatePlanMutation = (
+  { __typename?: 'Mutation' }
+  & { createPlan: (
+    { __typename?: 'PlanResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, plan?: Maybe<(
+      { __typename?: 'Plan' }
+      & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'monthlyPriceStripeId' | 'annualPrice' | 'annualPriceStripeId' | 'visibilityStatus' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      & { settings?: Maybe<(
+        { __typename?: 'PlanSettings' }
+        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled'>
+      )> }
+    )> }
+  ) }
+);
+
 export type EditAdminRoleMutationVariables = Exact<{
   id: Scalars['Int'];
   options: NewAdminRoleInput;
@@ -614,6 +728,30 @@ export type EditCategoryMutation = (
       & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
     )> }
   )> }
+);
+
+export type EditPlanMutationVariables = Exact<{
+  id: Scalars['Int'];
+  options: PlanInput;
+}>;
+
+
+export type EditPlanMutation = (
+  { __typename?: 'Mutation' }
+  & { editPlan: (
+    { __typename?: 'PlanResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+    )>>, plan?: Maybe<(
+      { __typename?: 'Plan' }
+      & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'monthlyPriceStripeId' | 'annualPrice' | 'annualPriceStripeId' | 'visibilityStatus' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      & { settings?: Maybe<(
+        { __typename?: 'PlanSettings' }
+        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled'>
+      )> }
+    )> }
+  ) }
 );
 
 export type EditUserMutationVariables = Exact<{
@@ -800,7 +938,7 @@ export type GetAllPlansQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetAllPlansQuery = (
   { __typename?: 'Query' }
   & { getAllPlans: (
-    { __typename?: 'PlanResponse' }
+    { __typename?: 'PlanListResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
@@ -839,6 +977,29 @@ export type GetAllUsersQuery = (
       & ReceivedErrorsFragment
     )>> }
   )> }
+);
+
+export type GetPlanQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetPlanQuery = (
+  { __typename?: 'Query' }
+  & { getPlan: (
+    { __typename?: 'PlanResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, plan?: Maybe<(
+      { __typename?: 'Plan' }
+      & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'monthlyPriceStripeId' | 'annualPrice' | 'annualPriceStripeId' | 'visibilityStatus' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      & { settings?: Maybe<(
+        { __typename?: 'PlanSettings' }
+        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled'>
+      )> }
+    )> }
+  ) }
 );
 
 export type GetUserQueryVariables = Exact<{
@@ -971,6 +1132,54 @@ export const CreateCategoryDocument = gql`
 export function useCreateCategoryMutation() {
   return Urql.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument);
 };
+export const CreatePlanDocument = gql`
+    mutation CreatePlan($options: PlanInput!) {
+  createPlan(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    plan {
+      id
+      name
+      monthlyPrice
+      monthlyPriceStripeId
+      annualPrice
+      annualPriceStripeId
+      settings {
+        totalBiolinksLimit
+        totalLinksLimit
+        totalCustomDomainLimit
+        darkModeEnabled
+        addedToDirectoryEnabled
+        customBackHalfEnabled
+        noAdsEnabled
+        removableBrandingEnabled
+        customFooterBrandingEnabled
+        coloredLinksEnabled
+        googleAnalyticsEnabled
+        facebookPixelEnabled
+        emailCaptureEnabled
+        verifiedCheckmarkEnabled
+        linksSchedulingEnabled
+        seoEnabled
+        socialEnabled
+        utmParametersEnabled
+        passwordProtectionEnabled
+        sensitiveContentWarningEnabled
+        leapLinkEnabled
+      }
+      visibilityStatus
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useCreatePlanMutation() {
+  return Urql.useMutation<CreatePlanMutation, CreatePlanMutationVariables>(CreatePlanDocument);
+};
 export const EditAdminRoleDocument = gql`
     mutation EditAdminRole($id: Int!, $options: NewAdminRoleInput!) {
   editAdminRole(id: $id, options: $options) {
@@ -1017,6 +1226,56 @@ export const EditCategoryDocument = gql`
 
 export function useEditCategoryMutation() {
   return Urql.useMutation<EditCategoryMutation, EditCategoryMutationVariables>(EditCategoryDocument);
+};
+export const EditPlanDocument = gql`
+    mutation EditPlan($id: Int!, $options: PlanInput!) {
+  editPlan(id: $id, options: $options) {
+    errors {
+      errorCode
+      field
+      message
+    }
+    plan {
+      id
+      name
+      monthlyPrice
+      monthlyPriceStripeId
+      annualPrice
+      annualPriceStripeId
+      settings {
+        totalBiolinksLimit
+        totalLinksLimit
+        totalCustomDomainLimit
+        darkModeEnabled
+        addedToDirectoryEnabled
+        customBackHalfEnabled
+        noAdsEnabled
+        removableBrandingEnabled
+        customFooterBrandingEnabled
+        coloredLinksEnabled
+        googleAnalyticsEnabled
+        facebookPixelEnabled
+        emailCaptureEnabled
+        verifiedCheckmarkEnabled
+        linksSchedulingEnabled
+        seoEnabled
+        socialEnabled
+        utmParametersEnabled
+        passwordProtectionEnabled
+        sensitiveContentWarningEnabled
+        leapLinkEnabled
+      }
+      visibilityStatus
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+    `;
+
+export function useEditPlanMutation() {
+  return Urql.useMutation<EditPlanMutation, EditPlanMutationVariables>(EditPlanDocument);
 };
 export const EditUserDocument = gql`
     mutation EditUser($id: String!, $options: EditUserInput!) {
@@ -1253,6 +1512,54 @@ ${ReceivedErrorsFragmentDoc}`;
 
 export function useGetAllUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllUsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllUsersQuery>({ query: GetAllUsersDocument, ...options });
+};
+export const GetPlanDocument = gql`
+    query GetPlan($id: Int!) {
+  getPlan(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+    plan {
+      id
+      name
+      monthlyPrice
+      monthlyPriceStripeId
+      annualPrice
+      annualPriceStripeId
+      settings {
+        totalBiolinksLimit
+        totalLinksLimit
+        totalCustomDomainLimit
+        darkModeEnabled
+        addedToDirectoryEnabled
+        customBackHalfEnabled
+        noAdsEnabled
+        removableBrandingEnabled
+        customFooterBrandingEnabled
+        coloredLinksEnabled
+        googleAnalyticsEnabled
+        facebookPixelEnabled
+        emailCaptureEnabled
+        verifiedCheckmarkEnabled
+        linksSchedulingEnabled
+        seoEnabled
+        socialEnabled
+        utmParametersEnabled
+        passwordProtectionEnabled
+        sensitiveContentWarningEnabled
+        leapLinkEnabled
+      }
+      visibilityStatus
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetPlanQuery(options: Omit<Urql.UseQueryArgs<GetPlanQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPlanQuery>({ query: GetPlanDocument, ...options });
 };
 export const GetUserDocument = gql`
     query GetUser($id: String!) {

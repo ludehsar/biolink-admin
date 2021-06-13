@@ -1,0 +1,44 @@
+mutation EditPlan($id: Int!, $options: PlanInput!) {
+  editPlan(id: $id, options: $options) {
+    errors {
+      errorCode
+      field
+      message
+    }
+    plan {
+      id
+      name
+      monthlyPrice
+      monthlyPriceStripeId
+      annualPrice
+      annualPriceStripeId
+      settings {
+        totalBiolinksLimit
+        totalLinksLimit
+        totalCustomDomainLimit
+        darkModeEnabled
+        addedToDirectoryEnabled
+        customBackHalfEnabled
+        noAdsEnabled
+        removableBrandingEnabled
+        customFooterBrandingEnabled
+        coloredLinksEnabled
+        googleAnalyticsEnabled
+        facebookPixelEnabled
+        emailCaptureEnabled
+        verifiedCheckmarkEnabled
+        linksSchedulingEnabled
+        seoEnabled
+        socialEnabled
+        utmParametersEnabled
+        passwordProtectionEnabled
+        sensitiveContentWarningEnabled
+        leapLinkEnabled
+      }
+      visibilityStatus
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}

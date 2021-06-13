@@ -37,7 +37,7 @@ const PlansIndexPage: NextPage = () => {
                   <Col>
                     <h3 className="mb-0 float-left">Plans</h3>
                     <div className="float-right">
-                      <Link href="#">
+                      <Link href="/plans/add">
                         <Button color="primary" size="sm">
                           Add New
                         </Button>
@@ -87,9 +87,9 @@ const PlansIndexPage: NextPage = () => {
                             <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
                               View Details
                             </DropdownItem>
-                            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                              Edit
-                            </DropdownItem>
+                            <Link href={'/plans/edit/' + plan.id}>
+                              <DropdownItem href={'/plans/edit/' + plan.id}>Edit</DropdownItem>
+                            </Link>
                           </DropdownMenu>
                         </UncontrolledDropdown>
                       </td>

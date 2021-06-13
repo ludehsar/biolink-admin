@@ -1,0 +1,42 @@
+mutation CreatePlan($options: PlanInput!) {
+  createPlan(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    plan {
+      id
+      name
+      monthlyPrice
+      monthlyPriceStripeId
+      annualPrice
+      annualPriceStripeId
+      settings {
+        totalBiolinksLimit
+        totalLinksLimit
+        totalCustomDomainLimit
+        darkModeEnabled
+        addedToDirectoryEnabled
+        customBackHalfEnabled
+        noAdsEnabled
+        removableBrandingEnabled
+        customFooterBrandingEnabled
+        coloredLinksEnabled
+        googleAnalyticsEnabled
+        facebookPixelEnabled
+        emailCaptureEnabled
+        verifiedCheckmarkEnabled
+        linksSchedulingEnabled
+        seoEnabled
+        socialEnabled
+        utmParametersEnabled
+        passwordProtectionEnabled
+        sensitiveContentWarningEnabled
+        leapLinkEnabled
+      }
+      visibilityStatus
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
