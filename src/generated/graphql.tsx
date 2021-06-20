@@ -56,7 +56,11 @@ export type Biolink = {
   profilePhotoUrl?: Maybe<Scalars['String']>;
   coverPhotoUrl?: Maybe<Scalars['String']>;
   displayName?: Maybe<Scalars['String']>;
-  location?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
   bio?: Maybe<Scalars['String']>;
   settings?: Maybe<BiolinkSettings>;
   verificationStatus?: Maybe<Scalars['String']>;
@@ -70,6 +74,19 @@ export type Biolink = {
   user?: Maybe<User>;
   links?: Maybe<Array<Link>>;
   category?: Maybe<Category>;
+};
+
+export type BiolinkConnection = {
+  __typename?: 'BiolinkConnection';
+  pageInfo: PageInfo;
+  edges: Array<BiolinkEdge>;
+};
+
+export type BiolinkEdge = {
+  __typename?: 'BiolinkEdge';
+  node: Biolink;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type BiolinkSettings = {
@@ -196,6 +213,7 @@ export type Link = {
   id: Scalars['String'];
   linkType?: Maybe<Scalars['String']>;
   linkTitle?: Maybe<Scalars['String']>;
+  linkImageUrl?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   shortenedUrl?: Maybe<Scalars['String']>;
   order?: Maybe<Scalars['Int']>;
@@ -314,18 +332,27 @@ export type PageInfo = {
 export type Payment = {
   __typename?: 'Payment';
   id?: Maybe<Scalars['String']>;
-  clientIp?: Maybe<Scalars['String']>;
-  stripePaymentCreatedAt?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  methodType?: Maybe<Scalars['String']>;
-  cardBrand?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
-  cvcCheck?: Maybe<Scalars['String']>;
-  expMonth?: Maybe<Scalars['String']>;
-  expYear?: Maybe<Scalars['String']>;
-  funding?: Maybe<Scalars['String']>;
-  cardId?: Maybe<Scalars['String']>;
-  last4?: Maybe<Scalars['String']>;
+  paymentType?: Maybe<Scalars['String']>;
+  stripeAmountDue?: Maybe<Scalars['Int']>;
+  stripeAmountPaid?: Maybe<Scalars['Int']>;
+  stripeAmountRemaining?: Maybe<Scalars['Int']>;
+  stripeChargeId?: Maybe<Scalars['String']>;
+  stripeInvoiceCreated?: Maybe<Scalars['String']>;
+  stripePaymentCurrency?: Maybe<Scalars['String']>;
+  stripeCustomerId?: Maybe<Scalars['String']>;
+  stripeCustomerAddress?: Maybe<Scalars['String']>;
+  stripeCustomerEmail?: Maybe<Scalars['String']>;
+  stripeCustomerName?: Maybe<Scalars['String']>;
+  stripeCustomerPhone?: Maybe<Scalars['String']>;
+  stripeCustomerShipping?: Maybe<Scalars['String']>;
+  stripeDiscount?: Maybe<Scalars['String']>;
+  stripeInvoicePdfUrl?: Maybe<Scalars['String']>;
+  stripePriceId?: Maybe<Scalars['String']>;
+  stripeSubscriptionId?: Maybe<Scalars['String']>;
+  stripeInvoiceNumber?: Maybe<Scalars['String']>;
+  stripePeriodStart?: Maybe<Scalars['String']>;
+  stripePeriodEnd?: Maybe<Scalars['String']>;
+  stripeStatus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
 };
 
@@ -417,6 +444,8 @@ export type Query = {
   getAllAdminRoles: AdminRoleListResponse;
   getAdminRole: AdminRoleResponse;
   me?: Maybe<User>;
+  getAllBiolinks?: Maybe<BiolinkConnection>;
+  getAllDirectories?: Maybe<BiolinkConnection>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
   getAllPlans: PlanListResponse;
@@ -429,6 +458,17 @@ export type Query = {
 
 export type QueryGetAdminRoleArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryGetAllBiolinksArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllDirectoriesArgs = {
+  categoryIds?: Maybe<Array<Scalars['Int']>>;
+  options: ConnectionArgs;
 };
 
 
@@ -513,10 +553,12 @@ export type SocialMediaProps = {
 export type Support = {
   __typename?: 'Support';
   id: Scalars['String'];
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
+  fullName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
+  phoneNumber?: Maybe<Scalars['String']>;
+  company?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
   supportReply?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
@@ -909,6 +951,36 @@ export type GetAllAdminsQuery = (
   )> }
 );
 
+export type GetAllBiolinksQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllBiolinksQuery = (
+  { __typename?: 'Query' }
+  & { getAllBiolinks?: Maybe<(
+    { __typename?: 'BiolinkConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
+    ), edges: Array<(
+      { __typename?: 'BiolinkEdge' }
+      & Pick<BiolinkEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'username' | 'profilePhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'verificationStatus' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, category?: Maybe<(
+          { __typename?: 'Category' }
+          & Pick<Category, 'id' | 'categoryName'>
+        )> }
+      ) }
+    )> }
+  )> }
+);
+
 export type GetAlLCategoriesQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -927,6 +999,36 @@ export type GetAlLCategoriesQuery = (
       & { node: (
         { __typename?: 'Category' }
         & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      ) }
+    )> }
+  )> }
+);
+
+export type GetAllDirectoriesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllDirectoriesQuery = (
+  { __typename?: 'Query' }
+  & { getAllDirectories?: Maybe<(
+    { __typename?: 'BiolinkConnection' }
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
+    ), edges: Array<(
+      { __typename?: 'BiolinkEdge' }
+      & Pick<BiolinkEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'username' | 'profilePhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'verificationStatus' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, category?: Maybe<(
+          { __typename?: 'Category' }
+          & Pick<Category, 'id' | 'categoryName'>
+        )> }
       ) }
     )> }
   )> }
@@ -1432,6 +1534,44 @@ ${ReceivedErrorsFragmentDoc}`;
 export function useGetAllAdminsQuery(options: Omit<Urql.UseQueryArgs<GetAllAdminsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllAdminsQuery>({ query: GetAllAdminsDocument, ...options });
 };
+export const GetAllBiolinksDocument = gql`
+    query GetAllBiolinks($options: ConnectionArgs!) {
+  getAllBiolinks(options: $options) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        id
+        username
+        profilePhotoUrl
+        displayName
+        city
+        state
+        country
+        verificationStatus
+        createdAt
+        user {
+          id
+          email
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
+    `;
+
+export function useGetAllBiolinksQuery(options: Omit<Urql.UseQueryArgs<GetAllBiolinksQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllBiolinksQuery>({ query: GetAllBiolinksDocument, ...options });
+};
 export const GetAlLCategoriesDocument = gql`
     query GetAlLCategories($options: ConnectionArgs!) {
   getAllCategories(options: $options) {
@@ -1457,6 +1597,44 @@ export const GetAlLCategoriesDocument = gql`
 
 export function useGetAlLCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAlLCategoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAlLCategoriesQuery>({ query: GetAlLCategoriesDocument, ...options });
+};
+export const GetAllDirectoriesDocument = gql`
+    query GetAllDirectories($options: ConnectionArgs!) {
+  getAllDirectories(options: $options) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        id
+        username
+        profilePhotoUrl
+        displayName
+        city
+        state
+        country
+        verificationStatus
+        createdAt
+        user {
+          id
+          email
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
+    `;
+
+export function useGetAllDirectoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllDirectoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDirectoriesQuery>({ query: GetAllDirectoriesDocument, ...options });
 };
 export const GetAllPlansDocument = gql`
     query GetAllPlans {

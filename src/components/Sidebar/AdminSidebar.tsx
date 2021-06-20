@@ -73,6 +73,21 @@ const links: ILink[] = [
     icon: 'ni ni-books',
   },
   {
+    name: 'Manage Biolinks',
+    href: '#biolinks',
+    icon: 'ni ni-app',
+    children: [
+      {
+        name: 'Biolinks',
+        href: '/biolinks',
+      },
+      {
+        name: 'Directories',
+        href: '/biolinks/directories',
+      },
+    ],
+  },
+  {
     name: 'Plans',
     href: '/plans',
     icon: 'ni ni-tag',

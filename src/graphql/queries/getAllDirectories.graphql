@@ -1,0 +1,32 @@
+query GetAllDirectories($options: ConnectionArgs!) {
+  getAllDirectories(options: $options) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      node {
+        id
+        username
+        profilePhotoUrl
+        displayName
+        city
+        state
+        country
+        verificationStatus
+        createdAt
+        user {
+          id
+          email
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
