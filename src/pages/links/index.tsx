@@ -1,47 +1,37 @@
+import React, { useCallback, useState } from 'react'
 import moment from 'moment'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
-import React, { useState, useCallback } from 'react'
-import {
-  Media,
-  Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from 'reactstrap'
 
-import { useGetAllDirectoriesQuery } from '../../../generated/graphql'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
-import DataTable from '../../../components/DataTable/DataTable'
-import AdminHeader from '../../../components/Header/AdminHeader'
+import AdminHeader from '../../components/Header/AdminHeader'
+import AdminLayout from '../../layouts/Admin.layout'
+import { createUrqlClient } from '../../utils/createUrqlClient'
+import { DropdownItem, DropdownMenu, DropdownToggle, Media, UncontrolledDropdown } from 'reactstrap'
+import { useGetAllLinksQuery } from '../../generated/graphql'
+import DataTable from '../../components/DataTable/DataTable'
+import { FRONTEND_APP_URL } from '../../config/app'
 
 const columns = [
   {
-    name: 'Username',
-    selector: 'usernameWithProfilePhoto',
+    name: 'Title',
+    selector: 'linkTitleWithLinkImage',
   },
   {
-    name: 'Full Name',
-    selector: 'displayName',
+    name: 'Link Type',
+    selector: 'linkType',
   },
   {
     name: 'User',
     selector: 'email',
   },
   {
-    name: 'Category',
-    selector: 'category',
+    name: 'URL',
+    selector: 'url',
   },
   {
-    name: 'Country',
-    selector: 'country',
-  },
-  {
-    name: 'Verification Status',
-    selector: 'verificationStatus',
+    name: 'Shortened URL',
+    selector: 'shortenedUrl',
   },
   {
     name: 'Joined',
@@ -53,48 +43,57 @@ const columns = [
   },
 ]
 
-const DirectoriesIndexPage: NextPage = () => {
+const LinksIndexPage: NextPage = () => {
   const [after, setAfter] = useState<string>('')
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
-  const [{ data }] = useGetAllDirectoriesQuery({
+  const [{ data }] = useGetAllLinksQuery({
     variables: { options: { first: 10, after, before, query: searchText } },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllDirectories?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllLinks?.pageInfo?.startCursor || '')
     setAfter('')
-  }, [data?.getAllDirectories?.pageInfo?.startCursor])
+  }, [data?.getAllLinks?.pageInfo?.startCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllDirectories?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllLinks?.pageInfo?.endCursor || '')
     setBefore('')
-  }, [data?.getAllDirectories?.pageInfo?.endCursor])
+  }, [data?.getAllLinks?.pageInfo?.endCursor])
 
-  const directoryData =
-    data?.getAllDirectories?.edges?.map((edge) => ({
-      usernameWithProfilePhoto: (
+  const biolinkData =
+    data?.getAllLinks?.edges?.map((edge) => ({
+      linkTitleWithLinkImage: (
         <Media className="align-items-center">
           <Link href="#">
             <a className="avatar rounded-circle mr-3" href="#" onClick={(e) => e.preventDefault()}>
-              <img alt="Biolink User Profile" src={edge.node.profilePhotoUrl as string} />
+              <img alt="Biolink Profile" src={edge.node.linkImageUrl as string} />
             </a>
           </Link>
           <Media>
-            <span className="mb-0 text-sm">{edge.node.username}</span>
+            <span className="mb-0 text-sm">{edge.node.linkTitle}</span>
           </Media>
         </Media>
       ),
-      displayName: edge.node.displayName,
+      linkType: edge.node.linkType,
       email: (
         <Link href={'/users/view/' + edge.node.user?.id}>
           <a href={'/users/view/' + edge.node.user?.id}>{edge.node.user?.email}</a>
         </Link>
       ),
-      category: edge.node.category?.categoryName,
-      country: edge.node.country,
-      verificationStatus: <Badge color="primary">{edge.node.verificationStatus}</Badge>,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).toLocaleString(),
+      url: (
+        <Link href={edge.node.url || '#'}>
+          <a href={edge.node.url || '#'}>{edge.node.url}</a>
+        </Link>
+      ),
+      shortenedUrl: (
+        <Link href={FRONTEND_APP_URL + '/' + edge.node.shortenedUrl || '#'}>
+          <a href={FRONTEND_APP_URL + '/' + edge.node.shortenedUrl || '#'}>
+            {FRONTEND_APP_URL + '/' + edge.node.shortenedUrl}
+          </a>
+        </Link>
+      ),
+      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -123,13 +122,13 @@ const DirectoriesIndexPage: NextPage = () => {
     <AdminLayout>
       <AdminHeader />
       <DataTable
-        title="Directories"
+        title="Links"
         newButton={true}
         newButtonLink={'/users/add'}
         columns={columns}
-        data={directoryData}
-        hasNextPage={data?.getAllDirectories?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllDirectories?.pageInfo?.hasPreviousPage || false}
+        data={biolinkData}
+        hasNextPage={data?.getAllLinks?.pageInfo?.hasNextPage || false}
+        hasPreviousPage={data?.getAllLinks?.pageInfo?.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}
@@ -138,4 +137,4 @@ const DirectoriesIndexPage: NextPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(DirectoriesIndexPage)
+export default withUrqlClient(createUrqlClient)(LinksIndexPage)

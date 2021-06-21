@@ -1,10 +1,10 @@
 query GetAlLCategories($options: ConnectionArgs!) {
   getAllCategories(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
     edges {
       node {

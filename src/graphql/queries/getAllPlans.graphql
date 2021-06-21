@@ -1,9 +1,7 @@
 query GetAllPlans {
   getAllPlans {
     errors {
-      errorCode
-      field
-      message
+      ...ReceivedErrors
     }
     plans {
       id

@@ -88,6 +88,11 @@ const links: ILink[] = [
     ],
   },
   {
+    name: 'Links',
+    href: '/links',
+    icon: 'ni ni-compass-04',
+  },
+  {
     name: 'Plans',
     href: '/plans',
     icon: 'ni ni-tag',

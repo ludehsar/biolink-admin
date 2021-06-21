@@ -35,7 +35,7 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
   const [{ data: adminRoles }] = useGetAllAdminRolesQuery()
   const [{ data: userData }] = useGetUserQuery({ variables: { id: id || '' } })
 
-  const categoryOptions = categories?.getAllCategories?.edges.map((edge) => ({
+  const categoryOptions = categories?.getAllCategories?.edges?.map((edge) => ({
     value: edge.node.id || '',
     label: edge.node.categoryName || '',
   }))

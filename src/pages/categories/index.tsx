@@ -88,8 +88,8 @@ const CategoriesIndexPage: NextPage = () => {
         newButtonLink="/categories/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllCategories?.pageInfo.hasNextPage || false}
-        hasPreviousPage={data?.getAllCategories?.pageInfo.hasPreviousPage || false}
+        hasNextPage={data?.getAllCategories?.pageInfo?.hasNextPage || false}
+        hasPreviousPage={data?.getAllCategories?.pageInfo?.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

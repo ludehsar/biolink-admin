@@ -1,10 +1,10 @@
 query GetAllBiolinks($options: ConnectionArgs!) {
   getAllBiolinks(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
     edges {
       node {

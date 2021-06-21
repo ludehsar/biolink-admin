@@ -1,0 +1,26 @@
+query GetAllLinks($options: ConnectionArgs!) {
+  getAllLinks(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        linkType
+        linkTitle
+        linkImageUrl
+        url
+        shortenedUrl
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}

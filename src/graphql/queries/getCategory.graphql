@@ -1,9 +1,7 @@
 query GetCategory($id: Int!) {
   getCategory(id: $id) {
     errors {
-      errorCode
-      field
-      message
+      ...ReceivedErrors
     }
     category {
       id

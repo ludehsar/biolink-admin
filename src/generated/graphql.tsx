@@ -78,8 +78,9 @@ export type Biolink = {
 
 export type BiolinkConnection = {
   __typename?: 'BiolinkConnection';
-  pageInfo: PageInfo;
-  edges: Array<BiolinkEdge>;
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<BiolinkEdge>>;
 };
 
 export type BiolinkEdge = {
@@ -134,8 +135,9 @@ export type Category = {
 
 export type CategoryConnection = {
   __typename?: 'CategoryConnection';
-  pageInfo: PageInfo;
-  edges: Array<CategoryEdge>;
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<CategoryEdge>>;
 };
 
 export type CategoryEdge = {
@@ -226,6 +228,20 @@ export type Link = {
   deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
   biolink?: Maybe<Biolink>;
+};
+
+export type LinkConnection = {
+  __typename?: 'LinkConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<LinkEdge>>;
+};
+
+export type LinkEdge = {
+  __typename?: 'LinkEdge';
+  node: Link;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type LoginInput = {
@@ -448,6 +464,7 @@ export type Query = {
   getAllDirectories?: Maybe<BiolinkConnection>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
+  getAllLinks?: Maybe<LinkConnection>;
   getAllPlans: PlanListResponse;
   getPlan: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
@@ -479,6 +496,11 @@ export type QueryGetAllCategoriesArgs = {
 
 export type QueryGetCategoryArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryGetAllLinksArgs = {
+  options: ConnectionArgs;
 };
 
 
@@ -829,25 +851,6 @@ export type SendForgotPasswordEmailMutation = (
   ) }
 );
 
-export type GetCategoryQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type GetCategoryQuery = (
-  { __typename?: 'Query' }
-  & { getCategory?: Maybe<(
-    { __typename?: 'CategoryResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'ErrorResponse' }
-      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
-    )>>, category?: Maybe<(
-      { __typename?: 'Category' }
-      & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
-    )> }
-  )> }
-);
-
 export type LoginMutationVariables = Exact<{
   options: LoginInput;
 }>;
@@ -960,10 +963,13 @@ export type GetAllBiolinksQuery = (
   { __typename?: 'Query' }
   & { getAllBiolinks?: Maybe<(
     { __typename?: 'BiolinkConnection' }
-    & { pageInfo: (
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
       { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
-    ), edges: Array<(
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
       { __typename?: 'BiolinkEdge' }
       & Pick<BiolinkEdge, 'cursor'>
       & { node: (
@@ -977,7 +983,7 @@ export type GetAllBiolinksQuery = (
           & Pick<Category, 'id' | 'categoryName'>
         )> }
       ) }
-    )> }
+    )>> }
   )> }
 );
 
@@ -990,17 +996,20 @@ export type GetAlLCategoriesQuery = (
   { __typename?: 'Query' }
   & { getAllCategories?: Maybe<(
     { __typename?: 'CategoryConnection' }
-    & { pageInfo: (
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
       { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
-    ), edges: Array<(
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
       { __typename?: 'CategoryEdge' }
       & Pick<CategoryEdge, 'cursor'>
       & { node: (
         { __typename?: 'Category' }
         & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt' | 'deletedAt'>
       ) }
-    )> }
+    )>> }
   )> }
 );
 
@@ -1013,10 +1022,13 @@ export type GetAllDirectoriesQuery = (
   { __typename?: 'Query' }
   & { getAllDirectories?: Maybe<(
     { __typename?: 'BiolinkConnection' }
-    & { pageInfo: (
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
       { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>
-    ), edges: Array<(
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
       { __typename?: 'BiolinkEdge' }
       & Pick<BiolinkEdge, 'cursor'>
       & { node: (
@@ -1030,7 +1042,37 @@ export type GetAllDirectoriesQuery = (
           & Pick<Category, 'id' | 'categoryName'>
         )> }
       ) }
-    )> }
+    )>> }
+  )> }
+);
+
+export type GetAllLinksQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllLinksQuery = (
+  { __typename?: 'Query' }
+  & { getAllLinks?: Maybe<(
+    { __typename?: 'LinkConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'LinkEdge' }
+      & Pick<LinkEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Link' }
+        & Pick<Link, 'id' | 'linkType' | 'linkTitle' | 'linkImageUrl' | 'url' | 'shortenedUrl' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
   )> }
 );
 
@@ -1043,7 +1085,7 @@ export type GetAllPlansQuery = (
     { __typename?: 'PlanListResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
-      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+      & ReceivedErrorsFragment
     )>>, plans?: Maybe<Array<(
       { __typename?: 'Plan' }
       & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'annualPrice' | 'enabledStatus' | 'visibilityStatus'>
@@ -1078,6 +1120,25 @@ export type GetAllUsersQuery = (
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
     )>> }
+  )> }
+);
+
+export type GetCategoryQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetCategoryQuery = (
+  { __typename?: 'Query' }
+  & { getCategory?: Maybe<(
+    { __typename?: 'CategoryResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, category?: Maybe<(
+      { __typename?: 'Category' }
+      & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
+    )> }
   )> }
 );
 
@@ -1405,27 +1466,6 @@ export const SendForgotPasswordEmailDocument = gql`
 export function useSendForgotPasswordEmailMutation() {
   return Urql.useMutation<SendForgotPasswordEmailMutation, SendForgotPasswordEmailMutationVariables>(SendForgotPasswordEmailDocument);
 };
-export const GetCategoryDocument = gql`
-    query GetCategory($id: Int!) {
-  getCategory(id: $id) {
-    errors {
-      errorCode
-      field
-      message
-    }
-    category {
-      id
-      categoryName
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-
-export function useGetCategoryQuery(options: Omit<Urql.UseQueryArgs<GetCategoryQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetCategoryQuery>({ query: GetCategoryDocument, ...options });
-};
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
   login(options: $options) {
@@ -1537,11 +1577,11 @@ export function useGetAllAdminsQuery(options: Omit<Urql.UseQueryArgs<GetAllAdmin
 export const GetAllBiolinksDocument = gql`
     query GetAllBiolinks($options: ConnectionArgs!) {
   getAllBiolinks(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
     edges {
       node {
@@ -1567,7 +1607,8 @@ export const GetAllBiolinksDocument = gql`
     }
   }
 }
-    `;
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
 
 export function useGetAllBiolinksQuery(options: Omit<Urql.UseQueryArgs<GetAllBiolinksQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllBiolinksQuery>({ query: GetAllBiolinksDocument, ...options });
@@ -1575,11 +1616,11 @@ export function useGetAllBiolinksQuery(options: Omit<Urql.UseQueryArgs<GetAllBio
 export const GetAlLCategoriesDocument = gql`
     query GetAlLCategories($options: ConnectionArgs!) {
   getAllCategories(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
     edges {
       node {
@@ -1593,7 +1634,8 @@ export const GetAlLCategoriesDocument = gql`
     }
   }
 }
-    `;
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
 
 export function useGetAlLCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAlLCategoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAlLCategoriesQuery>({ query: GetAlLCategoriesDocument, ...options });
@@ -1601,11 +1643,11 @@ export function useGetAlLCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAlLC
 export const GetAllDirectoriesDocument = gql`
     query GetAllDirectories($options: ConnectionArgs!) {
   getAllDirectories(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
     pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+      ...PageInfo
     }
     edges {
       node {
@@ -1631,18 +1673,50 @@ export const GetAllDirectoriesDocument = gql`
     }
   }
 }
-    `;
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
 
 export function useGetAllDirectoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllDirectoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllDirectoriesQuery>({ query: GetAllDirectoriesDocument, ...options });
+};
+export const GetAllLinksDocument = gql`
+    query GetAllLinks($options: ConnectionArgs!) {
+  getAllLinks(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        linkType
+        linkTitle
+        linkImageUrl
+        url
+        shortenedUrl
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllLinksQuery(options: Omit<Urql.UseQueryArgs<GetAllLinksQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllLinksQuery>({ query: GetAllLinksDocument, ...options });
 };
 export const GetAllPlansDocument = gql`
     query GetAllPlans {
   getAllPlans {
     errors {
-      errorCode
-      field
-      message
+      ...ReceivedErrors
     }
     plans {
       id
@@ -1654,7 +1728,7 @@ export const GetAllPlansDocument = gql`
     }
   }
 }
-    `;
+    ${ReceivedErrorsFragmentDoc}`;
 
 export function useGetAllPlansQuery(options: Omit<Urql.UseQueryArgs<GetAllPlansQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllPlansQuery>({ query: GetAllPlansDocument, ...options });
@@ -1690,6 +1764,25 @@ ${ReceivedErrorsFragmentDoc}`;
 
 export function useGetAllUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllUsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllUsersQuery>({ query: GetAllUsersDocument, ...options });
+};
+export const GetCategoryDocument = gql`
+    query GetCategory($id: Int!) {
+  getCategory(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+    category {
+      id
+      categoryName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetCategoryQuery(options: Omit<Urql.UseQueryArgs<GetCategoryQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCategoryQuery>({ query: GetCategoryDocument, ...options });
 };
 export const GetPlanDocument = gql`
     query GetPlan($id: Int!) {
