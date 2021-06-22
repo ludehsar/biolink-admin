@@ -67,7 +67,7 @@ const LinksIndexPage: NextPage = () => {
         <Media className="align-items-center">
           <Link href="#">
             <a className="avatar rounded-circle mr-3" href="#" onClick={(e) => e.preventDefault()}>
-              <img alt="Biolink Profile" src={edge.node.linkImageUrl as string} />
+              <img alt="Link" src={edge.node.linkImageUrl as string} />
             </a>
           </Link>
           <Media>
