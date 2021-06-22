@@ -1,5 +1,5 @@
-query GetAllLinks($options: ConnectionArgs!) {
-  getAllLinks(options: $options) {
+query GetAllEmbeds($options: ConnectionArgs!) {
+  getAllEmbeds(options: $options) {
     errors {
       ...ReceivedErrors
     }

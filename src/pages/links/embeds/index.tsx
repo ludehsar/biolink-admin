@@ -3,14 +3,14 @@ import moment from 'moment'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
+import { Media, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
-import AdminHeader from '../../components/Header/AdminHeader'
-import AdminLayout from '../../layouts/Admin.layout'
-import { createUrqlClient } from '../../utils/createUrqlClient'
-import { DropdownItem, DropdownMenu, DropdownToggle, Media, UncontrolledDropdown } from 'reactstrap'
-import { useGetAllLinksQuery } from '../../generated/graphql'
-import DataTable from '../../components/DataTable/DataTable'
-import { FRONTEND_APP_URL } from '../../config/app'
+import DataTable from '../../../components/DataTable/DataTable'
+import AdminHeader from '../../../components/Header/AdminHeader'
+import { FRONTEND_APP_URL } from '../../../config/app'
+import { useGetAllEmbedsQuery } from '../../../generated/graphql'
+import AdminLayout from '../../../layouts/Admin.layout'
+import { createUrqlClient } from '../../../utils/createUrqlClient'
 
 const columns = [
   {
@@ -39,26 +39,26 @@ const columns = [
   },
 ]
 
-const LinksIndexPage: NextPage = () => {
+const EmbedsIndexPage: NextPage = () => {
   const [after, setAfter] = useState<string>('')
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
-  const [{ data }] = useGetAllLinksQuery({
+  const [{ data }] = useGetAllEmbedsQuery({
     variables: { options: { first: 10, after, before, query: searchText } },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllLinks?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllEmbeds?.pageInfo?.startCursor || '')
     setAfter('')
-  }, [data?.getAllLinks?.pageInfo?.startCursor])
+  }, [data?.getAllEmbeds?.pageInfo?.startCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllLinks?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllEmbeds?.pageInfo?.endCursor || '')
     setBefore('')
-  }, [data?.getAllLinks?.pageInfo?.endCursor])
+  }, [data?.getAllEmbeds?.pageInfo?.endCursor])
 
   const biolinkData =
-    data?.getAllLinks?.edges?.map((edge) => ({
+    data?.getAllEmbeds?.edges?.map((edge) => ({
       linkTitleWithLinkImage: (
         <Media className="align-items-center">
           <Link href="#">
@@ -122,8 +122,8 @@ const LinksIndexPage: NextPage = () => {
         newButtonLink={'/users/add'}
         columns={columns}
         data={biolinkData}
-        hasNextPage={data?.getAllLinks?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllLinks?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={data?.getAllEmbeds?.pageInfo?.hasNextPage || false}
+        hasPreviousPage={data?.getAllEmbeds?.pageInfo?.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}
@@ -132,4 +132,4 @@ const LinksIndexPage: NextPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(LinksIndexPage)
+export default withUrqlClient(createUrqlClient)(EmbedsIndexPage)

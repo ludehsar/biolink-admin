@@ -88,9 +88,19 @@ const links: ILink[] = [
     ],
   },
   {
-    name: 'Links',
-    href: '/links',
+    name: 'Manage Links',
+    href: '#links',
     icon: 'ni ni-compass-04',
+    children: [
+      {
+        name: 'Links',
+        href: '/links',
+      },
+      {
+        name: 'Embedded Links',
+        href: '/links/embeds',
+      },
+    ],
   },
   {
     name: 'Plans',

@@ -465,6 +465,7 @@ export type Query = {
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
   getAllLinks?: Maybe<LinkConnection>;
+  getAllEmbeds?: Maybe<LinkConnection>;
   getAllPlans: PlanListResponse;
   getPlan: PlanResponse;
   getAllUsers?: Maybe<UserConnection>;
@@ -500,6 +501,11 @@ export type QueryGetCategoryArgs = {
 
 
 export type QueryGetAllLinksArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllEmbedsArgs = {
   options: ConnectionArgs;
 };
 
@@ -1046,6 +1052,36 @@ export type GetAllDirectoriesQuery = (
   )> }
 );
 
+export type GetAllEmbedsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllEmbedsQuery = (
+  { __typename?: 'Query' }
+  & { getAllEmbeds?: Maybe<(
+    { __typename?: 'LinkConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'LinkEdge' }
+      & Pick<LinkEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Link' }
+        & Pick<Link, 'id' | 'linkTitle' | 'linkImageUrl' | 'url' | 'shortenedUrl' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetAllLinksQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -1066,7 +1102,7 @@ export type GetAllLinksQuery = (
       & Pick<LinkEdge, 'cursor'>
       & { node: (
         { __typename?: 'Link' }
-        & Pick<Link, 'id' | 'linkType' | 'linkTitle' | 'linkImageUrl' | 'url' | 'shortenedUrl' | 'createdAt'>
+        & Pick<Link, 'id' | 'linkTitle' | 'linkImageUrl' | 'url' | 'shortenedUrl' | 'createdAt'>
         & { user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, 'id' | 'email'>
@@ -1679,6 +1715,38 @@ ${PageInfoFragmentDoc}`;
 export function useGetAllDirectoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllDirectoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllDirectoriesQuery>({ query: GetAllDirectoriesDocument, ...options });
 };
+export const GetAllEmbedsDocument = gql`
+    query GetAllEmbeds($options: ConnectionArgs!) {
+  getAllEmbeds(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        linkTitle
+        linkImageUrl
+        url
+        shortenedUrl
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllEmbedsQuery(options: Omit<Urql.UseQueryArgs<GetAllEmbedsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllEmbedsQuery>({ query: GetAllEmbedsDocument, ...options });
+};
 export const GetAllLinksDocument = gql`
     query GetAllLinks($options: ConnectionArgs!) {
   getAllLinks(options: $options) {
@@ -1691,7 +1759,6 @@ export const GetAllLinksDocument = gql`
     edges {
       node {
         id
-        linkType
         linkTitle
         linkImageUrl
         url
