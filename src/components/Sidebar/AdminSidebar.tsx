@@ -107,6 +107,25 @@ const links: ILink[] = [
     href: '/plans',
     icon: 'ni ni-tag',
   },
+  {
+    name: 'Manage Black Lists',
+    href: '#black-lists',
+    icon: 'ni ni-istanbul',
+    children: [
+      {
+        name: 'Bad Words',
+        href: '/black-lists/bad-words',
+      },
+      {
+        name: 'Emails',
+        href: '/black-lists/emails',
+      },
+      {
+        name: 'Usernames',
+        href: '/black-lists/usernames',
+      },
+    ],
+  },
 ]
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
