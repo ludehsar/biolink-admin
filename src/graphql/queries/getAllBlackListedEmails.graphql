@@ -1,0 +1,19 @@
+query GetAllBlackListedEmails($options: ConnectionArgs!) {
+  getAllBlackListedEmails(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        keyword
+        reason
+        createdAt
+      }
+      cursor
+    }
+  }
+}

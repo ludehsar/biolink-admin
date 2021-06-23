@@ -1,0 +1,19 @@
+query GetAllBlackListedUsernames($options: ConnectionArgs!) {
+  getAllBlackListedUsernames(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        keyword
+        reason
+        createdAt
+      }
+      cursor
+    }
+  }
+}

@@ -124,6 +124,31 @@ export type BiolinkSettings = {
   enableSensitiveContentWarning?: Maybe<Scalars['Boolean']>;
 };
 
+export type BlackList = {
+  __typename?: 'BlackList';
+  id?: Maybe<Scalars['Int']>;
+  blacklistType?: Maybe<Scalars['String']>;
+  keyword?: Maybe<Scalars['String']>;
+  reason?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
+};
+
+export type BlackListConnection = {
+  __typename?: 'BlackListConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<BlackListEdge>>;
+};
+
+export type BlackListEdge = {
+  __typename?: 'BlackListEdge';
+  node: BlackList;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
+};
+
 export type Category = {
   __typename?: 'Category';
   id?: Maybe<Scalars['Int']>;
@@ -462,6 +487,9 @@ export type Query = {
   me?: Maybe<User>;
   getAllBiolinks?: Maybe<BiolinkConnection>;
   getAllDirectories?: Maybe<BiolinkConnection>;
+  getAllBlackListedBadWords?: Maybe<BlackListConnection>;
+  getAllBlackListedEmails?: Maybe<BlackListConnection>;
+  getAllBlackListedUsernames?: Maybe<BlackListConnection>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
   getAllLinks?: Maybe<LinkConnection>;
@@ -486,6 +514,21 @@ export type QueryGetAllBiolinksArgs = {
 
 export type QueryGetAllDirectoriesArgs = {
   categoryIds?: Maybe<Array<Scalars['Int']>>;
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllBlackListedBadWordsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllBlackListedEmailsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllBlackListedUsernamesArgs = {
   options: ConnectionArgs;
 };
 
@@ -988,6 +1031,84 @@ export type GetAllBiolinksQuery = (
           { __typename?: 'Category' }
           & Pick<Category, 'id' | 'categoryName'>
         )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllBlackListedBadWordsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllBlackListedBadWordsQuery = (
+  { __typename?: 'Query' }
+  & { getAllBlackListedBadWords?: Maybe<(
+    { __typename?: 'BlackListConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'BlackListEdge' }
+      & Pick<BlackListEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'BlackList' }
+        & Pick<BlackList, 'id' | 'keyword' | 'reason' | 'createdAt'>
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllBlackListedEmailsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllBlackListedEmailsQuery = (
+  { __typename?: 'Query' }
+  & { getAllBlackListedEmails?: Maybe<(
+    { __typename?: 'BlackListConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'BlackListEdge' }
+      & Pick<BlackListEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'BlackList' }
+        & Pick<BlackList, 'id' | 'keyword' | 'reason' | 'createdAt'>
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllBlackListedUsernamesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllBlackListedUsernamesQuery = (
+  { __typename?: 'Query' }
+  & { getAllBlackListedUsernames?: Maybe<(
+    { __typename?: 'BlackListConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'BlackListEdge' }
+      & Pick<BlackListEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'BlackList' }
+        & Pick<BlackList, 'id' | 'keyword' | 'reason' | 'createdAt'>
       ) }
     )>> }
   )> }
@@ -1648,6 +1769,84 @@ ${PageInfoFragmentDoc}`;
 
 export function useGetAllBiolinksQuery(options: Omit<Urql.UseQueryArgs<GetAllBiolinksQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllBiolinksQuery>({ query: GetAllBiolinksDocument, ...options });
+};
+export const GetAllBlackListedBadWordsDocument = gql`
+    query GetAllBlackListedBadWords($options: ConnectionArgs!) {
+  getAllBlackListedBadWords(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        keyword
+        reason
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllBlackListedBadWordsQuery(options: Omit<Urql.UseQueryArgs<GetAllBlackListedBadWordsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllBlackListedBadWordsQuery>({ query: GetAllBlackListedBadWordsDocument, ...options });
+};
+export const GetAllBlackListedEmailsDocument = gql`
+    query GetAllBlackListedEmails($options: ConnectionArgs!) {
+  getAllBlackListedEmails(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        keyword
+        reason
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllBlackListedEmailsQuery(options: Omit<Urql.UseQueryArgs<GetAllBlackListedEmailsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllBlackListedEmailsQuery>({ query: GetAllBlackListedEmailsDocument, ...options });
+};
+export const GetAllBlackListedUsernamesDocument = gql`
+    query GetAllBlackListedUsernames($options: ConnectionArgs!) {
+  getAllBlackListedUsernames(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        keyword
+        reason
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllBlackListedUsernamesQuery(options: Omit<Urql.UseQueryArgs<GetAllBlackListedUsernamesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllBlackListedUsernamesQuery>({ query: GetAllBlackListedUsernamesDocument, ...options });
 };
 export const GetAlLCategoriesDocument = gql`
     query GetAlLCategories($options: ConnectionArgs!) {

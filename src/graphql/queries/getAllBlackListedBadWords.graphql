@@ -1,0 +1,19 @@
+query GetAllBlackListedBadWords($options: ConnectionArgs!) {
+  getAllBlackListedBadWords(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        keyword
+        reason
+        createdAt
+      }
+      cursor
+    }
+  }
+}
