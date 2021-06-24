@@ -189,6 +189,21 @@ export type Code = {
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
+  referrer?: Maybe<User>;
+};
+
+export type CodeConnection = {
+  __typename?: 'CodeConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<CodeEdge>>;
+};
+
+export type CodeEdge = {
+  __typename?: 'CodeEdge';
+  node: Code;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type ConnectionArgs = {
@@ -492,6 +507,8 @@ export type Query = {
   getAllBlackListedUsernames?: Maybe<BlackListConnection>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
+  getAllDiscounts?: Maybe<CodeConnection>;
+  getAllReferrals?: Maybe<CodeConnection>;
   getAllLinks?: Maybe<LinkConnection>;
   getAllEmbeds?: Maybe<LinkConnection>;
   getAllPlans: PlanListResponse;
@@ -540,6 +557,16 @@ export type QueryGetAllCategoriesArgs = {
 
 export type QueryGetCategoryArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryGetAllDiscountsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllReferralsArgs = {
+  options: ConnectionArgs;
 };
 
 
@@ -1173,6 +1200,36 @@ export type GetAllDirectoriesQuery = (
   )> }
 );
 
+export type GetAllDiscountsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllDiscountsQuery = (
+  { __typename?: 'Query' }
+  & { getAllDiscounts?: Maybe<(
+    { __typename?: 'CodeConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'CodeEdge' }
+      & Pick<CodeEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Code' }
+        & Pick<Code, 'id' | 'code' | 'discount' | 'quantity' | 'expireDate' | 'createdAt' | 'updatedAt'>
+        & { referrer?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetAllEmbedsQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -1248,6 +1305,36 @@ export type GetAllPlansQuery = (
       & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'annualPrice' | 'enabledStatus' | 'visibilityStatus'>
     )>> }
   ) }
+);
+
+export type GetAllReferralsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllReferralsQuery = (
+  { __typename?: 'Query' }
+  & { getAllReferrals?: Maybe<(
+    { __typename?: 'CodeConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'CodeEdge' }
+      & Pick<CodeEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Code' }
+        & Pick<Code, 'id' | 'code' | 'discount' | 'quantity' | 'expireDate' | 'createdAt' | 'updatedAt'>
+        & { referrer?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
 );
 
 export type GetAllUsersQueryVariables = Exact<{
@@ -1914,6 +2001,39 @@ ${PageInfoFragmentDoc}`;
 export function useGetAllDirectoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllDirectoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllDirectoriesQuery>({ query: GetAllDirectoriesDocument, ...options });
 };
+export const GetAllDiscountsDocument = gql`
+    query GetAllDiscounts($options: ConnectionArgs!) {
+  getAllDiscounts(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        code
+        discount
+        quantity
+        expireDate
+        createdAt
+        updatedAt
+        referrer {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllDiscountsQuery(options: Omit<Urql.UseQueryArgs<GetAllDiscountsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDiscountsQuery>({ query: GetAllDiscountsDocument, ...options });
+};
 export const GetAllEmbedsDocument = gql`
     query GetAllEmbeds($options: ConnectionArgs!) {
   getAllEmbeds(options: $options) {
@@ -1998,6 +2118,39 @@ export const GetAllPlansDocument = gql`
 
 export function useGetAllPlansQuery(options: Omit<Urql.UseQueryArgs<GetAllPlansQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllPlansQuery>({ query: GetAllPlansDocument, ...options });
+};
+export const GetAllReferralsDocument = gql`
+    query GetAllReferrals($options: ConnectionArgs!) {
+  getAllReferrals(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        code
+        discount
+        quantity
+        expireDate
+        createdAt
+        updatedAt
+        referrer {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllReferralsQuery(options: Omit<Urql.UseQueryArgs<GetAllReferralsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllReferralsQuery>({ query: GetAllReferralsDocument, ...options });
 };
 export const GetAllUsersDocument = gql`
     query GetAllUsers($options: ConnectionArgs!) {

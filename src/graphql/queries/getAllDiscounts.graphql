@@ -1,0 +1,26 @@
+query GetAllDiscounts($options: ConnectionArgs!) {
+  getAllDiscounts(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        code
+        discount
+        quantity
+        expireDate
+        createdAt
+        updatedAt
+        referrer {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}

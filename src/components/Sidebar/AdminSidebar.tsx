@@ -110,7 +110,7 @@ const links: ILink[] = [
   {
     name: 'Manage Black Lists',
     href: '#black-lists',
-    icon: 'ni ni-istanbul',
+    icon: 'ni ni-bold',
     children: [
       {
         name: 'Bad Words',
@@ -123,6 +123,21 @@ const links: ILink[] = [
       {
         name: 'Usernames',
         href: '/black-lists/usernames',
+      },
+    ],
+  },
+  {
+    name: 'Manage Codes',
+    href: '#codes',
+    icon: 'ni ni-shop',
+    children: [
+      {
+        name: 'Referrals',
+        href: '/codes/referrals',
+      },
+      {
+        name: 'Discounts',
+        href: '/codes/discounts',
       },
     ],
   },

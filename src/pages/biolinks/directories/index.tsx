@@ -94,7 +94,7 @@ const DirectoriesIndexPage: NextPage = () => {
       category: edge.node.category?.categoryName,
       country: edge.node.country,
       verificationStatus: <Badge color="primary">{edge.node.verificationStatus}</Badge>,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).toLocaleString(),
+      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle

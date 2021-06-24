@@ -52,7 +52,7 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
     data?.getAllBlackListedBadWords?.edges?.map((edge) => ({
       keyword: edge.node.keyword,
       reason: edge.node.reason,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).toLocaleString(),
+      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle

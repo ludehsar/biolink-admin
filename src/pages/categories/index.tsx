@@ -56,8 +56,8 @@ const CategoriesIndexPage: NextPage = () => {
     data?.getAllCategories?.edges?.map((edge) => ({
       id: edge.node.id,
       categoryName: edge.node.categoryName,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).toLocaleString(),
-      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).toLocaleString(),
+      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle

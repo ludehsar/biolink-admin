@@ -1,28 +1,44 @@
 import React, { useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
-import moment from 'moment'
-
-import AdminHeader from '../../../components/Header/AdminHeader'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
-import { useGetAllBlackListedUsernamesQuery } from '../../../generated/graphql'
-import DataTable from '../../../components/DataTable/DataTable'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import Link from 'next/link'
+import moment from 'moment'
+
+import DataTable from '../../../components/DataTable/DataTable'
+import AdminHeader from '../../../components/Header/AdminHeader'
+import { useGetAllReferralsQuery } from '../../../generated/graphql'
+import AdminLayout from '../../../layouts/Admin.layout'
+import { createUrqlClient } from '../../../utils/createUrqlClient'
 
 const columns = [
   {
-    name: 'Username',
-    selector: 'keyword',
+    name: 'Code',
+    selector: 'code',
   },
   {
-    name: 'Reason',
-    selector: 'reason',
+    name: 'Discount',
+    selector: 'discount',
+  },
+  {
+    name: 'Quantity',
+    selector: 'quantity',
+  },
+  {
+    name: 'Expire Date',
+    selector: 'expireDate',
+  },
+  {
+    name: 'Referrer',
+    selector: 'email',
   },
   {
     name: 'Created',
     selector: 'createdAt',
+  },
+  {
+    name: 'Updated',
+    selector: 'updatedAt',
   },
   {
     name: '',
@@ -30,29 +46,37 @@ const columns = [
   },
 ]
 
-const BlackListedUsernamesIndexPage: NextPage = () => {
+const ReferralsIndexPage: NextPage = () => {
   const [after, setAfter] = useState<string>('')
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
-  const [{ data }] = useGetAllBlackListedUsernamesQuery({
+  const [{ data }] = useGetAllReferralsQuery({
     variables: { options: { first: 10, after, before, query: searchText } },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllBlackListedUsernames?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllReferrals?.pageInfo?.startCursor || '')
     setAfter('')
-  }, [data?.getAllBlackListedUsernames?.pageInfo?.startCursor])
+  }, [data?.getAllReferrals?.pageInfo?.startCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllBlackListedUsernames?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllReferrals?.pageInfo?.endCursor || '')
     setBefore('')
-  }, [data?.getAllBlackListedUsernames?.pageInfo?.endCursor])
+  }, [data?.getAllReferrals?.pageInfo?.endCursor])
 
   const userData =
-    data?.getAllBlackListedUsernames?.edges?.map((edge) => ({
-      keyword: edge.node.keyword,
-      reason: edge.node.reason,
+    data?.getAllReferrals?.edges?.map((edge) => ({
+      code: edge.node.code,
+      discount: edge.node.discount,
+      quantity: edge.node.quantity,
+      expireDate: edge.node.expireDate,
+      email: (
+        <Link href={'/users/view/' + edge.node.referrer?.id}>
+          <a href={'/users/view/' + edge.node.referrer?.id}>{edge.node.referrer?.email}</a>
+        </Link>
+      ),
       createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -78,13 +102,13 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
     <AdminLayout>
       <AdminHeader />
       <DataTable
-        title="Black Listed Usernames"
+        title="Discounts"
         newButton={true}
         newButtonLink="/categories/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllBlackListedUsernames?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllBlackListedUsernames?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={data?.getAllReferrals?.pageInfo?.hasNextPage || false}
+        hasPreviousPage={data?.getAllReferrals?.pageInfo?.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}
@@ -93,4 +117,4 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(BlackListedUsernamesIndexPage)
+export default withUrqlClient(createUrqlClient)(ReferralsIndexPage)

@@ -63,8 +63,12 @@ const AdminRolesIndexPage: NextPage = () => {
                       <td>{role.id}</td>
                       <td>{role.roleName}</td>
                       <td>{role.roleDescription}</td>
-                      <td>{moment.unix(parseInt(role.createdAt || '') / 1000).toLocaleString()}</td>
-                      <td>{moment.unix(parseInt(role.updatedAt || '') / 1000).toLocaleString()}</td>
+                      <td>
+                        {moment.unix(parseInt(role.createdAt || '') / 1000).format('DD-MM-YYYY')}
+                      </td>
+                      <td>
+                        {moment.unix(parseInt(role.updatedAt || '') / 1000).format('DD-MM-YYYY')}
+                      </td>
                       <td className="text-right">
                         <UncontrolledDropdown>
                           <DropdownToggle
