@@ -81,7 +81,7 @@ const BiolinksIndexPage: NextPage = () => {
             </a>
           </Link>
           <Media>
-            <span className="mb-0 text-sm">{edge.node.username}</span>
+            <span className="mb-0 text-sm">{edge.node.username?.username}</span>
           </Media>
         </Media>
       ),

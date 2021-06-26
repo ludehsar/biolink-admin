@@ -32,7 +32,10 @@ query GetUser($id: String!) {
       deletedAt
       biolinks {
         id
-        username
+        username {
+          id
+          username
+        }
         profilePhotoUrl
         displayName
       }

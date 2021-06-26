@@ -9,7 +9,10 @@ query GetAllDirectories($options: ConnectionArgs!) {
     edges {
       node {
         id
-        username
+        username {
+          id
+          username
+        }
         profilePhotoUrl
         displayName
         city

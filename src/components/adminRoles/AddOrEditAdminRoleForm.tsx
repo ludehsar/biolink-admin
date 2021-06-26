@@ -296,36 +296,36 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                         (settings) => settings.resource === 'plan'
                       )?.canShowList,
 
-                // premium username
+                // username
                 premiumUsernameCanCreate:
                   variant === 'Add'
                     ? false
                     : data?.getAdminRole.adminRole?.roleSettings?.find(
-                        (settings) => settings.resource === 'premium_username'
+                        (settings) => settings.resource === 'username'
                       )?.canCreate,
                 premiumUsernameCanDelete:
                   variant === 'Add'
                     ? false
                     : data?.getAdminRole.adminRole?.roleSettings?.find(
-                        (settings) => settings.resource === 'premium_username'
+                        (settings) => settings.resource === 'username'
                       )?.canDelete,
                 premiumUsernameCanEdit:
                   variant === 'Add'
                     ? false
                     : data?.getAdminRole.adminRole?.roleSettings?.find(
-                        (settings) => settings.resource === 'premium_username'
+                        (settings) => settings.resource === 'username'
                       )?.canEdit,
                 premiumUsernameCanShow:
                   variant === 'Add'
                     ? false
                     : data?.getAdminRole.adminRole?.roleSettings?.find(
-                        (settings) => settings.resource === 'premium_username'
+                        (settings) => settings.resource === 'username'
                       )?.canShow,
                 premiumUsernameCanShowList:
                   variant === 'Add'
                     ? false
                     : data?.getAdminRole.adminRole?.roleSettings?.find(
-                        (settings) => settings.resource === 'premium_username'
+                        (settings) => settings.resource === 'username'
                       )?.canShowList,
 
                 // tax
@@ -515,7 +515,7 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                     canShowList: values.planCanShowList,
                   },
                   {
-                    resource: 'premium_username',
+                    resource: 'username',
                     canCreate: values.premiumUsernameCanCreate,
                     canDelete: values.premiumUsernameCanDelete,
                     canEdit: values.premiumUsernameCanEdit,
@@ -936,7 +936,7 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                           </td>
                         </tr>
                         <tr>
-                          <th scope="row">Premium Username</th>
+                          <th scope="row">Username</th>
                           <td className="text-center">
                             <Input
                               name="premiumUsernameCanShow"

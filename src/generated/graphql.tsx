@@ -22,6 +22,7 @@ export type AdminRole = {
   roleSettings?: Maybe<Array<RoleSettings>>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
 };
 
 export type AdminRoleListResponse = {
@@ -52,7 +53,6 @@ export type Billing = {
 export type Biolink = {
   __typename?: 'Biolink';
   id?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
   profilePhotoUrl?: Maybe<Scalars['String']>;
   coverPhotoUrl?: Maybe<Scalars['String']>;
   displayName?: Maybe<Scalars['String']>;
@@ -68,9 +68,12 @@ export type Biolink = {
   verifiedEmail?: Maybe<Scalars['Boolean']>;
   verifiedPhoneNumber?: Maybe<Scalars['Boolean']>;
   verifiedWorkEmail?: Maybe<Scalars['Boolean']>;
+  featured?: Maybe<Scalars['Boolean']>;
+  changedUsername?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
+  username?: Maybe<Username>;
   user?: Maybe<User>;
   links?: Maybe<Array<Link>>;
   category?: Maybe<Category>;
@@ -101,6 +104,7 @@ export type BiolinkSettings = {
   addedToDirectory?: Maybe<Scalars['Boolean']>;
   directoryBio?: Maybe<Scalars['String']>;
   enableColoredSocialMediaIcons?: Maybe<Scalars['Boolean']>;
+  socialAccountStyleType?: Maybe<Scalars['String']>;
   socialAccounts?: Maybe<Array<SocialMediaProps>>;
   enableFacebookPixel?: Maybe<Scalars['Boolean']>;
   facebookPixelId?: Maybe<Scalars['String']>;
@@ -153,6 +157,7 @@ export type Category = {
   __typename?: 'Category';
   id?: Maybe<Scalars['Int']>;
   categoryName?: Maybe<Scalars['String']>;
+  featured?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
@@ -231,6 +236,7 @@ export type Domain = {
   enabledStatus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
 };
 
 export type EditUserInput = {
@@ -645,6 +651,7 @@ export type RoleSettingsInput = {
 export type SocialMediaProps = {
   __typename?: 'SocialMediaProps';
   platform?: Maybe<Scalars['String']>;
+  icon?: Maybe<Scalars['String']>;
   link?: Maybe<Scalars['String']>;
 };
 
@@ -661,6 +668,7 @@ export type Support = {
   supportReply?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
 };
 
@@ -687,6 +695,7 @@ export type User = {
   activities?: Maybe<Array<UserLogs>>;
   links?: Maybe<Array<Link>>;
   plan?: Maybe<Plan>;
+  usernames?: Maybe<Array<Username>>;
   payments?: Maybe<Array<Payment>>;
   codes?: Maybe<Array<Code>>;
   referrals?: Maybe<Array<Referral>>;
@@ -728,6 +737,19 @@ export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<ErrorResponse>>;
   user?: Maybe<User>;
+};
+
+export type Username = {
+  __typename?: 'Username';
+  id?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
+  premiumType?: Maybe<Scalars['String']>;
+  expireDate?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
+  owner?: Maybe<User>;
+  biolink?: Maybe<Biolink>;
 };
 
 export type CurrentUserFragment = (
@@ -1050,8 +1072,11 @@ export type GetAllBiolinksQuery = (
       & Pick<BiolinkEdge, 'cursor'>
       & { node: (
         { __typename?: 'Biolink' }
-        & Pick<Biolink, 'id' | 'username' | 'profilePhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'verificationStatus' | 'createdAt'>
-        & { user?: Maybe<(
+        & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'verificationStatus' | 'createdAt'>
+        & { username?: Maybe<(
+          { __typename?: 'Username' }
+          & Pick<Username, 'id' | 'username'>
+        )>, user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, 'id' | 'email'>
         )>, category?: Maybe<(
@@ -1187,8 +1212,11 @@ export type GetAllDirectoriesQuery = (
       & Pick<BiolinkEdge, 'cursor'>
       & { node: (
         { __typename?: 'Biolink' }
-        & Pick<Biolink, 'id' | 'username' | 'profilePhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'verificationStatus' | 'createdAt'>
-        & { user?: Maybe<(
+        & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'verificationStatus' | 'createdAt'>
+        & { username?: Maybe<(
+          { __typename?: 'Username' }
+          & Pick<Username, 'id' | 'username'>
+        )>, user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, 'id' | 'email'>
         )>, category?: Maybe<(
@@ -1429,7 +1457,11 @@ export type GetUserQuery = (
         & Pick<Billing, 'type' | 'name' | 'address1' | 'address2' | 'city' | 'state' | 'country' | 'zip' | 'phone'>
       )>, biolinks?: Maybe<Array<(
         { __typename?: 'Biolink' }
-        & Pick<Biolink, 'id' | 'username' | 'profilePhotoUrl' | 'displayName'>
+        & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName'>
+        & { username?: Maybe<(
+          { __typename?: 'Username' }
+          & Pick<Username, 'id' | 'username'>
+        )> }
       )>>, activities?: Maybe<Array<(
         { __typename?: 'UserLogs' }
         & Pick<UserLogs, 'id' | 'ipAddress' | 'cityName' | 'countryCode' | 'browserName' | 'browserLanguage' | 'deviceType' | 'osName' | 'description' | 'createdAt'>
@@ -1830,7 +1862,10 @@ export const GetAllBiolinksDocument = gql`
     edges {
       node {
         id
-        username
+        username {
+          id
+          username
+        }
         profilePhotoUrl
         displayName
         city
@@ -1974,7 +2009,10 @@ export const GetAllDirectoriesDocument = gql`
     edges {
       node {
         id
-        username
+        username {
+          id
+          username
+        }
         profilePhotoUrl
         displayName
         city
@@ -2286,7 +2324,10 @@ export const GetUserDocument = gql`
       deletedAt
       biolinks {
         id
-        username
+        username {
+          id
+          username
+        }
         profilePhotoUrl
         displayName
       }
