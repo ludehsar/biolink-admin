@@ -59,7 +59,7 @@ const PremiumUsernamesIndexPage: NextPage = () => {
   const userData =
     data?.getAllPremiumUsernames?.edges?.map((edge) => ({
       username: edge.node.username,
-      expireDate: moment.unix(parseInt(edge.node.expireDate || '') / 1000).format('DD-MM-YYYY'),
+      expireDate: moment(edge.node.expireDate).format('DD-MM-YYYY'),
       email: (
         <Link href={'/users/view/' + edge.node.owner?.id}>
           <a href={'/users/view/' + edge.node.owner?.id}>{edge.node.owner?.email}</a>
