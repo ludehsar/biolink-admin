@@ -103,6 +103,25 @@ const links: ILink[] = [
     ],
   },
   {
+    name: 'Manage Usernames',
+    href: '#usernames',
+    icon: 'ni ni-bulb-61',
+    children: [
+      {
+        name: 'Usernames',
+        href: '/usernames',
+      },
+      {
+        name: 'Premium Usernames',
+        href: '/usernames/premium-usernames',
+      },
+      {
+        name: 'Trademark Usernames',
+        href: '/usernames/trademark-usernames',
+      },
+    ],
+  },
+  {
     name: 'Plans',
     href: '/plans',
     icon: 'ni ni-tag',
