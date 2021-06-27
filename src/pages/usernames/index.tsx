@@ -5,31 +5,23 @@ import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 import Link from 'next/link'
 import moment from 'moment'
 
-import DataTable from '../../../components/DataTable/DataTable'
-import AdminHeader from '../../../components/Header/AdminHeader'
-import { useGetAllReferralsQuery } from '../../../generated/graphql'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
+import DataTable from '../../components/DataTable/DataTable'
+import AdminHeader from '../../components/Header/AdminHeader'
+import { useGetAllUsernamesQuery } from '../../generated/graphql'
+import AdminLayout from '../../layouts/Admin.layout'
+import { createUrqlClient } from '../../utils/createUrqlClient'
 
 const columns = [
   {
-    name: 'Code',
-    selector: 'code',
-  },
-  {
-    name: 'Discount',
-    selector: 'discount',
-  },
-  {
-    name: 'Quantity',
-    selector: 'quantity',
+    name: 'Username',
+    selector: 'username',
   },
   {
     name: 'Expire Date',
     selector: 'expireDate',
   },
   {
-    name: 'Referrer',
+    name: 'Owner',
     selector: 'email',
   },
   {
@@ -46,33 +38,31 @@ const columns = [
   },
 ]
 
-const ReferralsIndexPage: NextPage = () => {
+const UsernamesIndexPage: NextPage = () => {
   const [after, setAfter] = useState<string>('')
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
-  const [{ data }] = useGetAllReferralsQuery({
+  const [{ data }] = useGetAllUsernamesQuery({
     variables: { options: { first: 10, after, before, query: searchText } },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllReferrals?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllUsernames?.pageInfo?.startCursor || '')
     setAfter('')
-  }, [data?.getAllReferrals?.pageInfo?.startCursor])
+  }, [data?.getAllUsernames?.pageInfo?.startCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllReferrals?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllUsernames?.pageInfo?.endCursor || '')
     setBefore('')
-  }, [data?.getAllReferrals?.pageInfo?.endCursor])
+  }, [data?.getAllUsernames?.pageInfo?.endCursor])
 
   const userData =
-    data?.getAllReferrals?.edges?.map((edge) => ({
-      code: edge.node.code,
-      discount: edge.node.discount,
-      quantity: edge.node.quantity,
+    data?.getAllUsernames?.edges?.map((edge) => ({
+      username: edge.node.username,
       expireDate: moment.unix(parseInt(edge.node.expireDate || '') / 1000).format('DD-MM-YYYY'),
       email: (
-        <Link href={'/users/view/' + edge.node.referrer?.id}>
-          <a href={'/users/view/' + edge.node.referrer?.id}>{edge.node.referrer?.email}</a>
+        <Link href={'/users/view/' + edge.node.owner?.id}>
+          <a href={'/users/view/' + edge.node.owner?.id}>{edge.node.owner?.email}</a>
         </Link>
       ),
       createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
@@ -107,8 +97,8 @@ const ReferralsIndexPage: NextPage = () => {
         newButtonLink="/categories/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllReferrals?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllReferrals?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={data?.getAllUsernames?.pageInfo?.hasNextPage || false}
+        hasPreviousPage={data?.getAllUsernames?.pageInfo?.hasPreviousPage || false}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}
@@ -117,4 +107,4 @@ const ReferralsIndexPage: NextPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(ReferralsIndexPage)
+export default withUrqlClient(createUrqlClient)(UsernamesIndexPage)

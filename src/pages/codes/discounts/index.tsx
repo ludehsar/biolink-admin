@@ -69,7 +69,7 @@ const DiscountsIndexPage: NextPage = () => {
       code: edge.node.code,
       discount: edge.node.discount,
       quantity: edge.node.quantity,
-      expireDate: edge.node.expireDate,
+      expireDate: moment.unix(parseInt(edge.node.expireDate || '') / 1000).format('DD-MM-YYYY'),
       email: (
         <Link href={'/users/view/' + edge.node.referrer?.id}>
           <a href={'/users/view/' + edge.node.referrer?.id}>{edge.node.referrer?.email}</a>

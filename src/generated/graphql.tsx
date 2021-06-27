@@ -522,6 +522,9 @@ export type Query = {
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
+  getAllUsernames?: Maybe<UsernameConnection>;
+  getAllPremiumUsernames?: Maybe<UsernameConnection>;
+  getAllTrademarkUsernames?: Maybe<UsernameConnection>;
 };
 
 
@@ -603,6 +606,21 @@ export type QueryGetAllAdminsArgs = {
 
 export type QueryGetUserArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryGetAllUsernamesArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllPremiumUsernamesArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllTrademarkUsernamesArgs = {
+  options: ConnectionArgs;
 };
 
 export type Referral = {
@@ -750,6 +768,20 @@ export type Username = {
   deletedAt?: Maybe<Scalars['String']>;
   owner?: Maybe<User>;
   biolink?: Maybe<Biolink>;
+};
+
+export type UsernameConnection = {
+  __typename?: 'UsernameConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<UsernameEdge>>;
+};
+
+export type UsernameEdge = {
+  __typename?: 'UsernameEdge';
+  node: Username;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type CurrentUserFragment = (
@@ -1335,6 +1367,39 @@ export type GetAllPlansQuery = (
   ) }
 );
 
+export type GetAllPremiumUsernamesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllPremiumUsernamesQuery = (
+  { __typename?: 'Query' }
+  & { getAllPremiumUsernames?: Maybe<(
+    { __typename?: 'UsernameConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'UsernameEdge' }
+      & Pick<UsernameEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Username' }
+        & Pick<Username, 'id' | 'username' | 'expireDate' | 'createdAt' | 'updatedAt'>
+        & { owner?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, biolink?: Maybe<(
+          { __typename?: 'Biolink' }
+          & Pick<Biolink, 'id'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetAllReferralsQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -1359,6 +1424,72 @@ export type GetAllReferralsQuery = (
         & { referrer?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllTrademarkUsernamesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllTrademarkUsernamesQuery = (
+  { __typename?: 'Query' }
+  & { getAllTrademarkUsernames?: Maybe<(
+    { __typename?: 'UsernameConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'UsernameEdge' }
+      & Pick<UsernameEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Username' }
+        & Pick<Username, 'id' | 'username' | 'expireDate' | 'createdAt' | 'updatedAt'>
+        & { owner?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, biolink?: Maybe<(
+          { __typename?: 'Biolink' }
+          & Pick<Biolink, 'id'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllUsernamesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllUsernamesQuery = (
+  { __typename?: 'Query' }
+  & { getAllUsernames?: Maybe<(
+    { __typename?: 'UsernameConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'UsernameEdge' }
+      & Pick<UsernameEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Username' }
+        & Pick<Username, 'id' | 'username' | 'expireDate' | 'createdAt' | 'updatedAt'>
+        & { owner?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, biolink?: Maybe<(
+          { __typename?: 'Biolink' }
+          & Pick<Biolink, 'id'>
         )> }
       ) }
     )>> }
@@ -2157,6 +2288,40 @@ export const GetAllPlansDocument = gql`
 export function useGetAllPlansQuery(options: Omit<Urql.UseQueryArgs<GetAllPlansQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllPlansQuery>({ query: GetAllPlansDocument, ...options });
 };
+export const GetAllPremiumUsernamesDocument = gql`
+    query GetAllPremiumUsernames($options: ConnectionArgs!) {
+  getAllPremiumUsernames(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        username
+        expireDate
+        createdAt
+        updatedAt
+        owner {
+          id
+          email
+        }
+        biolink {
+          id
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllPremiumUsernamesQuery(options: Omit<Urql.UseQueryArgs<GetAllPremiumUsernamesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllPremiumUsernamesQuery>({ query: GetAllPremiumUsernamesDocument, ...options });
+};
 export const GetAllReferralsDocument = gql`
     query GetAllReferrals($options: ConnectionArgs!) {
   getAllReferrals(options: $options) {
@@ -2189,6 +2354,74 @@ ${PageInfoFragmentDoc}`;
 
 export function useGetAllReferralsQuery(options: Omit<Urql.UseQueryArgs<GetAllReferralsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllReferralsQuery>({ query: GetAllReferralsDocument, ...options });
+};
+export const GetAllTrademarkUsernamesDocument = gql`
+    query GetAllTrademarkUsernames($options: ConnectionArgs!) {
+  getAllTrademarkUsernames(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        username
+        expireDate
+        createdAt
+        updatedAt
+        owner {
+          id
+          email
+        }
+        biolink {
+          id
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllTrademarkUsernamesQuery(options: Omit<Urql.UseQueryArgs<GetAllTrademarkUsernamesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllTrademarkUsernamesQuery>({ query: GetAllTrademarkUsernamesDocument, ...options });
+};
+export const GetAllUsernamesDocument = gql`
+    query GetAllUsernames($options: ConnectionArgs!) {
+  getAllUsernames(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        username
+        expireDate
+        createdAt
+        updatedAt
+        owner {
+          id
+          email
+        }
+        biolink {
+          id
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllUsernamesQuery(options: Omit<Urql.UseQueryArgs<GetAllUsernamesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllUsernamesQuery>({ query: GetAllUsernamesDocument, ...options });
 };
 export const GetAllUsersDocument = gql`
     query GetAllUsers($options: ConnectionArgs!) {

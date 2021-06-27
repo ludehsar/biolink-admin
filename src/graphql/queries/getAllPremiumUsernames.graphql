@@ -1,0 +1,27 @@
+query GetAllPremiumUsernames($options: ConnectionArgs!) {
+  getAllPremiumUsernames(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        username
+        expireDate
+        createdAt
+        updatedAt
+        owner {
+          id
+          email
+        }
+        biolink {
+          id
+        }
+      }
+      cursor
+    }
+  }
+}
