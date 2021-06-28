@@ -1,0 +1,25 @@
+query GetAllResolvedReports($options: ConnectionArgs!) {
+  getAllResolvedReports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        firstName
+        lastName
+        email
+        reportedUrl
+        reporter {
+          id
+          email
+        }
+        createdAt
+      }
+      cursor
+    }
+  }
+}

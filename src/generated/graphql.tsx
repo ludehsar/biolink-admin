@@ -416,6 +416,21 @@ export type Payment = {
   stripePeriodEnd?: Maybe<Scalars['String']>;
   stripeStatus?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
+};
+
+export type PaymentConnection = {
+  __typename?: 'PaymentConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<PaymentEdge>>;
+};
+
+export type PaymentEdge = {
+  __typename?: 'PaymentEdge';
+  node: Payment;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type Plan = {
@@ -517,14 +532,25 @@ export type Query = {
   getAllReferrals?: Maybe<CodeConnection>;
   getAllLinks?: Maybe<LinkConnection>;
   getAllEmbeds?: Maybe<LinkConnection>;
+  getAllStripePayments?: Maybe<PaymentConnection>;
   getAllPlans: PlanListResponse;
   getPlan: PlanResponse;
+  getAllPendingReports?: Maybe<ReportConnection>;
+  getAllResolvedReports?: Maybe<ReportConnection>;
+  getAllDismissedReports?: Maybe<ReportConnection>;
+  getAllPendingSupports?: Maybe<SupportConnection>;
+  getAllResolvedSupports?: Maybe<SupportConnection>;
+  getAllDismissedSupports?: Maybe<SupportConnection>;
+  getAllTaxes?: Maybe<TaxConnection>;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
   getAllUsernames?: Maybe<UsernameConnection>;
   getAllPremiumUsernames?: Maybe<UsernameConnection>;
   getAllTrademarkUsernames?: Maybe<UsernameConnection>;
+  getAllPendingVerifications?: Maybe<VerificationConnection>;
+  getAllVerifiedVerifications?: Maybe<VerificationConnection>;
+  getAllRejectedVerifications?: Maybe<VerificationConnection>;
 };
 
 
@@ -589,8 +615,48 @@ export type QueryGetAllEmbedsArgs = {
 };
 
 
+export type QueryGetAllStripePaymentsArgs = {
+  options: ConnectionArgs;
+};
+
+
 export type QueryGetPlanArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryGetAllPendingReportsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllResolvedReportsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllDismissedReportsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllPendingSupportsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllResolvedSupportsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllDismissedSupportsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllTaxesArgs = {
+  options: ConnectionArgs;
 };
 
 
@@ -623,6 +689,21 @@ export type QueryGetAllTrademarkUsernamesArgs = {
   options: ConnectionArgs;
 };
 
+
+export type QueryGetAllPendingVerificationsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllVerifiedVerificationsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllRejectedVerificationsArgs = {
+  options: ConnectionArgs;
+};
+
 export type Referral = {
   __typename?: 'Referral';
   id: Scalars['String'];
@@ -645,6 +726,20 @@ export type Report = {
   status?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   reporter?: Maybe<User>;
+};
+
+export type ReportConnection = {
+  __typename?: 'ReportConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<ReportEdge>>;
+};
+
+export type ReportEdge = {
+  __typename?: 'ReportEdge';
+  node: Report;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type RoleSettings = {
@@ -688,6 +783,50 @@ export type Support = {
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
+};
+
+export type SupportConnection = {
+  __typename?: 'SupportConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<SupportEdge>>;
+};
+
+export type SupportEdge = {
+  __typename?: 'SupportEdge';
+  node: Support;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
+};
+
+export type Tax = {
+  __typename?: 'Tax';
+  id?: Maybe<Scalars['Int']>;
+  internalName?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['Int']>;
+  valueType?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  billingFor?: Maybe<Scalars['String']>;
+  countries?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
+};
+
+export type TaxConnection = {
+  __typename?: 'TaxConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<TaxEdge>>;
+};
+
+export type TaxEdge = {
+  __typename?: 'TaxEdge';
+  node: Tax;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
 };
 
 export type User = {
@@ -780,6 +919,49 @@ export type UsernameConnection = {
 export type UsernameEdge = {
   __typename?: 'UsernameEdge';
   node: Username;
+  /** Used in `before` and `after` args */
+  cursor: Scalars['String'];
+};
+
+export type Verification = {
+  __typename?: 'Verification';
+  id?: Maybe<Scalars['String']>;
+  verificationStatus?: Maybe<Scalars['String']>;
+  verifiedGovernmentId?: Maybe<Scalars['Boolean']>;
+  verifiedEmail?: Maybe<Scalars['Boolean']>;
+  verifiedPhoneNumber?: Maybe<Scalars['Boolean']>;
+  verifiedWorkEmail?: Maybe<Scalars['Boolean']>;
+  username?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  mobileNumber?: Maybe<Scalars['String']>;
+  workNumber?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  websiteLink?: Maybe<Scalars['String']>;
+  instagramUrl?: Maybe<Scalars['String']>;
+  twitterUrl?: Maybe<Scalars['String']>;
+  linkedinUrl?: Maybe<Scalars['String']>;
+  photoIdUrl?: Maybe<Scalars['String']>;
+  businessDocumentUrl?: Maybe<Scalars['String']>;
+  otherDocumentsUrl?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  deletedAt?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
+  biolink?: Maybe<Biolink>;
+  category?: Maybe<Category>;
+};
+
+export type VerificationConnection = {
+  __typename?: 'VerificationConnection';
+  errors?: Maybe<Array<ErrorResponse>>;
+  pageInfo?: Maybe<PageInfo>;
+  edges?: Maybe<Array<VerificationEdge>>;
+};
+
+export type VerificationEdge = {
+  __typename?: 'VerificationEdge';
+  node: Verification;
   /** Used in `before` and `after` args */
   cursor: Scalars['String'];
 };
@@ -1290,6 +1472,66 @@ export type GetAllDiscountsQuery = (
   )> }
 );
 
+export type GetAllDismissedReportsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllDismissedReportsQuery = (
+  { __typename?: 'Query' }
+  & { getAllDismissedReports?: Maybe<(
+    { __typename?: 'ReportConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'ReportEdge' }
+      & Pick<ReportEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Report' }
+        & Pick<Report, 'id' | 'firstName' | 'lastName' | 'email' | 'reportedUrl' | 'createdAt'>
+        & { reporter?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllDismissedSupportsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllDismissedSupportsQuery = (
+  { __typename?: 'Query' }
+  & { getAllDismissedSupports?: Maybe<(
+    { __typename?: 'SupportConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'SupportEdge' }
+      & Pick<SupportEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Support' }
+        & Pick<Support, 'id' | 'fullName' | 'email' | 'phoneNumber' | 'company' | 'subject' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
 export type GetAllEmbedsQueryVariables = Exact<{
   options: ConnectionArgs;
 }>;
@@ -1344,6 +1586,106 @@ export type GetAllLinksQuery = (
         & { user?: Maybe<(
           { __typename?: 'User' }
           & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllPendingReportsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllPendingReportsQuery = (
+  { __typename?: 'Query' }
+  & { getAllPendingReports?: Maybe<(
+    { __typename?: 'ReportConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'ReportEdge' }
+      & Pick<ReportEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Report' }
+        & Pick<Report, 'id' | 'firstName' | 'lastName' | 'email' | 'reportedUrl' | 'createdAt'>
+        & { reporter?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllPendingSupportsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllPendingSupportsQuery = (
+  { __typename?: 'Query' }
+  & { getAllPendingSupports?: Maybe<(
+    { __typename?: 'SupportConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'SupportEdge' }
+      & Pick<SupportEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Support' }
+        & Pick<Support, 'id' | 'fullName' | 'email' | 'phoneNumber' | 'company' | 'subject' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllPendingVerificationsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllPendingVerificationsQuery = (
+  { __typename?: 'Query' }
+  & { getAllPendingVerifications?: Maybe<(
+    { __typename?: 'VerificationConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'VerificationEdge' }
+      & Pick<VerificationEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'id' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'username' | 'firstName' | 'lastName' | 'mobileNumber' | 'workNumber' | 'email' | 'websiteLink' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, biolink?: Maybe<(
+          { __typename?: 'Biolink' }
+          & Pick<Biolink, 'id'>
+          & { username?: Maybe<(
+            { __typename?: 'Username' }
+            & Pick<Username, 'id' | 'username'>
+          )> }
+        )>, category?: Maybe<(
+          { __typename?: 'Category' }
+          & Pick<Category, 'id' | 'categoryName'>
         )> }
       ) }
     )>> }
@@ -1425,6 +1767,162 @@ export type GetAllReferralsQuery = (
           { __typename?: 'User' }
           & Pick<User, 'id' | 'email'>
         )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllRejectedVerificationsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllRejectedVerificationsQuery = (
+  { __typename?: 'Query' }
+  & { getAllRejectedVerifications?: Maybe<(
+    { __typename?: 'VerificationConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'VerificationEdge' }
+      & Pick<VerificationEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'id' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'username' | 'firstName' | 'lastName' | 'mobileNumber' | 'workNumber' | 'email' | 'websiteLink' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, biolink?: Maybe<(
+          { __typename?: 'Biolink' }
+          & Pick<Biolink, 'id'>
+          & { username?: Maybe<(
+            { __typename?: 'Username' }
+            & Pick<Username, 'id' | 'username'>
+          )> }
+        )>, category?: Maybe<(
+          { __typename?: 'Category' }
+          & Pick<Category, 'id' | 'categoryName'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllResolvedReportsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllResolvedReportsQuery = (
+  { __typename?: 'Query' }
+  & { getAllResolvedReports?: Maybe<(
+    { __typename?: 'ReportConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'ReportEdge' }
+      & Pick<ReportEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Report' }
+        & Pick<Report, 'id' | 'firstName' | 'lastName' | 'email' | 'reportedUrl' | 'createdAt'>
+        & { reporter?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllResolvedSupportsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllResolvedSupportsQuery = (
+  { __typename?: 'Query' }
+  & { getAllResolvedSupports?: Maybe<(
+    { __typename?: 'SupportConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'SupportEdge' }
+      & Pick<SupportEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Support' }
+        & Pick<Support, 'id' | 'fullName' | 'email' | 'phoneNumber' | 'company' | 'subject' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllStripePaymentsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllStripePaymentsQuery = (
+  { __typename?: 'Query' }
+  & { getAllStripePayments?: Maybe<(
+    { __typename?: 'PaymentConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'PaymentEdge' }
+      & Pick<PaymentEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Payment' }
+        & Pick<Payment, 'id' | 'stripeInvoiceNumber' | 'stripeAmountDue' | 'stripeAmountPaid' | 'stripeAmountRemaining' | 'stripeDiscount' | 'stripeChargeId' | 'stripeInvoiceCreated' | 'stripeCustomerId' | 'stripeCustomerEmail' | 'stripeCustomerName' | 'stripeCustomerPhone' | 'stripePriceId' | 'stripeSubscriptionId' | 'stripeStatus' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )> }
+      ) }
+    )>> }
+  )> }
+);
+
+export type GetAllTaxesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllTaxesQuery = (
+  { __typename?: 'Query' }
+  & { getAllTaxes?: Maybe<(
+    { __typename?: 'TaxConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'TaxEdge' }
+      & Pick<TaxEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Tax' }
+        & Pick<Tax, 'id' | 'internalName' | 'name' | 'value' | 'valueType' | 'type' | 'billingFor' | 'createdAt'>
       ) }
     )>> }
   )> }
@@ -1522,6 +2020,46 @@ export type GetAllUsersQuery = (
     )>>, errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
+    )>> }
+  )> }
+);
+
+export type GetAllVerifiedVerificationsQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllVerifiedVerificationsQuery = (
+  { __typename?: 'Query' }
+  & { getAllVerifiedVerifications?: Maybe<(
+    { __typename?: 'VerificationConnection' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'VerificationEdge' }
+      & Pick<VerificationEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'id' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'username' | 'firstName' | 'lastName' | 'mobileNumber' | 'workNumber' | 'email' | 'websiteLink' | 'createdAt'>
+        & { user?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'email'>
+        )>, biolink?: Maybe<(
+          { __typename?: 'Biolink' }
+          & Pick<Biolink, 'id'>
+          & { username?: Maybe<(
+            { __typename?: 'Username' }
+            & Pick<Username, 'id' | 'username'>
+          )> }
+        )>, category?: Maybe<(
+          { __typename?: 'Category' }
+          & Pick<Category, 'id' | 'categoryName'>
+        )> }
+      ) }
     )>> }
   )> }
 );
@@ -2203,6 +2741,71 @@ ${PageInfoFragmentDoc}`;
 export function useGetAllDiscountsQuery(options: Omit<Urql.UseQueryArgs<GetAllDiscountsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllDiscountsQuery>({ query: GetAllDiscountsDocument, ...options });
 };
+export const GetAllDismissedReportsDocument = gql`
+    query GetAllDismissedReports($options: ConnectionArgs!) {
+  getAllDismissedReports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        firstName
+        lastName
+        email
+        reportedUrl
+        reporter {
+          id
+          email
+        }
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllDismissedReportsQuery(options: Omit<Urql.UseQueryArgs<GetAllDismissedReportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDismissedReportsQuery>({ query: GetAllDismissedReportsDocument, ...options });
+};
+export const GetAllDismissedSupportsDocument = gql`
+    query GetAllDismissedSupports($options: ConnectionArgs!) {
+  getAllDismissedSupports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        fullName
+        email
+        phoneNumber
+        company
+        subject
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllDismissedSupportsQuery(options: Omit<Urql.UseQueryArgs<GetAllDismissedSupportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDismissedSupportsQuery>({ query: GetAllDismissedSupportsDocument, ...options });
+};
 export const GetAllEmbedsDocument = gql`
     query GetAllEmbeds($options: ConnectionArgs!) {
   getAllEmbeds(options: $options) {
@@ -2266,6 +2869,121 @@ ${PageInfoFragmentDoc}`;
 
 export function useGetAllLinksQuery(options: Omit<Urql.UseQueryArgs<GetAllLinksQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllLinksQuery>({ query: GetAllLinksDocument, ...options });
+};
+export const GetAllPendingReportsDocument = gql`
+    query GetAllPendingReports($options: ConnectionArgs!) {
+  getAllPendingReports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        firstName
+        lastName
+        email
+        reportedUrl
+        reporter {
+          id
+          email
+        }
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllPendingReportsQuery(options: Omit<Urql.UseQueryArgs<GetAllPendingReportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllPendingReportsQuery>({ query: GetAllPendingReportsDocument, ...options });
+};
+export const GetAllPendingSupportsDocument = gql`
+    query GetAllPendingSupports($options: ConnectionArgs!) {
+  getAllPendingSupports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        fullName
+        email
+        phoneNumber
+        company
+        subject
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllPendingSupportsQuery(options: Omit<Urql.UseQueryArgs<GetAllPendingSupportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllPendingSupportsQuery>({ query: GetAllPendingSupportsDocument, ...options });
+};
+export const GetAllPendingVerificationsDocument = gql`
+    query GetAllPendingVerifications($options: ConnectionArgs!) {
+  getAllPendingVerifications(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        verifiedGovernmentId
+        verifiedEmail
+        verifiedPhoneNumber
+        verifiedWorkEmail
+        username
+        firstName
+        lastName
+        mobileNumber
+        workNumber
+        email
+        websiteLink
+        createdAt
+        user {
+          id
+          email
+        }
+        biolink {
+          id
+          username {
+            id
+            username
+          }
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllPendingVerificationsQuery(options: Omit<Urql.UseQueryArgs<GetAllPendingVerificationsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllPendingVerificationsQuery>({ query: GetAllPendingVerificationsDocument, ...options });
 };
 export const GetAllPlansDocument = gql`
     query GetAllPlans {
@@ -2354,6 +3072,193 @@ ${PageInfoFragmentDoc}`;
 
 export function useGetAllReferralsQuery(options: Omit<Urql.UseQueryArgs<GetAllReferralsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllReferralsQuery>({ query: GetAllReferralsDocument, ...options });
+};
+export const GetAllRejectedVerificationsDocument = gql`
+    query GetAllRejectedVerifications($options: ConnectionArgs!) {
+  getAllRejectedVerifications(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        verifiedGovernmentId
+        verifiedEmail
+        verifiedPhoneNumber
+        verifiedWorkEmail
+        username
+        firstName
+        lastName
+        mobileNumber
+        workNumber
+        email
+        websiteLink
+        createdAt
+        user {
+          id
+          email
+        }
+        biolink {
+          id
+          username {
+            id
+            username
+          }
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllRejectedVerificationsQuery(options: Omit<Urql.UseQueryArgs<GetAllRejectedVerificationsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllRejectedVerificationsQuery>({ query: GetAllRejectedVerificationsDocument, ...options });
+};
+export const GetAllResolvedReportsDocument = gql`
+    query GetAllResolvedReports($options: ConnectionArgs!) {
+  getAllResolvedReports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        firstName
+        lastName
+        email
+        reportedUrl
+        reporter {
+          id
+          email
+        }
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllResolvedReportsQuery(options: Omit<Urql.UseQueryArgs<GetAllResolvedReportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllResolvedReportsQuery>({ query: GetAllResolvedReportsDocument, ...options });
+};
+export const GetAllResolvedSupportsDocument = gql`
+    query GetAllResolvedSupports($options: ConnectionArgs!) {
+  getAllResolvedSupports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        fullName
+        email
+        phoneNumber
+        company
+        subject
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllResolvedSupportsQuery(options: Omit<Urql.UseQueryArgs<GetAllResolvedSupportsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllResolvedSupportsQuery>({ query: GetAllResolvedSupportsDocument, ...options });
+};
+export const GetAllStripePaymentsDocument = gql`
+    query GetAllStripePayments($options: ConnectionArgs!) {
+  getAllStripePayments(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        stripeInvoiceNumber
+        stripeAmountDue
+        stripeAmountPaid
+        stripeAmountRemaining
+        stripeDiscount
+        stripeChargeId
+        stripeInvoiceCreated
+        stripeCustomerId
+        stripeCustomerEmail
+        stripeCustomerName
+        stripeCustomerPhone
+        stripePriceId
+        stripeSubscriptionId
+        stripeStatus
+        user {
+          id
+          email
+        }
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllStripePaymentsQuery(options: Omit<Urql.UseQueryArgs<GetAllStripePaymentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllStripePaymentsQuery>({ query: GetAllStripePaymentsDocument, ...options });
+};
+export const GetAllTaxesDocument = gql`
+    query GetAllTaxes($options: ConnectionArgs!) {
+  getAllTaxes(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        internalName
+        name
+        value
+        valueType
+        type
+        billingFor
+        createdAt
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllTaxesQuery(options: Omit<Urql.UseQueryArgs<GetAllTaxesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllTaxesQuery>({ query: GetAllTaxesDocument, ...options });
 };
 export const GetAllTrademarkUsernamesDocument = gql`
     query GetAllTrademarkUsernames($options: ConnectionArgs!) {
@@ -2454,6 +3359,56 @@ ${ReceivedErrorsFragmentDoc}`;
 
 export function useGetAllUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllUsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllUsersQuery>({ query: GetAllUsersDocument, ...options });
+};
+export const GetAllVerifiedVerificationsDocument = gql`
+    query GetAllVerifiedVerifications($options: ConnectionArgs!) {
+  getAllVerifiedVerifications(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        verifiedGovernmentId
+        verifiedEmail
+        verifiedPhoneNumber
+        verifiedWorkEmail
+        username
+        firstName
+        lastName
+        mobileNumber
+        workNumber
+        email
+        websiteLink
+        createdAt
+        user {
+          id
+          email
+        }
+        biolink {
+          id
+          username {
+            id
+            username
+          }
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}
+${PageInfoFragmentDoc}`;
+
+export function useGetAllVerifiedVerificationsQuery(options: Omit<Urql.UseQueryArgs<GetAllVerifiedVerificationsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllVerifiedVerificationsQuery>({ query: GetAllVerifiedVerificationsDocument, ...options });
 };
 export const GetCategoryDocument = gql`
     query GetCategory($id: Int!) {

@@ -1,0 +1,23 @@
+query GetAllTaxes($options: ConnectionArgs!) {
+  getAllTaxes(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        internalName
+        name
+        value
+        valueType
+        type
+        billingFor
+        createdAt
+      }
+      cursor
+    }
+  }
+}

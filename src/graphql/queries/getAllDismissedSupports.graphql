@@ -1,0 +1,26 @@
+query GetAllDismissedSupports($options: ConnectionArgs!) {
+  getAllDismissedSupports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        fullName
+        email
+        phoneNumber
+        company
+        subject
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}

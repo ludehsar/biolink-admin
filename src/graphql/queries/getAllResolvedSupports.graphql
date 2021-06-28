@@ -1,0 +1,26 @@
+query GetAllResolvedSupports($options: ConnectionArgs!) {
+  getAllResolvedSupports(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        fullName
+        email
+        phoneNumber
+        company
+        subject
+        createdAt
+        user {
+          id
+          email
+        }
+      }
+      cursor
+    }
+  }
+}

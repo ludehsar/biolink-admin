@@ -1,0 +1,35 @@
+query GetAllStripePayments($options: ConnectionArgs!) {
+  getAllStripePayments(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        stripeInvoiceNumber
+        stripeAmountDue
+        stripeAmountPaid
+        stripeAmountRemaining
+        stripeDiscount
+        stripeChargeId
+        stripeInvoiceCreated
+        stripeCustomerId
+        stripeCustomerEmail
+        stripeCustomerName
+        stripeCustomerPhone
+        stripePriceId
+        stripeSubscriptionId
+        stripeStatus
+        user {
+          id
+          email
+        }
+        createdAt
+      }
+      cursor
+    }
+  }
+}

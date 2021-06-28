@@ -1,0 +1,43 @@
+query GetAllVerifiedVerifications($options: ConnectionArgs!) {
+  getAllVerifiedVerifications(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        verifiedGovernmentId
+        verifiedEmail
+        verifiedPhoneNumber
+        verifiedWorkEmail
+        username
+        firstName
+        lastName
+        mobileNumber
+        workNumber
+        email
+        websiteLink
+        createdAt
+        user {
+          id
+          email
+        }
+        biolink {
+          id
+          username {
+            id
+            username
+          }
+        }
+        category {
+          id
+          categoryName
+        }
+      }
+      cursor
+    }
+  }
+}
