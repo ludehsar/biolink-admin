@@ -160,6 +160,79 @@ const links: ILink[] = [
       },
     ],
   },
+  {
+    name: 'Manage Payments',
+    href: '#payments',
+    icon: 'ni ni-money-coins',
+    children: [
+      {
+        name: 'Stripe Payments',
+        href: '/payments/stripe',
+      },
+    ],
+  },
+  {
+    name: 'Manage Reports',
+    href: '#reports',
+    icon: 'ni ni-planet',
+    children: [
+      {
+        name: 'Pending Reports',
+        href: '/reports/pending',
+      },
+      {
+        name: 'Resolved Reports',
+        href: '/reports/resolved',
+      },
+      {
+        name: 'Dismissed Reports',
+        href: '/reports/dismissed',
+      },
+    ],
+  },
+  {
+    name: 'Manage Supports',
+    href: '#supports',
+    icon: 'ni ni-support-16',
+    children: [
+      {
+        name: 'Pending Supports',
+        href: '/supports/pending',
+      },
+      {
+        name: 'Resolved Supports',
+        href: '/supports/resolved',
+      },
+      {
+        name: 'Dismissed Supports',
+        href: '/supports/dismissed',
+      },
+    ],
+  },
+  {
+    name: 'Taxes',
+    href: '/taxes',
+    icon: 'ni ni-folder-17',
+  },
+  {
+    name: 'Manage Verifications',
+    href: '#verifications',
+    icon: 'ni ni-spaceship',
+    children: [
+      {
+        name: 'Pending Verifications',
+        href: '/verifications/pending',
+      },
+      {
+        name: 'Verified Verifications',
+        href: '/verifications/verified',
+      },
+      {
+        name: 'Rejected Verifications',
+        href: '/verifications/rejected',
+      },
+    ],
+  },
 ]
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
