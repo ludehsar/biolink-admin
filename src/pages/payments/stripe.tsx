@@ -137,8 +137,8 @@ const StripePaymentsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/categories/view/' + edge.node.id}>
+              <DropdownItem href={'/categories/view/' + edge.node.id}>View Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -150,8 +150,6 @@ const StripePaymentsIndexPage: NextPage = () => {
       <AdminHeader />
       <DataTable
         title="Stripe Payments"
-        newButton={true}
-        newButtonLink="/categories/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllStripePayments?.pageInfo?.hasNextPage || false}
