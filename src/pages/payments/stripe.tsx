@@ -122,7 +122,7 @@ const StripePaymentsIndexPage: NextPage = () => {
       stripeCustomerPhone: edge.node.stripeCustomerPhone,
       stripePriceId: edge.node.stripePriceId,
       stripeSubscriptionId: edge.node.stripeSubscriptionId,
-      stripeStatus: <Badge color="primary">{edge.node.stripeCustomerEmail}</Badge>,
+      stripeStatus: <Badge color="primary">{edge.node.stripeStatus}</Badge>,
       createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
