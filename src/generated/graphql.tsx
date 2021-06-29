@@ -409,6 +409,7 @@ export type Payment = {
   stripeCustomerShipping?: Maybe<Scalars['String']>;
   stripeDiscount?: Maybe<Scalars['String']>;
   stripeInvoicePdfUrl?: Maybe<Scalars['String']>;
+  stripeInvoiceUrl?: Maybe<Scalars['String']>;
   stripePriceId?: Maybe<Scalars['String']>;
   stripeSubscriptionId?: Maybe<Scalars['String']>;
   stripeInvoiceNumber?: Maybe<Scalars['String']>;
@@ -835,7 +836,7 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   emailVerifiedAt?: Maybe<Scalars['String']>;
   billing?: Maybe<Billing>;
-  accountStatus?: Maybe<Scalars['String']>;
+  lastActiveTill?: Maybe<Scalars['String']>;
   planExpirationDate?: Maybe<Scalars['String']>;
   planTrialDone?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
@@ -2011,7 +2012,7 @@ export type GetAllUsersQuery = (
       & Pick<UserEdge, 'cursor'>
       & { node: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'accountStatus' | 'language' | 'lastIPAddress' | 'country'>
+        & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'lastActiveTill' | 'language' | 'lastIPAddress' | 'country'>
         & { plan?: Maybe<(
           { __typename?: 'Plan' }
           & Pick<Plan, 'name'>
@@ -2120,7 +2121,7 @@ export type GetUserQuery = (
       & ReceivedErrorsFragment
     )>>, user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'accountStatus' | 'planExpirationDate' | 'planTrialDone' | 'language' | 'timezone' | 'lastIPAddress' | 'lastUserAgent' | 'country' | 'totalLogin' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+      & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'lastActiveTill' | 'planExpirationDate' | 'planTrialDone' | 'language' | 'timezone' | 'lastIPAddress' | 'lastUserAgent' | 'country' | 'totalLogin' | 'createdAt' | 'updatedAt' | 'deletedAt'>
       & { billing?: Maybe<(
         { __typename?: 'Billing' }
         & Pick<Billing, 'type' | 'name' | 'address1' | 'address2' | 'city' | 'state' | 'country' | 'zip' | 'phone'>
@@ -3339,7 +3340,7 @@ export const GetAllUsersDocument = gql`
         id
         email
         emailVerifiedAt
-        accountStatus
+        lastActiveTill
         language
         lastIPAddress
         country
@@ -3498,7 +3499,7 @@ export const GetUserDocument = gql`
         zip
         phone
       }
-      accountStatus
+      lastActiveTill
       planExpirationDate
       planTrialDone
       language

@@ -18,7 +18,7 @@ query GetUser($id: String!) {
         zip
         phone
       }
-      accountStatus
+      lastActiveTill
       planExpirationDate
       planTrialDone
       language

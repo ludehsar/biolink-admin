@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
+import moment from 'moment'
 import Link from 'next/link'
 
 import AdminHeader from '../../components/Header/AdminHeader'
@@ -69,12 +70,15 @@ const UsersIndexPage: NextPage = () => {
       emailVerifiedAt: edge.node.emailVerifiedAt,
       accountStatus: (
         <Badge color="" className="badge-dot mr-4">
-          {edge.node.accountStatus === 'Active' ? (
-            <i className="bg-success" />
+          {moment(moment.now()).isBefore(edge.node.lastActiveTill) ? (
+            <>
+              <i className="bg-success" /> Active
+            </>
           ) : (
-            <i className="bg-danger" />
+            <>
+              <i className="bg-danger" /> Inactive
+            </>
           )}
-          {edge.node.accountStatus}
         </Badge>
       ),
       language: edge.node.language,

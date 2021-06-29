@@ -8,7 +8,7 @@ query GetAllUsers($options:ConnectionArgs!) {
         id
         email
         emailVerifiedAt
-        accountStatus
+        lastActiveTill
         language
         lastIPAddress
         country
