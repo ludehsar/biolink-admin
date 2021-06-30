@@ -70,7 +70,10 @@ const UsersIndexPage: NextPage = () => {
       emailVerifiedAt: edge.node.emailVerifiedAt,
       accountStatus: (
         <Badge color="" className="badge-dot mr-4">
-          {moment(moment.now()).isBefore(edge.node.lastActiveTill) ? (
+          {edge.node.lastActiveTill &&
+          moment(moment.now()).isBefore(
+            moment.unix(parseInt(edge.node.lastActiveTill || '') / 1000)
+          ) ? (
             <>
               <i className="bg-success" /> Active
             </>
