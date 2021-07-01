@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
+import moment from 'moment'
 
 import AdminHeader from '../../components/Header/AdminHeader'
 import AdminLayout from '../../layouts/Admin.layout'
@@ -8,6 +9,7 @@ import { createUrqlClient } from '../../utils/createUrqlClient'
 import { Badge, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap'
 import { useGetAllAdminsQuery } from '../../generated/graphql'
 import DataTable from '../../components/DataTable/DataTable'
+import Link from 'next/link'
 
 const columns = [
   {
@@ -29,6 +31,10 @@ const columns = [
   {
     name: 'Admin Role',
     selector: 'adminRole',
+  },
+  {
+    name: 'Joined',
+    selector: 'createdAt',
   },
   {
     name: '',
@@ -61,6 +67,7 @@ const AdminsIndexPage: NextPage = () => {
       lastIpAddress: edge.node.lastIPAddress,
       country: edge.node.country,
       adminRole: <Badge color="primary">{edge.node.adminRole?.roleName || 'Not Loaded'}</Badge>,
+      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -74,12 +81,12 @@ const AdminsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              View Details
-            </DropdownItem>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              Edit
-            </DropdownItem>
+            <Link href={'/users/view/' + edge.node.id}>
+              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            </Link>
+            <Link href={'/users/edit/' + edge.node.id}>
+              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
       ),

@@ -17,10 +17,6 @@ const columns = [
     selector: 'email',
   },
   {
-    name: 'Email Verified At',
-    selector: 'emailVerifiedAt',
-  },
-  {
     name: 'Account Status',
     selector: 'accountStatus',
   },
@@ -39,6 +35,10 @@ const columns = [
   {
     name: 'Current Plan',
     selector: 'plan',
+  },
+  {
+    name: 'Joined',
+    selector: 'createdAt',
   },
   {
     name: '',
@@ -67,7 +67,6 @@ const UsersIndexPage: NextPage = () => {
   const userData =
     data?.getAllUsers?.edges?.map((edge) => ({
       email: edge.node.email,
-      emailVerifiedAt: edge.node.emailVerifiedAt,
       accountStatus: (
         <Badge color="" className="badge-dot mr-4">
           {edge.node.lastActiveTill &&
@@ -88,6 +87,7 @@ const UsersIndexPage: NextPage = () => {
       lastIpAddress: edge.node.lastIPAddress,
       country: edge.node.country,
       plan: <Badge color="primary">{edge.node.plan?.name || 'Free'}</Badge>,
+      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -101,9 +101,9 @@ const UsersIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              View Details
-            </DropdownItem>
+            <Link href={'/users/view/' + edge.node.id}>
+              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            </Link>
             <Link href={'/users/edit/' + edge.node.id}>
               <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>

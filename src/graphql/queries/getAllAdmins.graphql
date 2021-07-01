@@ -13,6 +13,7 @@ query GetAllAdmins($options: ConnectionArgs!) {
         adminRole {
           roleName
         }
+        createdAt
       }
       cursor
     }

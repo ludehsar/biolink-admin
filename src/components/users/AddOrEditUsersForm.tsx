@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ErrorPage from 'next/error'
 import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form, Label } from 'reactstrap'
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
@@ -50,7 +51,7 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
     label: role.roleName as string,
   }))
 
-  return (
+  return variant === 'Add' || userData?.getUser?.user ? (
     <Container className="mt--7" fluid>
       <Row>
         <div className="col">
@@ -206,6 +207,8 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
         </div>
       </Row>
     </Container>
+  ) : (
+    <ErrorPage statusCode={404} />
   )
 }
 

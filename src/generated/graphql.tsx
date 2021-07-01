@@ -887,6 +887,7 @@ export type UserLogs = {
   deviceType?: Maybe<Scalars['String']>;
   osName?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  showInActivity?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
 };
@@ -1254,7 +1255,7 @@ export type GetAllAdminsQuery = (
       & Pick<UserEdge, 'cursor'>
       & { node: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'email' | 'language' | 'lastIPAddress' | 'country'>
+        & Pick<User, 'id' | 'email' | 'language' | 'lastIPAddress' | 'country' | 'createdAt'>
         & { adminRole?: Maybe<(
           { __typename?: 'AdminRole' }
           & Pick<AdminRole, 'roleName'>
@@ -2012,7 +2013,7 @@ export type GetAllUsersQuery = (
       & Pick<UserEdge, 'cursor'>
       & { node: (
         { __typename?: 'User' }
-        & Pick<User, 'id' | 'email' | 'emailVerifiedAt' | 'lastActiveTill' | 'language' | 'lastIPAddress' | 'country'>
+        & Pick<User, 'id' | 'email' | 'lastActiveTill' | 'language' | 'lastIPAddress' | 'country' | 'createdAt'>
         & { plan?: Maybe<(
           { __typename?: 'Plan' }
           & Pick<Plan, 'name'>
@@ -2506,6 +2507,7 @@ export const GetAllAdminsDocument = gql`
         adminRole {
           roleName
         }
+        createdAt
       }
       cursor
     }
@@ -3339,7 +3341,6 @@ export const GetAllUsersDocument = gql`
       node {
         id
         email
-        emailVerifiedAt
         lastActiveTill
         language
         lastIPAddress
@@ -3347,6 +3348,7 @@ export const GetAllUsersDocument = gql`
         plan {
           name
         }
+        createdAt
       }
       cursor
     }
