@@ -1,4 +1,5 @@
 import React from 'react'
+import ErrorPage from 'next/error'
 import {
   Container,
   Row,
@@ -41,7 +42,7 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
   const [, editAdminRole] = useEditAdminRoleMutation()
   const [{ data }] = useGetAdminRoleQuery({ variables: { id: id as number } })
 
-  return (
+  return variant === 'Add' || data?.getAdminRole.adminRole ? (
     <Container className="mt--7" fluid>
       <Row>
         <div className="col">
@@ -1193,6 +1194,8 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
         </div>
       </Row>
     </Container>
+  ) : (
+    <ErrorPage statusCode={404} />
   )
 }
 

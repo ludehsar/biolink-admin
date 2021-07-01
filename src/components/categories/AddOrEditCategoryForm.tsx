@@ -1,4 +1,5 @@
 import React from 'react'
+import ErrorPage from 'next/error'
 import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form } from 'reactstrap'
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
@@ -25,7 +26,7 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
   const [, editCategory] = useEditCategoryMutation()
   const [{ data }] = useGetCategoryQuery({ variables: { id: id as number } })
 
-  return (
+  return variant === 'Add' || data?.getCategory?.category ? (
     <Container className="mt--7" fluid>
       <Row>
         <div className="col">
@@ -114,6 +115,8 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
         </div>
       </Row>
     </Container>
+  ) : (
+    <ErrorPage statusCode={404} />
   )
 }
 
