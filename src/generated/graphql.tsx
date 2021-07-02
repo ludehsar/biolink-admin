@@ -93,6 +93,12 @@ export type BiolinkEdge = {
   cursor: Scalars['String'];
 };
 
+export type BiolinkResponse = {
+  __typename?: 'BiolinkResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  biolink?: Maybe<Biolink>;
+};
+
 export type BiolinkSettings = {
   __typename?: 'BiolinkSettings';
   enableDarkMode?: Maybe<Scalars['Boolean']>;
@@ -524,6 +530,7 @@ export type Query = {
   me?: Maybe<User>;
   getAllBiolinks?: Maybe<BiolinkConnection>;
   getAllDirectories?: Maybe<BiolinkConnection>;
+  getBiolink?: Maybe<BiolinkResponse>;
   getAllBlackListedBadWords?: Maybe<BlackListConnection>;
   getAllBlackListedEmails?: Maybe<BlackListConnection>;
   getAllBlackListedUsernames?: Maybe<BlackListConnection>;
@@ -568,6 +575,11 @@ export type QueryGetAllBiolinksArgs = {
 export type QueryGetAllDirectoriesArgs = {
   categoryIds?: Maybe<Array<Scalars['Int']>>;
   options: ConnectionArgs;
+};
+
+
+export type QueryGetBiolinkArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -2066,6 +2078,42 @@ export type GetAllVerifiedVerificationsQuery = (
   )> }
 );
 
+export type GetBiolinkQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetBiolinkQuery = (
+  { __typename?: 'Query' }
+  & { getBiolink?: Maybe<(
+    { __typename?: 'BiolinkResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, biolink?: Maybe<(
+      { __typename?: 'Biolink' }
+      & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'coverPhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'latitude' | 'longitude' | 'bio' | 'verificationStatus' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'featured' | 'changedUsername' | 'createdAt'>
+      & { settings?: Maybe<(
+        { __typename?: 'BiolinkSettings' }
+        & Pick<BiolinkSettings, 'enableDarkMode' | 'showEmail' | 'email' | 'showPhone' | 'phone' | 'enableColoredContactButtons' | 'addedToDirectory' | 'directoryBio' | 'enableColoredSocialMediaIcons' | 'socialAccountStyleType' | 'enableFacebookPixel' | 'facebookPixelId' | 'enableGoogleAnalytics' | 'googleAnalyticsCode' | 'enableEmailCapture' | 'emailCaptureId' | 'enableUtmParameters' | 'utmSource' | 'utmMedium' | 'utmCampaign' | 'blockSearchEngineIndexing' | 'pageTitle' | 'metaDescription' | 'opengraphImageUrl' | 'removeDefaultBranding' | 'enableCustomBranding' | 'customBrandingName' | 'customBrandingUrl' | 'enablePasswordProtection' | 'enableSensitiveContentWarning'>
+        & { socialAccounts?: Maybe<Array<(
+          { __typename?: 'SocialMediaProps' }
+          & Pick<SocialMediaProps, 'platform' | 'icon' | 'link'>
+        )>> }
+      )>, username?: Maybe<(
+        { __typename?: 'Username' }
+        & Pick<Username, 'id' | 'username'>
+      )>, user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )>, category?: Maybe<(
+        { __typename?: 'Category' }
+        & Pick<Category, 'id' | 'categoryName'>
+      )> }
+    )> }
+  )> }
+);
+
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -3412,6 +3460,88 @@ ${PageInfoFragmentDoc}`;
 
 export function useGetAllVerifiedVerificationsQuery(options: Omit<Urql.UseQueryArgs<GetAllVerifiedVerificationsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllVerifiedVerificationsQuery>({ query: GetAllVerifiedVerificationsDocument, ...options });
+};
+export const GetBiolinkDocument = gql`
+    query GetBiolink($id: String!) {
+  getBiolink(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+    biolink {
+      id
+      profilePhotoUrl
+      coverPhotoUrl
+      displayName
+      city
+      state
+      country
+      latitude
+      longitude
+      bio
+      settings {
+        enableDarkMode
+        showEmail
+        email
+        showPhone
+        phone
+        enableColoredContactButtons
+        addedToDirectory
+        directoryBio
+        enableColoredSocialMediaIcons
+        socialAccountStyleType
+        socialAccounts {
+          platform
+          icon
+          link
+        }
+        enableFacebookPixel
+        facebookPixelId
+        enableGoogleAnalytics
+        googleAnalyticsCode
+        enableEmailCapture
+        emailCaptureId
+        enableUtmParameters
+        utmSource
+        utmMedium
+        utmCampaign
+        blockSearchEngineIndexing
+        pageTitle
+        metaDescription
+        opengraphImageUrl
+        removeDefaultBranding
+        enableCustomBranding
+        customBrandingName
+        customBrandingUrl
+        enablePasswordProtection
+        enableSensitiveContentWarning
+      }
+      verificationStatus
+      verifiedGovernmentId
+      verifiedEmail
+      verifiedPhoneNumber
+      verifiedWorkEmail
+      featured
+      changedUsername
+      createdAt
+      username {
+        id
+        username
+      }
+      user {
+        id
+        email
+      }
+      category {
+        id
+        categoryName
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetBiolinkQuery(options: Omit<Urql.UseQueryArgs<GetBiolinkQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetBiolinkQuery>({ query: GetBiolinkDocument, ...options });
 };
 export const GetCategoryDocument = gql`
     query GetCategory($id: Int!) {

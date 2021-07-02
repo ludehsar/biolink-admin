@@ -108,10 +108,10 @@ const BiolinksIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              View Details
-            </DropdownItem>
-            <Link href={'/users/edit/' + edge.node.id}>
+            <Link href={'/biolinks/view/' + edge.node.id}>
+              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            </Link>
+            <Link href={'/biolinks/edit/' + edge.node.id}>
               <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
