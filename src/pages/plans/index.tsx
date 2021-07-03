@@ -84,9 +84,6 @@ const PlansIndexPage: NextPage = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                              View Details
-                            </DropdownItem>
                             <Link href={'/plans/edit/' + plan.id}>
                               <DropdownItem href={'/plans/edit/' + plan.id}>Edit</DropdownItem>
                             </Link>

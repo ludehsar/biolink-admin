@@ -17,6 +17,8 @@ const ViewBiolinkPage: NextPage = () => {
   const { id } = router.query
   const [{ data }] = useGetBiolinkQuery({ variables: { id: (id as string) || '' } })
 
+  console.log(data)
+
   return data?.getBiolink?.biolink ? (
     <AdminLayout>
       <UserHeader coverPhotoUrl={data.getBiolink.biolink.coverPhotoUrl || undefined} />

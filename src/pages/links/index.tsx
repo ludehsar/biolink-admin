@@ -102,11 +102,8 @@ const LinksIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-              View Details
-            </DropdownItem>
-            <Link href={'/users/edit/' + edge.node.id}>
-              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/links/edit/' + edge.node.id}>
+              <DropdownItem href={'/links/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -118,8 +115,6 @@ const LinksIndexPage: NextPage = () => {
       <AdminHeader />
       <DataTable
         title="Links"
-        newButton={true}
-        newButtonLink={'/users/add'}
         columns={columns}
         data={biolinkData}
         hasNextPage={data?.getAllLinks?.pageInfo?.hasNextPage || false}
