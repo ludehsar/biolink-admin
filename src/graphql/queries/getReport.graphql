@@ -1,0 +1,21 @@
+query GetReport($reportId: String!) {
+  getReport(reportId: $reportId) {
+    errors {
+      ...ReceivedErrors
+    }
+    report {
+      id
+      firstName
+      lastName
+      email
+      reportedUrl
+      description
+      status
+      createdAt
+      reporter {
+        id
+        email
+      }
+    }
+  }
+}

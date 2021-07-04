@@ -85,8 +85,8 @@ const DismissedReportsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/reports/details/' + edge.node.id}>
+              <DropdownItem href={'/reports/details/' + edge.node.id}>Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -98,8 +98,6 @@ const DismissedReportsIndexPage: NextPage = () => {
       <AdminHeader />
       <DataTable
         title="Dismissed Reports"
-        newButton={true}
-        newButtonLink="/categories/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllDismissedReports?.pageInfo?.hasNextPage || false}

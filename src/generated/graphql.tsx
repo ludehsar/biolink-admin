@@ -267,6 +267,7 @@ export type Link = {
   id: Scalars['String'];
   linkType?: Maybe<Scalars['String']>;
   linkTitle?: Maybe<Scalars['String']>;
+  linkColor?: Maybe<Scalars['String']>;
   linkImageUrl?: Maybe<Scalars['String']>;
   url?: Maybe<Scalars['String']>;
   shortenedUrl?: Maybe<Scalars['String']>;
@@ -546,9 +547,11 @@ export type Query = {
   getAllPendingReports?: Maybe<ReportConnection>;
   getAllResolvedReports?: Maybe<ReportConnection>;
   getAllDismissedReports?: Maybe<ReportConnection>;
+  getReport?: Maybe<ReportResponse>;
   getAllPendingSupports?: Maybe<SupportConnection>;
   getAllResolvedSupports?: Maybe<SupportConnection>;
   getAllDismissedSupports?: Maybe<SupportConnection>;
+  getSupport?: Maybe<SupportResponse>;
   getAllTaxes?: Maybe<TaxConnection>;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
@@ -653,6 +656,11 @@ export type QueryGetAllDismissedReportsArgs = {
 };
 
 
+export type QueryGetReportArgs = {
+  reportId: Scalars['String'];
+};
+
+
 export type QueryGetAllPendingSupportsArgs = {
   options: ConnectionArgs;
 };
@@ -665,6 +673,11 @@ export type QueryGetAllResolvedSupportsArgs = {
 
 export type QueryGetAllDismissedSupportsArgs = {
   options: ConnectionArgs;
+};
+
+
+export type QueryGetSupportArgs = {
+  supportId: Scalars['String'];
 };
 
 
@@ -755,6 +768,12 @@ export type ReportEdge = {
   cursor: Scalars['String'];
 };
 
+export type ReportResponse = {
+  __typename?: 'ReportResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  report?: Maybe<Report>;
+};
+
 export type RoleSettings = {
   __typename?: 'RoleSettings';
   resource?: Maybe<Scalars['String']>;
@@ -810,6 +829,12 @@ export type SupportEdge = {
   node: Support;
   /** Used in `before` and `after` args */
   cursor: Scalars['String'];
+};
+
+export type SupportResponse = {
+  __typename?: 'SupportResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  support?: Maybe<Support>;
 };
 
 export type Tax = {
@@ -2154,6 +2179,52 @@ export type GetPlanQuery = (
       )> }
     )> }
   ) }
+);
+
+export type GetReportQueryVariables = Exact<{
+  reportId: Scalars['String'];
+}>;
+
+
+export type GetReportQuery = (
+  { __typename?: 'Query' }
+  & { getReport?: Maybe<(
+    { __typename?: 'ReportResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, report?: Maybe<(
+      { __typename?: 'Report' }
+      & Pick<Report, 'id' | 'firstName' | 'lastName' | 'email' | 'reportedUrl' | 'description' | 'status' | 'createdAt'>
+      & { reporter?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
+    )> }
+  )> }
+);
+
+export type GetSupportQueryVariables = Exact<{
+  supportId: Scalars['String'];
+}>;
+
+
+export type GetSupportQuery = (
+  { __typename?: 'Query' }
+  & { getSupport?: Maybe<(
+    { __typename?: 'SupportResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, support?: Maybe<(
+      { __typename?: 'Support' }
+      & Pick<Support, 'id' | 'fullName' | 'email' | 'phoneNumber' | 'company' | 'subject' | 'message' | 'status' | 'supportReply' | 'createdAt' | 'updatedAt'>
+      & { user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
+    )> }
+  )> }
 );
 
 export type GetUserQueryVariables = Exact<{
@@ -3609,6 +3680,63 @@ export const GetPlanDocument = gql`
 
 export function useGetPlanQuery(options: Omit<Urql.UseQueryArgs<GetPlanQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPlanQuery>({ query: GetPlanDocument, ...options });
+};
+export const GetReportDocument = gql`
+    query GetReport($reportId: String!) {
+  getReport(reportId: $reportId) {
+    errors {
+      ...ReceivedErrors
+    }
+    report {
+      id
+      firstName
+      lastName
+      email
+      reportedUrl
+      description
+      status
+      createdAt
+      reporter {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetReportQuery(options: Omit<Urql.UseQueryArgs<GetReportQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetReportQuery>({ query: GetReportDocument, ...options });
+};
+export const GetSupportDocument = gql`
+    query GetSupport($supportId: String!) {
+  getSupport(supportId: $supportId) {
+    errors {
+      ...ReceivedErrors
+    }
+    support {
+      id
+      fullName
+      email
+      phoneNumber
+      company
+      subject
+      message
+      status
+      supportReply
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetSupportQuery(options: Omit<Urql.UseQueryArgs<GetSupportQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSupportQuery>({ query: GetSupportDocument, ...options });
 };
 export const GetUserDocument = gql`
     query GetUser($id: String!) {

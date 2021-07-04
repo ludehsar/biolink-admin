@@ -90,8 +90,8 @@ const PendingSupportsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/supports/details/' + edge.node.id}>
+              <DropdownItem href={'/supports/details/' + edge.node.id}>Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -103,8 +103,6 @@ const PendingSupportsIndexPage: NextPage = () => {
       <AdminHeader />
       <DataTable
         title="Pending Supports"
-        newButton={true}
-        newButtonLink="/categories/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllPendingSupports?.pageInfo?.hasNextPage || false}
