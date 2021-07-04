@@ -2,6 +2,12 @@ import React from 'react'
 import ErrorPage from 'next/error'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
+import { Dispatch } from 'redux'
+import Link from 'next/link'
+import moment from 'moment'
+import { Formik } from 'formik'
+import { connect } from 'react-redux'
+import { useRouter } from 'next/router'
 import {
   Button,
   Card,
@@ -17,16 +23,23 @@ import {
 
 import AdminLayout from '../../../layouts/Admin.layout'
 import { createUrqlClient } from '../../../utils/createUrqlClient'
-import { useRouter } from 'next/router'
-import { useGetSupportQuery } from '../../../generated/graphql'
+import {
+  useGetSupportQuery,
+  useEditSupportMutation,
+  ErrorResponse,
+} from '../../../generated/graphql'
 import AdminHeader from '../../../components/Header/AdminHeader'
-import Link from 'next/link'
-import moment from 'moment'
+import { ADD_ERRORS_REQUESTED } from '../../../redux/actions/errorAction'
 
-const SupportDetailsPage: NextPage = () => {
+interface SupportDetailsPageProps {
+  addErrors: (errors: ErrorResponse[]) => void
+}
+
+const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) => {
   const router = useRouter()
   const { id } = router.query
   const [{ data }] = useGetSupportQuery({ variables: { supportId: (id as string) || '' } })
+  const [, editSupport] = useEditSupportMutation()
 
   return data?.getSupport?.support ? (
     <AdminLayout>
@@ -43,193 +56,233 @@ const SupportDetailsPage: NextPage = () => {
                 </Row>
               </CardHeader>
               <CardBody>
-                <Form>
-                  <h6 className="heading-small text-muted mb-4">Contact Information</h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-email">
-                            User
-                          </label>
-                          <div>
-                            <Link href={'/users/view/' + data.getSupport.support.user?.id}>
-                              <a>{data.getSupport.support.user?.email}</a>
-                            </Link>
-                          </div>
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-full-name">
-                            Full Name
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={data.getSupport.support.fullName || ''}
-                            id="input-full-name"
-                            placeholder="Full Name"
-                            type="text"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-email">
-                            Contact Email
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={data.getSupport.support.email || ''}
-                            id="input-email"
-                            placeholder="Email Address"
-                            type="email"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-phone-number">
-                            Phone Number
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={data.getSupport.support.phoneNumber || ''}
-                            id="input-phone-number"
-                            placeholder="Phone Number"
-                            type="tel"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-company">
-                            Company
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={data.getSupport.support.company || ''}
-                            id="input-company"
-                            placeholder="Company"
-                            type="text"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  <h6 className="heading-small text-muted mb-4">Support Information</h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-subject">
-                            Subject
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={data.getSupport.support.subject || ''}
-                            id="input-subject"
-                            placeholder="Subject"
-                            type="text"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-message">
-                            Message
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={data.getSupport.support.message || ''}
-                            id="input-message"
-                            placeholder="Message"
-                            rows="4"
-                            type="textarea"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  <h6 className="heading-small text-muted mb-4">Support Status</h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-change-status">
-                            Change Status
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            id="input-change-status"
-                            defaultValue={data.getSupport.support.status || ''}
-                            placeholder="Change Status"
-                            type="select"
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Dismissed">Dismissed</option>
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                      <Col lg="8">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-issued">
-                            Issued at
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            value={moment
-                              .unix(parseInt(data.getSupport.support.createdAt || '') / 1000)
-                              .format('DD-MM-YYYY HH:mm:ss')}
-                            id="input-issued"
-                            placeholder="Issue Date"
-                            type="datetime"
-                            readOnly
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-support-reply">
-                            Admin Reply
-                          </label>
-                          <Input
-                            className="bg-white form-control-alternative"
-                            defaultValue={data.getSupport.support.supportReply || ''}
-                            id="input-support-reply"
-                            placeholder="Admin Reply"
-                            rows="4"
-                            type="textarea"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <Button color="primary">Submit</Button>
-                      </Col>
-                    </Row>
-                  </div>
-                </Form>
+                <h6 className="heading-small text-muted mb-4">Contact Information</h6>
+                <div className="pl-lg-4">
+                  <Row>
+                    <Col lg="12">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-email">
+                          User
+                        </label>
+                        <div>
+                          <Link href={'/users/view/' + data.getSupport.support.user?.id}>
+                            <a>{data.getSupport.support.user?.email}</a>
+                          </Link>
+                        </div>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg="12">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-full-name">
+                          Full Name
+                        </label>
+                        <Input
+                          className="bg-white form-control-alternative"
+                          value={data.getSupport.support.fullName || ''}
+                          id="input-full-name"
+                          placeholder="Full Name"
+                          type="text"
+                          readOnly
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg="6">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-email">
+                          Contact Email
+                        </label>
+                        <Input
+                          className="bg-white form-control-alternative"
+                          value={data.getSupport.support.email || ''}
+                          id="input-email"
+                          placeholder="Email Address"
+                          type="email"
+                          readOnly
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col lg="6">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-phone-number">
+                          Phone Number
+                        </label>
+                        <Input
+                          className="bg-white form-control-alternative"
+                          value={data.getSupport.support.phoneNumber || ''}
+                          id="input-phone-number"
+                          placeholder="Phone Number"
+                          type="tel"
+                          readOnly
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg="12">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-company">
+                          Company
+                        </label>
+                        <Input
+                          className="bg-white form-control-alternative"
+                          value={data.getSupport.support.company || ''}
+                          id="input-company"
+                          placeholder="Company"
+                          type="text"
+                          readOnly
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </div>
+                <hr className="my-4" />
+                <h6 className="heading-small text-muted mb-4">Support Information</h6>
+                <div className="pl-lg-4">
+                  <Row>
+                    <Col lg="12">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-subject">
+                          Subject
+                        </label>
+                        <Input
+                          className="bg-white form-control-alternative"
+                          value={data.getSupport.support.subject || ''}
+                          id="input-subject"
+                          placeholder="Subject"
+                          type="text"
+                          readOnly
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg="12">
+                      <FormGroup>
+                        <label className="form-control-label" htmlFor="input-message">
+                          Message
+                        </label>
+                        <Input
+                          className="bg-white form-control-alternative"
+                          value={data.getSupport.support.message || ''}
+                          id="input-message"
+                          placeholder="Message"
+                          rows="4"
+                          type="textarea"
+                          readOnly
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </div>
+                <hr className="my-4" />
+                <h6 className="heading-small text-muted mb-4">Support Status</h6>
+                <div className="pl-lg-4">
+                  <Formik
+                    enableReinitialize
+                    initialValues={{
+                      status: data.getSupport.support.status,
+                      supportReply: data.getSupport.support.supportReply,
+                    }}
+                    onSubmit={async (values, { setSubmitting }) => {
+                      const response = await editSupport({
+                        supportId: data.getSupport?.support?.id as string,
+                        options: {
+                          status: values.status,
+                          supportReply: values.supportReply,
+                        },
+                      })
+
+                      if (response.data?.editSupport?.errors) {
+                        addErrors(response.data.editSupport.errors)
+                      } else {
+                        router.push('/supports/pending')
+                      }
+                      setSubmitting(false)
+                    }}
+                  >
+                    {({ isSubmitting, handleChange, handleBlur, handleSubmit, values }) => (
+                      <Form role="form" method="post" onSubmit={handleSubmit}>
+                        <Row>
+                          <Col lg="4">
+                            <FormGroup>
+                              <label className="form-control-label" htmlFor="input-change-status">
+                                Change Status
+                              </label>
+                              <Input
+                                type="select"
+                                name="status"
+                                className="bg-white form-control-alternative"
+                                id="input-change-status"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.status || ''}
+                                placeholder="Change Status"
+                              >
+                                <option value="Pending">Pending</option>
+                                <option value="Resolved">Resolved</option>
+                                <option value="Dismissed">Dismissed</option>
+                              </Input>
+                            </FormGroup>
+                          </Col>
+                          <Col lg="8">
+                            <FormGroup>
+                              <label className="form-control-label" htmlFor="input-issued">
+                                Issued at
+                              </label>
+                              <Input
+                                className="bg-white form-control-alternative"
+                                value={moment
+                                  .unix(parseInt(data.getSupport?.support?.createdAt || '') / 1000)
+                                  .format('DD-MM-YYYY HH:mm:ss')}
+                                id="input-issued"
+                                placeholder="Issue Date"
+                                type="datetime"
+                                readOnly
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col lg="12">
+                            <FormGroup>
+                              <label className="form-control-label" htmlFor="input-support-reply">
+                                Admin Reply
+                              </label>
+                              <Input
+                                type="textarea"
+                                name="supportReply"
+                                className="bg-white form-control-alternative"
+                                id="input-support-reply"
+                                rows="4"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.supportReply || ''}
+                                placeholder="Admin Reply"
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Button type="submit" color="primary">
+                              {isSubmitting ? (
+                                <>
+                                  <i className="fa fa-spinner fa-spin"></i> Saving
+                                </>
+                              ) : (
+                                <>Save</>
+                              )}
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
               </CardBody>
             </Card>
           </Col>
@@ -241,4 +294,14 @@ const SupportDetailsPage: NextPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(SupportDetailsPage)
+const mapDispatchToProps = (
+  dispatch: Dispatch
+): {
+  addErrors: (errors: ErrorResponse[]) => void
+} => ({
+  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+})
+
+export default withUrqlClient(createUrqlClient)(
+  connect(null, mapDispatchToProps)(SupportDetailsPage)
+)

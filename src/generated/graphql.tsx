@@ -313,6 +313,8 @@ export type Mutation = {
   editCategory?: Maybe<CategoryResponse>;
   createPlan: PlanResponse;
   editPlan: PlanResponse;
+  changeReportStatus?: Maybe<ReportResponse>;
+  editSupport?: Maybe<SupportResponse>;
   addNewUser?: Maybe<DefaultResponse>;
   editUser?: Maybe<DefaultResponse>;
 };
@@ -358,6 +360,18 @@ export type MutationCreatePlanArgs = {
 export type MutationEditPlanArgs = {
   options: PlanInput;
   id: Scalars['Int'];
+};
+
+
+export type MutationChangeReportStatusArgs = {
+  options: ReportStatusInput;
+  reportId: Scalars['String'];
+};
+
+
+export type MutationEditSupportArgs = {
+  options: SupportAdminInput;
+  supportId: Scalars['String'];
 };
 
 
@@ -774,6 +788,10 @@ export type ReportResponse = {
   report?: Maybe<Report>;
 };
 
+export type ReportStatusInput = {
+  status?: Maybe<Scalars['String']>;
+};
+
 export type RoleSettings = {
   __typename?: 'RoleSettings';
   resource?: Maybe<Scalars['String']>;
@@ -815,6 +833,11 @@ export type Support = {
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
+};
+
+export type SupportAdminInput = {
+  status?: Maybe<Scalars['String']>;
+  supportReply?: Maybe<Scalars['String']>;
 };
 
 export type SupportConnection = {
@@ -1036,6 +1059,30 @@ export type AddNewUserMutation = (
   )> }
 );
 
+export type ChangeReportStatusMutationVariables = Exact<{
+  reportId: Scalars['String'];
+  options: ReportStatusInput;
+}>;
+
+
+export type ChangeReportStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { changeReportStatus?: Maybe<(
+    { __typename?: 'ReportResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, report?: Maybe<(
+      { __typename?: 'Report' }
+      & Pick<Report, 'id' | 'firstName' | 'lastName' | 'email' | 'reportedUrl' | 'description' | 'status' | 'createdAt'>
+      & { reporter?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
+    )> }
+  )> }
+);
+
 export type CreateAdminRoleMutationVariables = Exact<{
   options: NewAdminRoleInput;
 }>;
@@ -1167,6 +1214,30 @@ export type EditPlanMutation = (
       )> }
     )> }
   ) }
+);
+
+export type EditSupportMutationVariables = Exact<{
+  supportId: Scalars['String'];
+  options: SupportAdminInput;
+}>;
+
+
+export type EditSupportMutation = (
+  { __typename?: 'Mutation' }
+  & { editSupport?: Maybe<(
+    { __typename?: 'SupportResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, support?: Maybe<(
+      { __typename?: 'Support' }
+      & Pick<Support, 'id' | 'fullName' | 'email' | 'phoneNumber' | 'company' | 'subject' | 'message' | 'status' | 'supportReply' | 'createdAt'>
+      & { user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
+    )> }
+  )> }
 );
 
 export type EditUserMutationVariables = Exact<{
@@ -2314,6 +2385,33 @@ export const AddNewUserDocument = gql`
 export function useAddNewUserMutation() {
   return Urql.useMutation<AddNewUserMutation, AddNewUserMutationVariables>(AddNewUserDocument);
 };
+export const ChangeReportStatusDocument = gql`
+    mutation ChangeReportStatus($reportId: String!, $options: ReportStatusInput!) {
+  changeReportStatus(reportId: $reportId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    report {
+      id
+      firstName
+      lastName
+      email
+      reportedUrl
+      description
+      status
+      createdAt
+      reporter {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useChangeReportStatusMutation() {
+  return Urql.useMutation<ChangeReportStatusMutation, ChangeReportStatusMutationVariables>(ChangeReportStatusDocument);
+};
 export const CreateAdminRoleDocument = gql`
     mutation CreateAdminRole($options: NewAdminRoleInput!) {
   createAdminRole(options: $options) {
@@ -2505,6 +2603,35 @@ export const EditPlanDocument = gql`
 
 export function useEditPlanMutation() {
   return Urql.useMutation<EditPlanMutation, EditPlanMutationVariables>(EditPlanDocument);
+};
+export const EditSupportDocument = gql`
+    mutation EditSupport($supportId: String!, $options: SupportAdminInput!) {
+  editSupport(supportId: $supportId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    support {
+      id
+      fullName
+      email
+      phoneNumber
+      company
+      subject
+      message
+      status
+      supportReply
+      createdAt
+      user {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditSupportMutation() {
+  return Urql.useMutation<EditSupportMutation, EditSupportMutationVariables>(EditSupportDocument);
 };
 export const EditUserDocument = gql`
     mutation EditUser($id: String!, $options: EditUserInput!) {

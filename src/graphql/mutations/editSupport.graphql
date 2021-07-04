@@ -1,0 +1,23 @@
+mutation EditSupport($supportId: String!, $options: SupportAdminInput!) {
+  editSupport(supportId: $supportId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    support {
+      id
+      fullName
+      email
+      phoneNumber
+      company
+      subject
+      message
+      status
+      supportReply
+      createdAt
+      user {
+        id
+        email
+      }
+    }
+  }
+}
