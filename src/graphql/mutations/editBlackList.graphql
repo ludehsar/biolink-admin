@@ -1,0 +1,14 @@
+mutation EditBlackList($blackListId: Int!, $options: NewBlackListInput!) {
+  editBlackList(blackListId: $blackListId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    blackList {
+      id
+      blacklistType
+      keyword
+      reason
+      createdAt
+    }
+  }
+}

@@ -1,0 +1,10 @@
+mutation ChangeVerificationStatus(
+  $verificationId: String!
+  $options: VerificationStatusInput!
+) {
+  changeVerificationStatus(verificationId: $verificationId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}

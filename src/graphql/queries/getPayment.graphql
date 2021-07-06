@@ -1,0 +1,37 @@
+query GetPayment($paymentId: String!) {
+  getPayment(paymentId: $paymentId) {
+    errors {
+      ...ReceivedErrors
+    }
+    payment {
+      id
+      paymentType
+      stripeAmountDue
+      stripeAmountPaid
+      stripeAmountRemaining
+      stripeChargeId
+      stripeInvoiceCreated
+      stripePaymentCurrency
+      stripeCustomerId
+      stripeCustomerAddress
+      stripeCustomerEmail
+      stripeCustomerName
+      stripeCustomerPhone
+      stripeCustomerShipping
+      stripeDiscount
+      stripeInvoicePdfUrl
+      stripeInvoiceUrl
+      stripePriceId
+      stripeSubscriptionId
+      stripeInvoiceNumber
+      stripePeriodStart
+      stripePeriodEnd
+      stripeStatus
+      createdAt
+      user {
+        id
+        email
+      }
+    }
+  }
+}

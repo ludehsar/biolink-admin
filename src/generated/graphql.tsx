@@ -159,6 +159,12 @@ export type BlackListEdge = {
   cursor: Scalars['String'];
 };
 
+export type BlackListResponse = {
+  __typename?: 'BlackListResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  blackList?: Maybe<BlackList>;
+};
+
 export type Category = {
   __typename?: 'Category';
   id?: Maybe<Scalars['Int']>;
@@ -215,6 +221,12 @@ export type CodeEdge = {
   node: Code;
   /** Used in `before` and `after` args */
   cursor: Scalars['String'];
+};
+
+export type CodeResponse = {
+  __typename?: 'CodeResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  code?: Maybe<Code>;
 };
 
 export type ConnectionArgs = {
@@ -309,14 +321,23 @@ export type Mutation = {
   login: UserResponse;
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
+  addBlackList?: Maybe<BlackListResponse>;
+  editBlackList?: Maybe<BlackListResponse>;
   createCategory?: Maybe<CategoryResponse>;
   editCategory?: Maybe<CategoryResponse>;
+  addCode?: Maybe<CodeResponse>;
+  editCode?: Maybe<CodeResponse>;
   createPlan: PlanResponse;
   editPlan: PlanResponse;
   changeReportStatus?: Maybe<ReportResponse>;
   editSupport?: Maybe<SupportResponse>;
+  addTax?: Maybe<TaxResponse>;
+  editTax?: Maybe<TaxResponse>;
   addNewUser?: Maybe<DefaultResponse>;
   editUser?: Maybe<DefaultResponse>;
+  addUsername?: Maybe<UsernameResponse>;
+  editUsername?: Maybe<UsernameResponse>;
+  changeVerificationStatus?: Maybe<DefaultResponse>;
 };
 
 
@@ -341,6 +362,17 @@ export type MutationSendForgotPasswordEmailArgs = {
 };
 
 
+export type MutationAddBlackListArgs = {
+  options: NewBlackListInput;
+};
+
+
+export type MutationEditBlackListArgs = {
+  options: NewBlackListInput;
+  blackListId: Scalars['Int'];
+};
+
+
 export type MutationCreateCategoryArgs = {
   options: NewCategoryInput;
 };
@@ -349,6 +381,17 @@ export type MutationCreateCategoryArgs = {
 export type MutationEditCategoryArgs = {
   options: NewCategoryInput;
   id: Scalars['Int'];
+};
+
+
+export type MutationAddCodeArgs = {
+  options: NewCodeInput;
+};
+
+
+export type MutationEditCodeArgs = {
+  options: NewCodeInput;
+  codeId: Scalars['String'];
 };
 
 
@@ -375,6 +418,17 @@ export type MutationEditSupportArgs = {
 };
 
 
+export type MutationAddTaxArgs = {
+  options: NewTaxInput;
+};
+
+
+export type MutationEditTaxArgs = {
+  options: NewTaxInput;
+  taxId: Scalars['Int'];
+};
+
+
 export type MutationAddNewUserArgs = {
   options: NewUserInput;
 };
@@ -385,14 +439,57 @@ export type MutationEditUserArgs = {
   id: Scalars['String'];
 };
 
+
+export type MutationAddUsernameArgs = {
+  options: NewUsernameInput;
+};
+
+
+export type MutationEditUsernameArgs = {
+  options: NewUsernameInput;
+  usernameId: Scalars['String'];
+};
+
+
+export type MutationChangeVerificationStatusArgs = {
+  options: VerificationStatusInput;
+  verificationId: Scalars['String'];
+};
+
 export type NewAdminRoleInput = {
   roleName: Scalars['String'];
   roleDescription: Scalars['String'];
   roleSettings?: Maybe<Array<RoleSettingsInput>>;
 };
 
+export type NewBlackListInput = {
+  blacklistType?: Maybe<Scalars['String']>;
+  keyword?: Maybe<Scalars['String']>;
+  reason?: Maybe<Scalars['String']>;
+};
+
 export type NewCategoryInput = {
   categoryName?: Maybe<Scalars['String']>;
+};
+
+export type NewCodeInput = {
+  type?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['String']>;
+  discount?: Maybe<Scalars['Float']>;
+  quantity?: Maybe<Scalars['Float']>;
+  expireDate?: Maybe<Scalars['String']>;
+  referrerId?: Maybe<Scalars['String']>;
+};
+
+export type NewTaxInput = {
+  internalName?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['Float']>;
+  valueType?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  billingFor?: Maybe<Scalars['String']>;
+  countries?: Maybe<Scalars['String']>;
 };
 
 export type NewUserInput = {
@@ -402,6 +499,12 @@ export type NewUserInput = {
   displayName?: Maybe<Scalars['String']>;
   categoryId?: Maybe<Scalars['Float']>;
   planId?: Maybe<Scalars['Float']>;
+};
+
+export type NewUsernameInput = {
+  username?: Maybe<Scalars['String']>;
+  premiumType?: Maybe<Scalars['String']>;
+  ownerId?: Maybe<Scalars['String']>;
 };
 
 export type PageInfo = {
@@ -453,6 +556,12 @@ export type PaymentEdge = {
   node: Payment;
   /** Used in `before` and `after` args */
   cursor: Scalars['String'];
+};
+
+export type PaymentResponse = {
+  __typename?: 'PaymentResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  payment?: Maybe<Payment>;
 };
 
 export type Plan = {
@@ -549,13 +658,16 @@ export type Query = {
   getAllBlackListedBadWords?: Maybe<BlackListConnection>;
   getAllBlackListedEmails?: Maybe<BlackListConnection>;
   getAllBlackListedUsernames?: Maybe<BlackListConnection>;
+  getBlackList?: Maybe<BlackListResponse>;
   getAllCategories?: Maybe<CategoryConnection>;
   getCategory?: Maybe<CategoryResponse>;
   getAllDiscounts?: Maybe<CodeConnection>;
   getAllReferrals?: Maybe<CodeConnection>;
+  getCode?: Maybe<CodeResponse>;
   getAllLinks?: Maybe<LinkConnection>;
   getAllEmbeds?: Maybe<LinkConnection>;
   getAllStripePayments?: Maybe<PaymentConnection>;
+  getPayment?: Maybe<PaymentResponse>;
   getAllPlans: PlanListResponse;
   getPlan: PlanResponse;
   getAllPendingReports?: Maybe<ReportConnection>;
@@ -567,12 +679,14 @@ export type Query = {
   getAllDismissedSupports?: Maybe<SupportConnection>;
   getSupport?: Maybe<SupportResponse>;
   getAllTaxes?: Maybe<TaxConnection>;
+  getTax?: Maybe<TaxResponse>;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
   getAllUsernames?: Maybe<UsernameConnection>;
   getAllPremiumUsernames?: Maybe<UsernameConnection>;
   getAllTrademarkUsernames?: Maybe<UsernameConnection>;
+  getUsername?: Maybe<UsernameResponse>;
   getAllPendingVerifications?: Maybe<VerificationConnection>;
   getAllVerifiedVerifications?: Maybe<VerificationConnection>;
   getAllRejectedVerifications?: Maybe<VerificationConnection>;
@@ -615,6 +729,11 @@ export type QueryGetAllBlackListedUsernamesArgs = {
 };
 
 
+export type QueryGetBlackListArgs = {
+  blackListId: Scalars['Int'];
+};
+
+
 export type QueryGetAllCategoriesArgs = {
   options: ConnectionArgs;
 };
@@ -635,6 +754,11 @@ export type QueryGetAllReferralsArgs = {
 };
 
 
+export type QueryGetCodeArgs = {
+  codeId: Scalars['String'];
+};
+
+
 export type QueryGetAllLinksArgs = {
   options: ConnectionArgs;
 };
@@ -647,6 +771,11 @@ export type QueryGetAllEmbedsArgs = {
 
 export type QueryGetAllStripePaymentsArgs = {
   options: ConnectionArgs;
+};
+
+
+export type QueryGetPaymentArgs = {
+  paymentId: Scalars['String'];
 };
 
 
@@ -700,6 +829,11 @@ export type QueryGetAllTaxesArgs = {
 };
 
 
+export type QueryGetTaxArgs = {
+  taxId: Scalars['Int'];
+};
+
+
 export type QueryGetAllUsersArgs = {
   options: ConnectionArgs;
 };
@@ -727,6 +861,11 @@ export type QueryGetAllPremiumUsernamesArgs = {
 
 export type QueryGetAllTrademarkUsernamesArgs = {
   options: ConnectionArgs;
+};
+
+
+export type QueryGetUsernameArgs = {
+  usernameId: Scalars['String'];
 };
 
 
@@ -890,6 +1029,12 @@ export type TaxEdge = {
   cursor: Scalars['String'];
 };
 
+export type TaxResponse = {
+  __typename?: 'TaxResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  tax?: Maybe<Tax>;
+};
+
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['String']>;
@@ -985,6 +1130,12 @@ export type UsernameEdge = {
   cursor: Scalars['String'];
 };
 
+export type UsernameResponse = {
+  __typename?: 'UsernameResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  username?: Maybe<Username>;
+};
+
 export type Verification = {
   __typename?: 'Verification';
   id?: Maybe<Scalars['String']>;
@@ -1028,6 +1179,14 @@ export type VerificationEdge = {
   cursor: Scalars['String'];
 };
 
+export type VerificationStatusInput = {
+  status?: Maybe<Scalars['String']>;
+  verifiedGovernmentId?: Maybe<Scalars['Boolean']>;
+  verifiedEmail?: Maybe<Scalars['Boolean']>;
+  verifiedPhoneNumber?: Maybe<Scalars['Boolean']>;
+  verifiedWorkEmail?: Maybe<Scalars['Boolean']>;
+};
+
 export type CurrentUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'email'>
@@ -1043,6 +1202,48 @@ export type ReceivedErrorsFragment = (
   & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
 );
 
+export type AddBlackListMutationVariables = Exact<{
+  options: NewBlackListInput;
+}>;
+
+
+export type AddBlackListMutation = (
+  { __typename?: 'Mutation' }
+  & { addBlackList?: Maybe<(
+    { __typename?: 'BlackListResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, blackList?: Maybe<(
+      { __typename?: 'BlackList' }
+      & Pick<BlackList, 'id' | 'blacklistType' | 'keyword' | 'reason' | 'createdAt'>
+    )> }
+  )> }
+);
+
+export type AddCodeMutationVariables = Exact<{
+  options: NewCodeInput;
+}>;
+
+
+export type AddCodeMutation = (
+  { __typename?: 'Mutation' }
+  & { addCode?: Maybe<(
+    { __typename?: 'CodeResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, code?: Maybe<(
+      { __typename?: 'Code' }
+      & Pick<Code, 'id' | 'type' | 'code' | 'discount' | 'quantity' | 'expireDate' | 'createdAt' | 'updatedAt'>
+      & { referrer?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
+    )> }
+  )> }
+);
+
 export type AddNewUserMutationVariables = Exact<{
   options: NewUserInput;
 }>;
@@ -1056,6 +1257,51 @@ export type AddNewUserMutation = (
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
     )>> }
+  )> }
+);
+
+export type AddTaxMutationVariables = Exact<{
+  options: NewTaxInput;
+}>;
+
+
+export type AddTaxMutation = (
+  { __typename?: 'Mutation' }
+  & { addTax?: Maybe<(
+    { __typename?: 'TaxResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, tax?: Maybe<(
+      { __typename?: 'Tax' }
+      & Pick<Tax, 'id' | 'internalName' | 'name' | 'description' | 'value' | 'valueType' | 'type' | 'billingFor' | 'countries' | 'createdAt'>
+    )> }
+  )> }
+);
+
+export type AddUsernameMutationVariables = Exact<{
+  options: NewUsernameInput;
+}>;
+
+
+export type AddUsernameMutation = (
+  { __typename?: 'Mutation' }
+  & { addUsername?: Maybe<(
+    { __typename?: 'UsernameResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, username?: Maybe<(
+      { __typename?: 'Username' }
+      & Pick<Username, 'id' | 'username' | 'premiumType' | 'expireDate' | 'createdAt'>
+      & { owner?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )>, biolink?: Maybe<(
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName'>
+      )> }
+    )> }
   )> }
 );
 
@@ -1080,6 +1326,23 @@ export type ChangeReportStatusMutation = (
         & Pick<User, 'id' | 'email'>
       )> }
     )> }
+  )> }
+);
+
+export type ChangeVerificationStatusMutationVariables = Exact<{
+  verificationId: Scalars['String'];
+  options: VerificationStatusInput;
+}>;
+
+
+export type ChangeVerificationStatusMutation = (
+  { __typename?: 'Mutation' }
+  & { changeVerificationStatus?: Maybe<(
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
   )> }
 );
 
@@ -1172,6 +1435,26 @@ export type EditAdminRoleMutation = (
   ) }
 );
 
+export type EditBlackListMutationVariables = Exact<{
+  blackListId: Scalars['Int'];
+  options: NewBlackListInput;
+}>;
+
+
+export type EditBlackListMutation = (
+  { __typename?: 'Mutation' }
+  & { editBlackList?: Maybe<(
+    { __typename?: 'BlackListResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, blackList?: Maybe<(
+      { __typename?: 'BlackList' }
+      & Pick<BlackList, 'id' | 'blacklistType' | 'keyword' | 'reason' | 'createdAt'>
+    )> }
+  )> }
+);
+
 export type EditCategoryMutationVariables = Exact<{
   id: Scalars['Int'];
   options: NewCategoryInput;
@@ -1188,6 +1471,30 @@ export type EditCategoryMutation = (
     )>>, category?: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
+    )> }
+  )> }
+);
+
+export type EditCodeMutationVariables = Exact<{
+  codeId: Scalars['String'];
+  options: NewCodeInput;
+}>;
+
+
+export type EditCodeMutation = (
+  { __typename?: 'Mutation' }
+  & { editCode?: Maybe<(
+    { __typename?: 'CodeResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, code?: Maybe<(
+      { __typename?: 'Code' }
+      & Pick<Code, 'id' | 'type' | 'code' | 'discount' | 'quantity' | 'expireDate' | 'createdAt' | 'updatedAt'>
+      & { referrer?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
     )> }
   )> }
 );
@@ -1240,6 +1547,26 @@ export type EditSupportMutation = (
   )> }
 );
 
+export type EditTaxMutationVariables = Exact<{
+  taxId: Scalars['Int'];
+  options: NewTaxInput;
+}>;
+
+
+export type EditTaxMutation = (
+  { __typename?: 'Mutation' }
+  & { editTax?: Maybe<(
+    { __typename?: 'TaxResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, tax?: Maybe<(
+      { __typename?: 'Tax' }
+      & Pick<Tax, 'id' | 'internalName' | 'name' | 'description' | 'value' | 'valueType' | 'type' | 'billingFor' | 'countries' | 'createdAt'>
+    )> }
+  )> }
+);
+
 export type EditUserMutationVariables = Exact<{
   id: Scalars['String'];
   options: EditUserInput;
@@ -1254,6 +1581,33 @@ export type EditUserMutation = (
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
     )>> }
+  )> }
+);
+
+export type EditUsernameMutationVariables = Exact<{
+  usernameId: Scalars['String'];
+  options: NewUsernameInput;
+}>;
+
+
+export type EditUsernameMutation = (
+  { __typename?: 'Mutation' }
+  & { editUsername?: Maybe<(
+    { __typename?: 'UsernameResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, username?: Maybe<(
+      { __typename?: 'Username' }
+      & Pick<Username, 'id' | 'username' | 'premiumType' | 'expireDate' | 'createdAt'>
+      & { owner?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )>, biolink?: Maybe<(
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName'>
+      )> }
+    )> }
   )> }
 );
 
@@ -2210,6 +2564,25 @@ export type GetBiolinkQuery = (
   )> }
 );
 
+export type GetBlackListQueryVariables = Exact<{
+  blackListId: Scalars['Int'];
+}>;
+
+
+export type GetBlackListQuery = (
+  { __typename?: 'Query' }
+  & { getBlackList?: Maybe<(
+    { __typename?: 'BlackListResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, blackList?: Maybe<(
+      { __typename?: 'BlackList' }
+      & Pick<BlackList, 'id' | 'blacklistType' | 'keyword' | 'reason' | 'createdAt'>
+    )> }
+  )> }
+);
+
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -2225,6 +2598,52 @@ export type GetCategoryQuery = (
     )>>, category?: Maybe<(
       { __typename?: 'Category' }
       & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt'>
+    )> }
+  )> }
+);
+
+export type GetCodeQueryVariables = Exact<{
+  codeId: Scalars['String'];
+}>;
+
+
+export type GetCodeQuery = (
+  { __typename?: 'Query' }
+  & { getCode?: Maybe<(
+    { __typename?: 'CodeResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, code?: Maybe<(
+      { __typename?: 'Code' }
+      & Pick<Code, 'id' | 'type' | 'code' | 'discount' | 'quantity' | 'expireDate' | 'createdAt' | 'updatedAt'>
+      & { referrer?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
+    )> }
+  )> }
+);
+
+export type GetPaymentQueryVariables = Exact<{
+  paymentId: Scalars['String'];
+}>;
+
+
+export type GetPaymentQuery = (
+  { __typename?: 'Query' }
+  & { getPayment?: Maybe<(
+    { __typename?: 'PaymentResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, payment?: Maybe<(
+      { __typename?: 'Payment' }
+      & Pick<Payment, 'id' | 'paymentType' | 'stripeAmountDue' | 'stripeAmountPaid' | 'stripeAmountRemaining' | 'stripeChargeId' | 'stripeInvoiceCreated' | 'stripePaymentCurrency' | 'stripeCustomerId' | 'stripeCustomerAddress' | 'stripeCustomerEmail' | 'stripeCustomerName' | 'stripeCustomerPhone' | 'stripeCustomerShipping' | 'stripeDiscount' | 'stripeInvoicePdfUrl' | 'stripeInvoiceUrl' | 'stripePriceId' | 'stripeSubscriptionId' | 'stripeInvoiceNumber' | 'stripePeriodStart' | 'stripePeriodEnd' | 'stripeStatus' | 'createdAt'>
+      & { user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )> }
     )> }
   )> }
 );
@@ -2298,6 +2717,25 @@ export type GetSupportQuery = (
   )> }
 );
 
+export type GetTaxQueryVariables = Exact<{
+  taxId: Scalars['Int'];
+}>;
+
+
+export type GetTaxQuery = (
+  { __typename?: 'Query' }
+  & { getTax?: Maybe<(
+    { __typename?: 'TaxResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, tax?: Maybe<(
+      { __typename?: 'Tax' }
+      & Pick<Tax, 'id' | 'internalName' | 'name' | 'description' | 'value' | 'valueType' | 'type' | 'billingFor' | 'countries' | 'createdAt'>
+    )> }
+  )> }
+);
+
 export type GetUserQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -2340,6 +2778,32 @@ export type GetUserQuery = (
   )> }
 );
 
+export type GetUsernameQueryVariables = Exact<{
+  usernameId: Scalars['String'];
+}>;
+
+
+export type GetUsernameQuery = (
+  { __typename?: 'Query' }
+  & { getUsername?: Maybe<(
+    { __typename?: 'UsernameResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, username?: Maybe<(
+      { __typename?: 'Username' }
+      & Pick<Username, 'id' | 'username' | 'premiumType' | 'expireDate' | 'createdAt'>
+      & { owner?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )>, biolink?: Maybe<(
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName'>
+      )> }
+    )> }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2372,6 +2836,53 @@ export const ReceivedErrorsFragmentDoc = gql`
   message
 }
     `;
+export const AddBlackListDocument = gql`
+    mutation AddBlackList($options: NewBlackListInput!) {
+  addBlackList(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    blackList {
+      id
+      blacklistType
+      keyword
+      reason
+      createdAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useAddBlackListMutation() {
+  return Urql.useMutation<AddBlackListMutation, AddBlackListMutationVariables>(AddBlackListDocument);
+};
+export const AddCodeDocument = gql`
+    mutation AddCode($options: NewCodeInput!) {
+  addCode(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    code {
+      id
+      type
+      code
+      discount
+      quantity
+      expireDate
+      createdAt
+      updatedAt
+      referrer {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useAddCodeMutation() {
+  return Urql.useMutation<AddCodeMutation, AddCodeMutationVariables>(AddCodeDocument);
+};
 export const AddNewUserDocument = gql`
     mutation AddNewUser($options: NewUserInput!) {
   addNewUser(options: $options) {
@@ -2384,6 +2895,60 @@ export const AddNewUserDocument = gql`
 
 export function useAddNewUserMutation() {
   return Urql.useMutation<AddNewUserMutation, AddNewUserMutationVariables>(AddNewUserDocument);
+};
+export const AddTaxDocument = gql`
+    mutation AddTax($options: NewTaxInput!) {
+  addTax(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    tax {
+      id
+      internalName
+      name
+      description
+      value
+      valueType
+      type
+      billingFor
+      countries
+      createdAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useAddTaxMutation() {
+  return Urql.useMutation<AddTaxMutation, AddTaxMutationVariables>(AddTaxDocument);
+};
+export const AddUsernameDocument = gql`
+    mutation AddUsername($options: NewUsernameInput!) {
+  addUsername(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    username {
+      id
+      username
+      premiumType
+      expireDate
+      createdAt
+      owner {
+        id
+        email
+      }
+      biolink {
+        id
+        profilePhotoUrl
+        displayName
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useAddUsernameMutation() {
+  return Urql.useMutation<AddUsernameMutation, AddUsernameMutationVariables>(AddUsernameDocument);
 };
 export const ChangeReportStatusDocument = gql`
     mutation ChangeReportStatus($reportId: String!, $options: ReportStatusInput!) {
@@ -2411,6 +2976,19 @@ export const ChangeReportStatusDocument = gql`
 
 export function useChangeReportStatusMutation() {
   return Urql.useMutation<ChangeReportStatusMutation, ChangeReportStatusMutationVariables>(ChangeReportStatusDocument);
+};
+export const ChangeVerificationStatusDocument = gql`
+    mutation ChangeVerificationStatus($verificationId: String!, $options: VerificationStatusInput!) {
+  changeVerificationStatus(verificationId: $verificationId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useChangeVerificationStatusMutation() {
+  return Urql.useMutation<ChangeVerificationStatusMutation, ChangeVerificationStatusMutationVariables>(ChangeVerificationStatusDocument);
 };
 export const CreateAdminRoleDocument = gql`
     mutation CreateAdminRole($options: NewAdminRoleInput!) {
@@ -2535,6 +3113,26 @@ export const EditAdminRoleDocument = gql`
 export function useEditAdminRoleMutation() {
   return Urql.useMutation<EditAdminRoleMutation, EditAdminRoleMutationVariables>(EditAdminRoleDocument);
 };
+export const EditBlackListDocument = gql`
+    mutation EditBlackList($blackListId: Int!, $options: NewBlackListInput!) {
+  editBlackList(blackListId: $blackListId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    blackList {
+      id
+      blacklistType
+      keyword
+      reason
+      createdAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditBlackListMutation() {
+  return Urql.useMutation<EditBlackListMutation, EditBlackListMutationVariables>(EditBlackListDocument);
+};
 export const EditCategoryDocument = gql`
     mutation EditCategory($id: Int!, $options: NewCategoryInput!) {
   editCategory(id: $id, options: $options) {
@@ -2553,6 +3151,33 @@ export const EditCategoryDocument = gql`
 
 export function useEditCategoryMutation() {
   return Urql.useMutation<EditCategoryMutation, EditCategoryMutationVariables>(EditCategoryDocument);
+};
+export const EditCodeDocument = gql`
+    mutation EditCode($codeId: String!, $options: NewCodeInput!) {
+  editCode(codeId: $codeId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    code {
+      id
+      type
+      code
+      discount
+      quantity
+      expireDate
+      createdAt
+      updatedAt
+      referrer {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditCodeMutation() {
+  return Urql.useMutation<EditCodeMutation, EditCodeMutationVariables>(EditCodeDocument);
 };
 export const EditPlanDocument = gql`
     mutation EditPlan($id: Int!, $options: PlanInput!) {
@@ -2633,6 +3258,31 @@ export const EditSupportDocument = gql`
 export function useEditSupportMutation() {
   return Urql.useMutation<EditSupportMutation, EditSupportMutationVariables>(EditSupportDocument);
 };
+export const EditTaxDocument = gql`
+    mutation EditTax($taxId: Int!, $options: NewTaxInput!) {
+  editTax(taxId: $taxId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    tax {
+      id
+      internalName
+      name
+      description
+      value
+      valueType
+      type
+      billingFor
+      countries
+      createdAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditTaxMutation() {
+  return Urql.useMutation<EditTaxMutation, EditTaxMutationVariables>(EditTaxDocument);
+};
 export const EditUserDocument = gql`
     mutation EditUser($id: String!, $options: EditUserInput!) {
   editUser(id: $id, options: $options) {
@@ -2645,6 +3295,35 @@ export const EditUserDocument = gql`
 
 export function useEditUserMutation() {
   return Urql.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument);
+};
+export const EditUsernameDocument = gql`
+    mutation EditUsername($usernameId: String!, $options: NewUsernameInput!) {
+  editUsername(usernameId: $usernameId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    username {
+      id
+      username
+      premiumType
+      expireDate
+      createdAt
+      owner {
+        id
+        email
+      }
+      biolink {
+        id
+        profilePhotoUrl
+        displayName
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditUsernameMutation() {
+  return Urql.useMutation<EditUsernameMutation, EditUsernameMutationVariables>(EditUsernameDocument);
 };
 export const SendForgotPasswordEmailDocument = gql`
     mutation SendForgotPasswordEmail($options: EmailInput!) {
@@ -3741,6 +4420,26 @@ export const GetBiolinkDocument = gql`
 export function useGetBiolinkQuery(options: Omit<Urql.UseQueryArgs<GetBiolinkQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetBiolinkQuery>({ query: GetBiolinkDocument, ...options });
 };
+export const GetBlackListDocument = gql`
+    query GetBlackList($blackListId: Int!) {
+  getBlackList(blackListId: $blackListId) {
+    errors {
+      ...ReceivedErrors
+    }
+    blackList {
+      id
+      blacklistType
+      keyword
+      reason
+      createdAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetBlackListQuery(options: Omit<Urql.UseQueryArgs<GetBlackListQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetBlackListQuery>({ query: GetBlackListDocument, ...options });
+};
 export const GetCategoryDocument = gql`
     query GetCategory($id: Int!) {
   getCategory(id: $id) {
@@ -3759,6 +4458,76 @@ export const GetCategoryDocument = gql`
 
 export function useGetCategoryQuery(options: Omit<Urql.UseQueryArgs<GetCategoryQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCategoryQuery>({ query: GetCategoryDocument, ...options });
+};
+export const GetCodeDocument = gql`
+    query GetCode($codeId: String!) {
+  getCode(codeId: $codeId) {
+    errors {
+      ...ReceivedErrors
+    }
+    code {
+      id
+      type
+      code
+      discount
+      quantity
+      expireDate
+      createdAt
+      updatedAt
+      referrer {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetCodeQuery(options: Omit<Urql.UseQueryArgs<GetCodeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCodeQuery>({ query: GetCodeDocument, ...options });
+};
+export const GetPaymentDocument = gql`
+    query GetPayment($paymentId: String!) {
+  getPayment(paymentId: $paymentId) {
+    errors {
+      ...ReceivedErrors
+    }
+    payment {
+      id
+      paymentType
+      stripeAmountDue
+      stripeAmountPaid
+      stripeAmountRemaining
+      stripeChargeId
+      stripeInvoiceCreated
+      stripePaymentCurrency
+      stripeCustomerId
+      stripeCustomerAddress
+      stripeCustomerEmail
+      stripeCustomerName
+      stripeCustomerPhone
+      stripeCustomerShipping
+      stripeDiscount
+      stripeInvoicePdfUrl
+      stripeInvoiceUrl
+      stripePriceId
+      stripeSubscriptionId
+      stripeInvoiceNumber
+      stripePeriodStart
+      stripePeriodEnd
+      stripeStatus
+      createdAt
+      user {
+        id
+        email
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetPaymentQuery(options: Omit<Urql.UseQueryArgs<GetPaymentQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPaymentQuery>({ query: GetPaymentDocument, ...options });
 };
 export const GetPlanDocument = gql`
     query GetPlan($id: Int!) {
@@ -3865,6 +4634,31 @@ export const GetSupportDocument = gql`
 export function useGetSupportQuery(options: Omit<Urql.UseQueryArgs<GetSupportQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetSupportQuery>({ query: GetSupportDocument, ...options });
 };
+export const GetTaxDocument = gql`
+    query GetTax($taxId: Int!) {
+  getTax(taxId: $taxId) {
+    errors {
+      ...ReceivedErrors
+    }
+    tax {
+      id
+      internalName
+      name
+      description
+      value
+      valueType
+      type
+      billingFor
+      countries
+      createdAt
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetTaxQuery(options: Omit<Urql.UseQueryArgs<GetTaxQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetTaxQuery>({ query: GetTaxDocument, ...options });
+};
 export const GetUserDocument = gql`
     query GetUser($id: String!) {
   getUser(id: $id) {
@@ -3944,6 +4738,35 @@ export const GetUserDocument = gql`
 
 export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
+};
+export const GetUsernameDocument = gql`
+    query GetUsername($usernameId: String!) {
+  getUsername(usernameId: $usernameId) {
+    errors {
+      ...ReceivedErrors
+    }
+    username {
+      id
+      username
+      premiumType
+      expireDate
+      createdAt
+      owner {
+        id
+        email
+      }
+      biolink {
+        id
+        profilePhotoUrl
+        displayName
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetUsernameQuery(options: Omit<Urql.UseQueryArgs<GetUsernameQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUsernameQuery>({ query: GetUsernameDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

@@ -1,0 +1,23 @@
+query GetUsername($usernameId: String!) {
+  getUsername(usernameId: $usernameId) {
+    errors {
+      ...ReceivedErrors
+    }
+    username {
+      id
+      username
+      premiumType
+      expireDate
+      createdAt
+      owner {
+        id
+        email
+      }
+      biolink {
+        id
+        profilePhotoUrl
+        displayName
+      }
+    }
+  }
+}

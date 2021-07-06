@@ -1,0 +1,23 @@
+mutation EditUsername($usernameId: String!, $options: NewUsernameInput!) {
+  editUsername(usernameId: $usernameId, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    username {
+      id
+      username
+      premiumType
+      expireDate
+      createdAt
+      owner {
+        id
+        email
+      }
+      biolink {
+        id
+        profilePhotoUrl
+        displayName
+      }
+    }
+  }
+}

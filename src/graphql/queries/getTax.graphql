@@ -1,0 +1,19 @@
+query GetTax($taxId: Int!) {
+  getTax(taxId: $taxId) {
+    errors {
+      ...ReceivedErrors
+    }
+    tax {
+      id
+      internalName
+      name
+      description
+      value
+      valueType
+      type
+      billingFor
+      countries
+      createdAt
+    }
+  }
+}

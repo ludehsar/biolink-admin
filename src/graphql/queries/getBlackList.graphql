@@ -1,0 +1,14 @@
+query GetBlackList($blackListId: Int!) {
+  getBlackList(blackListId: $blackListId) {
+    errors {
+      ...ReceivedErrors
+    }
+    blackList {
+      id
+      blacklistType
+      keyword
+      reason
+      createdAt
+    }
+  }
+}

@@ -1,0 +1,14 @@
+mutation AddBlackList($options: NewBlackListInput!) {
+  addBlackList(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    blackList {
+      id
+      blacklistType
+      keyword
+      reason
+      createdAt
+    }
+  }
+}
