@@ -86,8 +86,11 @@ const TaxesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/taxes/view/' + edge.node.id}>
+              <DropdownItem href={'/taxes/view/' + edge.node.id}>View Details</DropdownItem>
+            </Link>
+            <Link href={'/taxes/edit/' + edge.node.id}>
+              <DropdownItem href={'/taxes/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -100,7 +103,7 @@ const TaxesIndexPage: NextPage = () => {
       <DataTable
         title="Taxes"
         newButton={true}
-        newButtonLink="/categories/add"
+        newButtonLink="/taxes/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllTaxes?.pageInfo?.hasNextPage || false}
