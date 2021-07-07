@@ -337,7 +337,7 @@ export type Mutation = {
   editUser?: Maybe<DefaultResponse>;
   addUsername?: Maybe<UsernameResponse>;
   editUsername?: Maybe<UsernameResponse>;
-  changeVerificationStatus?: Maybe<DefaultResponse>;
+  changeVerificationStatus?: Maybe<VerificationResponse>;
 };
 
 
@@ -690,6 +690,7 @@ export type Query = {
   getAllPendingVerifications?: Maybe<VerificationConnection>;
   getAllVerifiedVerifications?: Maybe<VerificationConnection>;
   getAllRejectedVerifications?: Maybe<VerificationConnection>;
+  getVerification?: Maybe<VerificationResponse>;
 };
 
 
@@ -881,6 +882,11 @@ export type QueryGetAllVerifiedVerificationsArgs = {
 
 export type QueryGetAllRejectedVerificationsArgs = {
   options: ConnectionArgs;
+};
+
+
+export type QueryGetVerificationArgs = {
+  verificationId: Scalars['String'];
 };
 
 export type Referral = {
@@ -1179,6 +1185,12 @@ export type VerificationEdge = {
   cursor: Scalars['String'];
 };
 
+export type VerificationResponse = {
+  __typename?: 'VerificationResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  verification?: Maybe<Verification>;
+};
+
 export type VerificationStatusInput = {
   status?: Maybe<Scalars['String']>;
   verifiedGovernmentId?: Maybe<Scalars['Boolean']>;
@@ -1338,7 +1350,7 @@ export type ChangeVerificationStatusMutationVariables = Exact<{
 export type ChangeVerificationStatusMutation = (
   { __typename?: 'Mutation' }
   & { changeVerificationStatus?: Maybe<(
-    { __typename?: 'DefaultResponse' }
+    { __typename?: 'VerificationResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
@@ -2799,6 +2811,39 @@ export type GetUsernameQuery = (
       )>, biolink?: Maybe<(
         { __typename?: 'Biolink' }
         & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'displayName'>
+      )> }
+    )> }
+  )> }
+);
+
+export type GetVerificationQueryVariables = Exact<{
+  verificationId: Scalars['String'];
+}>;
+
+
+export type GetVerificationQuery = (
+  { __typename?: 'Query' }
+  & { getVerification?: Maybe<(
+    { __typename?: 'VerificationResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & Pick<ErrorResponse, 'errorCode' | 'field' | 'message'>
+    )>>, verification?: Maybe<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'id' | 'firstName' | 'lastName' | 'username' | 'email' | 'mobileNumber' | 'workNumber' | 'websiteLink' | 'instagramUrl' | 'twitterUrl' | 'linkedinUrl' | 'photoIdUrl' | 'businessDocumentUrl' | 'otherDocumentsUrl' | 'verificationStatus' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'createdAt'>
+      & { user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )>, biolink?: Maybe<(
+        { __typename?: 'Biolink' }
+        & Pick<Biolink, 'id' | 'profilePhotoUrl'>
+        & { username?: Maybe<(
+          { __typename?: 'Username' }
+          & Pick<Username, 'id' | 'username'>
+        )> }
+      )>, category?: Maybe<(
+        { __typename?: 'Category' }
+        & Pick<Category, 'id' | 'categoryName'>
       )> }
     )> }
   )> }
@@ -4767,6 +4812,59 @@ export const GetUsernameDocument = gql`
 
 export function useGetUsernameQuery(options: Omit<Urql.UseQueryArgs<GetUsernameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUsernameQuery>({ query: GetUsernameDocument, ...options });
+};
+export const GetVerificationDocument = gql`
+    query GetVerification($verificationId: String!) {
+  getVerification(verificationId: $verificationId) {
+    errors {
+      errorCode
+      field
+      message
+    }
+    verification {
+      id
+      firstName
+      lastName
+      username
+      email
+      mobileNumber
+      workNumber
+      websiteLink
+      instagramUrl
+      twitterUrl
+      linkedinUrl
+      photoIdUrl
+      businessDocumentUrl
+      otherDocumentsUrl
+      verificationStatus
+      verifiedGovernmentId
+      verifiedEmail
+      verifiedPhoneNumber
+      verifiedWorkEmail
+      createdAt
+      user {
+        id
+        email
+      }
+      biolink {
+        id
+        profilePhotoUrl
+        username {
+          id
+          username
+        }
+      }
+      category {
+        id
+        categoryName
+      }
+    }
+  }
+}
+    `;
+
+export function useGetVerificationQuery(options: Omit<Urql.UseQueryArgs<GetVerificationQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetVerificationQuery>({ query: GetVerificationDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

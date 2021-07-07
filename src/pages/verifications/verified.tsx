@@ -116,8 +116,8 @@ const VerifiedVerificationsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/verifications/details/' + edge.node.id}>
+              <DropdownItem href={'/verifications/details/' + edge.node.id}>Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
