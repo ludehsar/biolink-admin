@@ -200,8 +200,8 @@ export type Code = {
   id?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
-  discount?: Maybe<Scalars['String']>;
-  quantity?: Maybe<Scalars['String']>;
+  discount?: Maybe<Scalars['Float']>;
+  quantity?: Maybe<Scalars['Float']>;
   expireDate?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -2651,7 +2651,7 @@ export type GetPaymentQuery = (
       & ReceivedErrorsFragment
     )>>, payment?: Maybe<(
       { __typename?: 'Payment' }
-      & Pick<Payment, 'id' | 'paymentType' | 'stripeAmountDue' | 'stripeAmountPaid' | 'stripeAmountRemaining' | 'stripeChargeId' | 'stripeInvoiceCreated' | 'stripePaymentCurrency' | 'stripeCustomerId' | 'stripeCustomerAddress' | 'stripeCustomerEmail' | 'stripeCustomerName' | 'stripeCustomerPhone' | 'stripeCustomerShipping' | 'stripeDiscount' | 'stripeInvoicePdfUrl' | 'stripeInvoiceUrl' | 'stripePriceId' | 'stripeSubscriptionId' | 'stripeInvoiceNumber' | 'stripePeriodStart' | 'stripePeriodEnd' | 'stripeStatus' | 'createdAt'>
+      & Pick<Payment, 'id' | 'stripeInvoiceNumber' | 'paymentType' | 'stripeAmountDue' | 'stripeAmountPaid' | 'stripeAmountRemaining' | 'stripeChargeId' | 'stripeInvoiceCreated' | 'stripePaymentCurrency' | 'stripePriceId' | 'stripeDiscount' | 'stripeStatus' | 'stripeInvoicePdfUrl' | 'stripeInvoiceUrl' | 'stripeCustomerId' | 'stripeCustomerName' | 'stripeCustomerEmail' | 'stripeCustomerPhone' | 'stripeCustomerAddress' | 'stripeCustomerShipping' | 'stripeSubscriptionId' | 'stripePeriodStart' | 'stripePeriodEnd' | 'createdAt'>
       & { user?: Maybe<(
         { __typename?: 'User' }
         & Pick<User, 'id' | 'email'>
@@ -4539,6 +4539,7 @@ export const GetPaymentDocument = gql`
     }
     payment {
       id
+      stripeInvoiceNumber
       paymentType
       stripeAmountDue
       stripeAmountPaid
@@ -4546,21 +4547,20 @@ export const GetPaymentDocument = gql`
       stripeChargeId
       stripeInvoiceCreated
       stripePaymentCurrency
-      stripeCustomerId
-      stripeCustomerAddress
-      stripeCustomerEmail
-      stripeCustomerName
-      stripeCustomerPhone
-      stripeCustomerShipping
+      stripePriceId
       stripeDiscount
+      stripeStatus
       stripeInvoicePdfUrl
       stripeInvoiceUrl
-      stripePriceId
+      stripeCustomerId
+      stripeCustomerName
+      stripeCustomerEmail
+      stripeCustomerPhone
+      stripeCustomerAddress
+      stripeCustomerShipping
       stripeSubscriptionId
-      stripeInvoiceNumber
       stripePeriodStart
       stripePeriodEnd
-      stripeStatus
       createdAt
       user {
         id

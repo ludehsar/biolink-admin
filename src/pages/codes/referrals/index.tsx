@@ -90,8 +90,8 @@ const ReferralsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/codes/edit/' + edge.node.id}>
+              <DropdownItem href={'/codes/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -104,7 +104,7 @@ const ReferralsIndexPage: NextPage = () => {
       <DataTable
         title="Discounts"
         newButton={true}
-        newButtonLink="/categories/add"
+        newButtonLink="/codes/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllReferrals?.pageInfo?.hasNextPage || false}
