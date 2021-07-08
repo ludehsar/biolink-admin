@@ -251,7 +251,7 @@ const StripePaymentDetails: React.FC<StripePaymentDetailsProps> = ({ payment }) 
               <Input
                 className="bg-white form-control-alternative"
                 value={moment
-                  .unix(parseInt(payment.createdAt || ''))
+                  .unix(parseInt(payment.createdAt || '') / 1000)
                   .format('DD-MM-YYYYY HH:mm:ss')}
                 id="input-created-at"
                 placeholder="Created At"
@@ -389,7 +389,7 @@ const StripePaymentDetails: React.FC<StripePaymentDetailsProps> = ({ payment }) 
               <Input
                 className="bg-white form-control-alternative"
                 value={moment
-                  .unix(parseInt(payment.stripePeriodStart || ''))
+                  .unix(parseInt(payment.stripePeriodStart || '') / 1000)
                   .format('DD-MM-YYYYY HH:mm:ss')}
                 id="input-period-start"
                 placeholder="Period Start"
@@ -406,7 +406,7 @@ const StripePaymentDetails: React.FC<StripePaymentDetailsProps> = ({ payment }) 
               <Input
                 className="bg-white form-control-alternative"
                 value={moment
-                  .unix(parseInt(payment.stripePeriodEnd || ''))
+                  .unix(parseInt(payment.stripePeriodEnd || '') / 1000)
                   .format('DD-MM-YYYYY HH:mm:ss')}
                 id="input-period-end"
                 placeholder="Period End"
