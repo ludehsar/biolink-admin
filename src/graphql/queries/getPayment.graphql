@@ -5,6 +5,7 @@ query GetPayment($paymentId: String!) {
     }
     payment {
       id
+      stripeInvoiceNumber
       paymentType
       stripeAmountDue
       stripeAmountPaid
@@ -12,21 +13,20 @@ query GetPayment($paymentId: String!) {
       stripeChargeId
       stripeInvoiceCreated
       stripePaymentCurrency
-      stripeCustomerId
-      stripeCustomerAddress
-      stripeCustomerEmail
-      stripeCustomerName
-      stripeCustomerPhone
-      stripeCustomerShipping
+      stripePriceId
       stripeDiscount
+      stripeStatus
       stripeInvoicePdfUrl
       stripeInvoiceUrl
-      stripePriceId
+      stripeCustomerId
+      stripeCustomerName
+      stripeCustomerEmail
+      stripeCustomerPhone
+      stripeCustomerAddress
+      stripeCustomerShipping
       stripeSubscriptionId
-      stripeInvoiceNumber
       stripePeriodStart
       stripePeriodEnd
-      stripeStatus
       createdAt
       user {
         id

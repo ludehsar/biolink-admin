@@ -137,8 +137,8 @@ const StripePaymentsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/view/' + edge.node.id}>
-              <DropdownItem href={'/categories/view/' + edge.node.id}>View Details</DropdownItem>
+            <Link href={'/payments/details/' + edge.node.id}>
+              <DropdownItem href={'/payments/details/' + edge.node.id}>View Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
