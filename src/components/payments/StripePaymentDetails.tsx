@@ -388,9 +388,7 @@ const StripePaymentDetails: React.FC<StripePaymentDetailsProps> = ({ payment }) 
               </label>
               <Input
                 className="bg-white form-control-alternative"
-                value={moment
-                  .unix(parseInt(payment.stripePeriodStart || ''))
-                  .format('DD-MM-YYYY HH:mm:ss')}
+                value={payment.stripePeriodStart || ''}
                 id="input-period-start"
                 placeholder="Period Start"
                 type="datetime"
@@ -405,9 +403,7 @@ const StripePaymentDetails: React.FC<StripePaymentDetailsProps> = ({ payment }) 
               </label>
               <Input
                 className="bg-white form-control-alternative"
-                value={moment
-                  .unix(parseInt(payment.stripePeriodEnd || ''))
-                  .format('DD-MM-YYYY HH:mm:ss')}
+                value={payment.stripePeriodEnd || ''}
                 id="input-period-end"
                 placeholder="Period End"
                 type="datetime"
