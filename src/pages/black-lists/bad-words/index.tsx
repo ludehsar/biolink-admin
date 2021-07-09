@@ -13,7 +13,7 @@ import Link from 'next/link'
 
 const columns = [
   {
-    name: 'Username',
+    name: 'Bad Words',
     selector: 'keyword',
   },
   {
@@ -66,8 +66,8 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/black-lists/edit/' + edge.node.id}>
+              <DropdownItem href={'/black-lists/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -80,7 +80,7 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
       <DataTable
         title="Black Listed Bad Words"
         newButton={true}
-        newButtonLink="/categories/add"
+        newButtonLink="/black-lists/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllBlackListedBadWords?.pageInfo?.hasNextPage || false}
