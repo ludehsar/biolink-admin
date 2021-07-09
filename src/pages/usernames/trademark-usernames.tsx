@@ -80,8 +80,8 @@ const TrademarkUsernamesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/usernames/edit/' + edge.node.id}>
+              <DropdownItem href={'/usernames/edit/' + edge.node.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -94,7 +94,7 @@ const TrademarkUsernamesIndexPage: NextPage = () => {
       <DataTable
         title="Discounts"
         newButton={true}
-        newButtonLink="/categories/add"
+        newButtonLink="/usernames/add"
         columns={columns}
         data={userData}
         hasNextPage={data?.getAllTrademarkUsernames?.pageInfo?.hasNextPage || false}
