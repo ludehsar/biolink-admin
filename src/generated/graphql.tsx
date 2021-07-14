@@ -132,6 +132,9 @@ export type BiolinkSettings = {
   customBrandingUrl?: Maybe<Scalars['String']>;
   enablePasswordProtection?: Maybe<Scalars['Boolean']>;
   enableSensitiveContentWarning?: Maybe<Scalars['Boolean']>;
+  paypalLink?: Maybe<Scalars['String']>;
+  venmoLink?: Maybe<Scalars['String']>;
+  payoneerLink?: Maybe<Scalars['String']>;
 };
 
 export type BlackList = {
@@ -608,6 +611,7 @@ export type PlanInput = {
   passwordProtectionEnabled?: Maybe<Scalars['Boolean']>;
   sensitiveContentWarningEnabled?: Maybe<Scalars['Boolean']>;
   leapLinkEnabled?: Maybe<Scalars['Boolean']>;
+  donationLinkEnabled?: Maybe<Scalars['Boolean']>;
 };
 
 export type PlanListResponse = {
@@ -645,6 +649,7 @@ export type PlanSettings = {
   passwordProtectionEnabled?: Maybe<Scalars['Boolean']>;
   sensitiveContentWarningEnabled?: Maybe<Scalars['Boolean']>;
   leapLinkEnabled?: Maybe<Scalars['Boolean']>;
+  donationLinkEnabled?: Maybe<Scalars['Boolean']>;
 };
 
 export type Query = {
@@ -961,6 +966,7 @@ export type SocialMediaProps = {
   platform?: Maybe<Scalars['String']>;
   icon?: Maybe<Scalars['String']>;
   link?: Maybe<Scalars['String']>;
+  featured?: Maybe<Scalars['Boolean']>;
 };
 
 export type Support = {
@@ -1417,7 +1423,7 @@ export type CreatePlanMutation = (
       & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'monthlyPriceStripeId' | 'annualPrice' | 'annualPriceStripeId' | 'visibilityStatus' | 'createdAt' | 'updatedAt' | 'deletedAt'>
       & { settings?: Maybe<(
         { __typename?: 'PlanSettings' }
-        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled'>
+        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled' | 'donationLinkEnabled'>
       )> }
     )> }
   ) }
@@ -1529,7 +1535,7 @@ export type EditPlanMutation = (
       & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'monthlyPriceStripeId' | 'annualPrice' | 'annualPriceStripeId' | 'visibilityStatus' | 'createdAt' | 'updatedAt' | 'deletedAt'>
       & { settings?: Maybe<(
         { __typename?: 'PlanSettings' }
-        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled'>
+        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled' | 'donationLinkEnabled'>
       )> }
     )> }
   ) }
@@ -2677,7 +2683,7 @@ export type GetPlanQuery = (
       & Pick<Plan, 'id' | 'name' | 'monthlyPrice' | 'monthlyPriceStripeId' | 'annualPrice' | 'annualPriceStripeId' | 'visibilityStatus' | 'createdAt' | 'updatedAt' | 'deletedAt'>
       & { settings?: Maybe<(
         { __typename?: 'PlanSettings' }
-        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled'>
+        & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled' | 'donationLinkEnabled'>
       )> }
     )> }
   ) }
@@ -3117,6 +3123,7 @@ export const CreatePlanDocument = gql`
         passwordProtectionEnabled
         sensitiveContentWarningEnabled
         leapLinkEnabled
+        donationLinkEnabled
       }
       visibilityStatus
       createdAt
@@ -3261,6 +3268,7 @@ export const EditPlanDocument = gql`
         passwordProtectionEnabled
         sensitiveContentWarningEnabled
         leapLinkEnabled
+        donationLinkEnabled
       }
       visibilityStatus
       createdAt
@@ -4609,6 +4617,7 @@ export const GetPlanDocument = gql`
         passwordProtectionEnabled
         sensitiveContentWarningEnabled
         leapLinkEnabled
+        donationLinkEnabled
       }
       visibilityStatus
       createdAt

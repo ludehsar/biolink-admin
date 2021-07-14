@@ -32,6 +32,7 @@ query GetPlan($id: Int!) {
         passwordProtectionEnabled
         sensitiveContentWarningEnabled
         leapLinkEnabled
+        donationLinkEnabled
       }
       visibilityStatus
       createdAt

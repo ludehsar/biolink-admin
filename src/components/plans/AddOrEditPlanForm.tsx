@@ -131,6 +131,8 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
                     variant === 'Add'
                       ? false
                       : data?.getPlan.plan?.settings?.verifiedCheckmarkEnabled,
+                  donationLinkEnabled:
+                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.donationLinkEnabled,
                 } as PlanInput
               }
               onSubmit={async (values, { setSubmitting }) => {
@@ -164,6 +166,7 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
                       utmParametersEnabled: values.utmParametersEnabled,
                       verifiedCheckmarkEnabled: values.verifiedCheckmarkEnabled,
                       visibilityStatus: values.visibilityStatus,
+                      donationLinkEnabled: values.donationLinkEnabled,
                     },
                   })
 
@@ -203,6 +206,7 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
                       utmParametersEnabled: values.utmParametersEnabled,
                       verifiedCheckmarkEnabled: values.verifiedCheckmarkEnabled,
                       visibilityStatus: values.visibilityStatus,
+                      donationLinkEnabled: values.donationLinkEnabled,
                     },
                   })
 
@@ -674,6 +678,28 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
                             onChange={(e) =>
                               setFieldValue(
                                 'verifiedCheckmarkEnabled',
+                                e.target.value === '1' ? true : false
+                              )
+                            }
+                          >
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                          </Input>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <Label for="donationLinkEnabled">Enable Donation Links</Label>
+                          <Input
+                            name="donationLinkEnabled"
+                            id="donationLinkEnabled"
+                            type="select"
+                            value={values.donationLinkEnabled === true ? '1' : '0'}
+                            onChange={(e) =>
+                              setFieldValue(
+                                'donationLinkEnabled',
                                 e.target.value === '1' ? true : false
                               )
                             }
