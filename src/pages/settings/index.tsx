@@ -13,6 +13,7 @@ import BusinessSettings from '../../components/settings/BusinessSettings'
 import CaptchaSettings from '../../components/settings/CaptchaSettings'
 import FacebookLoginSettings from '../../components/settings/FacebookLoginSettings'
 import AdsSettings from '../../components/settings/AdsSettings'
+import SocialSettings from '../../components/settings/SocialSettings'
 
 const SettingsPage: NextPage = () => {
   const [activeMenus, setActiveMenus] =
@@ -179,6 +180,7 @@ const SettingsPage: NextPage = () => {
                 {activeMenus === 'captcha' && <CaptchaSettings />}
                 {activeMenus === 'facebook-login' && <FacebookLoginSettings />}
                 {activeMenus === 'ads' && <AdsSettings />}
+                {activeMenus === 'socials' && <SocialSettings />}
               </Col>
             </Row>
           </CardBody>
