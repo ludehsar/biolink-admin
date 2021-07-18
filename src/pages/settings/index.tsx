@@ -9,6 +9,7 @@ import AdminHeader from '../../components/Header/AdminHeader'
 import MainSettings from '../../components/settings/MainSettings'
 import LinkSettings from '../../components/settings/LinkSettings'
 import PaymentSettings from '../../components/settings/PaymentSettings'
+import BusinessSettings from '../../components/settings/BusinessSettings'
 
 const SettingsPage: NextPage = () => {
   const [activeMenus, setActiveMenus] =
@@ -50,6 +51,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-home mr-2" />
                     Main Settings
                   </div>
                   <div
@@ -61,6 +63,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-link mr-2" />
                     Links &amp; Biolink Settings
                   </div>
                   <div
@@ -72,6 +75,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-dollar-sign mr-2" />
                     Payments Settings
                   </div>
                   <div
@@ -83,6 +87,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-wallet mr-2" />
                     Business Settings
                   </div>
                   <div
@@ -94,6 +99,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-robot mr-2" />
                     Captcha Settings
                   </div>
                   <div
@@ -107,6 +113,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fab fa-facebook-square mr-2" />
                     Facebook Login Settings
                   </div>
                   <div
@@ -118,6 +125,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-tags mr-2" />
                     Ads Settings
                   </div>
                   <div
@@ -129,6 +137,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fab fa-instagram-square mr-2" />
                     Socials Settings
                   </div>
                   <div
@@ -140,6 +149,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-paper-plane mr-2" />
                     Email Settings
                   </div>
                   <div
@@ -153,6 +163,7 @@ const SettingsPage: NextPage = () => {
                     role="button"
                     tabIndex={0}
                   >
+                    <i className="fas fa-bell mr-2" />
                     Notifications Settings
                   </div>
                 </div>
@@ -161,6 +172,7 @@ const SettingsPage: NextPage = () => {
                 {activeMenus === 'main' && <MainSettings />}
                 {activeMenus === 'links' && <LinkSettings />}
                 {activeMenus === 'payments' && <PaymentSettings />}
+                {activeMenus === 'business' && <BusinessSettings />}
               </Col>
             </Row>
           </CardBody>
