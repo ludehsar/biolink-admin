@@ -233,6 +233,11 @@ const links: ILink[] = [
       },
     ],
   },
+  {
+    name: 'Settings',
+    href: '/settings',
+    icon: 'ni ni-settings',
+  },
 ]
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
