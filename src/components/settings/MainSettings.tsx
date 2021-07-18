@@ -40,11 +40,11 @@ const MainSettings: React.FC = () => {
               </FormGroup>
 
               <FormGroup>
-                <label htmlFor="language">Default Language</label>
+                <label htmlFor="defaultLanguage">Default Language</label>
                 <Input
                   type="select"
                   name="defaultLanguage"
-                  id="language"
+                  id="defaultLanguage"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.defaultLanguage}
@@ -78,11 +78,11 @@ const MainSettings: React.FC = () => {
               </FormGroup>
 
               <FormGroup>
-                <label htmlFor="timezone">Default Timezone</label>
+                <label htmlFor="defaultTimezone">Default Timezone</label>
                 <Input
                   type="select"
                   name="defaultTimezone"
-                  id="timezone"
+                  id="defaultTimezone"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.defaultTimezone}
@@ -92,11 +92,11 @@ const MainSettings: React.FC = () => {
               </FormGroup>
 
               <FormGroup>
-                <label htmlFor="email-confirmation">Email Confirmation</label>
+                <label htmlFor="enableEmailConfirmation">Email Confirmation</label>
                 <Input
                   type="select"
                   name="enableEmailConfirmation"
-                  id="email-confirmation"
+                  id="enableEmailConfirmation"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.enableEmailConfirmation}
@@ -104,7 +104,7 @@ const MainSettings: React.FC = () => {
                   <option value="true">Yes</option>
                   <option value="false">No</option>
                 </Input>
-                <small id="email-confirmation-help-box" className="form-text text-muted">
+                <small id="enableEmailConfirmationHelpBox" className="form-text text-muted">
                   Send out email confirmation when a user registers or changes his email address.
                 </small>
               </FormGroup>
