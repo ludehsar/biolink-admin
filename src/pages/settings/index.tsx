@@ -8,6 +8,7 @@ import AdminLayout from '../../layouts/Admin.layout'
 import AdminHeader from '../../components/Header/AdminHeader'
 import MainSettings from '../../components/settings/MainSettings'
 import LinkSettings from '../../components/settings/LinkSettings'
+import PaymentSettings from '../../components/settings/PaymentSettings'
 
 const SettingsPage: NextPage = () => {
   const [activeMenus, setActiveMenus] =
@@ -159,6 +160,7 @@ const SettingsPage: NextPage = () => {
               <Col xl={9}>
                 {activeMenus === 'main' && <MainSettings />}
                 {activeMenus === 'links' && <LinkSettings />}
+                {activeMenus === 'payments' && <PaymentSettings />}
               </Col>
             </Row>
           </CardBody>
