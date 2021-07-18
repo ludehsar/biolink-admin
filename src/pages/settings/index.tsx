@@ -15,6 +15,7 @@ import FacebookLoginSettings from '../../components/settings/FacebookLoginSettin
 import AdsSettings from '../../components/settings/AdsSettings'
 import SocialSettings from '../../components/settings/SocialSettings'
 import EmailSettings from '../../components/settings/EmailSettings'
+import NotificationSettings from '../../components/settings/NotificationSettings'
 
 const SettingsPage: NextPage = () => {
   const [activeMenus, setActiveMenus] =
@@ -183,6 +184,7 @@ const SettingsPage: NextPage = () => {
                 {activeMenus === 'ads' && <AdsSettings />}
                 {activeMenus === 'socials' && <SocialSettings />}
                 {activeMenus === 'email' && <EmailSettings />}
+                {activeMenus === 'notifications' && <NotificationSettings />}
               </Col>
             </Row>
           </CardBody>
