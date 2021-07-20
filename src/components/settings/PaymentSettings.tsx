@@ -8,7 +8,7 @@ const PaymentSettings: React.FC = () => {
       enableReinitialize={true}
       initialValues={{
         enablePaymentSystem: 'false',
-        enabledPaymentType: 'both',
+        enabledPaymentType: 'Both',
         brandName: '',
         currency: 'usd',
         enableDiscountOrRedeemableCode: 'false',
@@ -51,9 +51,9 @@ const PaymentSettings: React.FC = () => {
                   onBlur={handleBlur}
                   value={values.enabledPaymentType}
                 >
-                  <option value="one-time">One Time</option>
-                  <option value="recurring">Recurring</option>
-                  <option value="both">Both</option>
+                  <option value="OneTime">One Time</option>
+                  <option value="Recurring">Recurring</option>
+                  <option value="Both">Both</option>
                 </Input>
               </FormGroup>
 
