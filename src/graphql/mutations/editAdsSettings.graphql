@@ -1,0 +1,13 @@
+mutation EditAdsSettings($options: AdsSettingsInput!) {
+  editAdsSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      header
+      footer
+      biolinkPageHeader
+      biolinkPageFooter
+    }
+  }
+}

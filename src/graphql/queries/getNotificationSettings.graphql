@@ -1,0 +1,12 @@
+query GetNotificationSettings {
+  getNotificationSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      emailsToBeNotified
+      emailOnNewUser
+      emailOnNewPayment
+    }
+  }
+}

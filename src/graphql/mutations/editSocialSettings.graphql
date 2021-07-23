@@ -1,0 +1,13 @@
+mutation EditSocialSettings($options: SocialSettingsInput!) {
+  editSocialSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      youtube
+      facebook
+      twitter
+      instagram
+    }
+  }
+}

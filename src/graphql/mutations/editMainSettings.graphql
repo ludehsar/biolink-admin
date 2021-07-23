@@ -1,0 +1,18 @@
+mutation EditMainSettings($options: MainSettingsInput!) {
+  editMainSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      title
+      defaultLanguage
+      websiteLogoUrl
+      faviconLogoUrl
+      defaultTimezone
+      enableEmailConfirmation
+      enableNewUserRegistration
+      termsAndConditionsUrl
+      privacyPolicyUrl
+    }
+  }
+}

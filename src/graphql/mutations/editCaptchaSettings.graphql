@@ -1,0 +1,14 @@
+mutation EditCaptchaSettings($options: CaptchaSettingsInput!) {
+  editCaptchaSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      captchaType
+      enableCaptchaOnLoginPage
+      enableCaptchaOnRegisterPage
+      enableCaptchaOnLostPasswordPage
+      enableCaptchaOnResendActivationPage
+    }
+  }
+}

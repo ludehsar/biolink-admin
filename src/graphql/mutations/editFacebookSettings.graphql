@@ -1,0 +1,10 @@
+mutation EditFacebookSettings($options: FacebookSettingsInput!) {
+  editFacebookSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableFacebookLogin
+    }
+  }
+}

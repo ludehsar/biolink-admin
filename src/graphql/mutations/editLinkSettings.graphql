@@ -1,0 +1,13 @@
+mutation EditLinkSettings($options: LinkSettingsInput!) {
+  editLinkSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      branding
+      enableLinkShortenerSystem
+      enablePhishtank
+      enableGoogleSafeBrowsing
+    }
+  }
+}

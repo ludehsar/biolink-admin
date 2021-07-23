@@ -1,0 +1,14 @@
+query GetCaptchaSettings {
+  getCaptchaSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      captchaType
+      enableCaptchaOnLoginPage
+      enableCaptchaOnRegisterPage
+      enableCaptchaOnLostPasswordPage
+      enableCaptchaOnResendActivationPage
+    }
+  }
+}

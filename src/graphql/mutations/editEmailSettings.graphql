@@ -1,0 +1,11 @@
+mutation EditEmailSettings($options: EmailSettingsInput!) {
+  editEmailSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      fromName
+      fromEmail
+    }
+  }
+}

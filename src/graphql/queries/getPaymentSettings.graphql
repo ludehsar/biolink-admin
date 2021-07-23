@@ -1,0 +1,17 @@
+query GetPaymentSettings {
+  getPaymentSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enablePaymentSystem
+      enabledPaymentType
+      brandName
+      currency
+      enableDiscountOrRedeemableCode
+      enableTaxesAndBilling
+      enablePaypal
+      enableStripe
+    }
+  }
+}

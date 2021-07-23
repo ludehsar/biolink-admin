@@ -1,0 +1,13 @@
+query GetAdsSettings {
+  getAdsSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      header
+      footer
+      biolinkPageHeader
+      biolinkPageFooter
+    }
+  }
+}

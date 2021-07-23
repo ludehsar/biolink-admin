@@ -12,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type AdminRole = {
@@ -35,6 +37,27 @@ export type AdminRoleResponse = {
   __typename?: 'AdminRoleResponse';
   errors?: Maybe<Array<ErrorResponse>>;
   adminRole?: Maybe<AdminRole>;
+};
+
+export type AdsSettingsInput = {
+  header?: Maybe<Scalars['String']>;
+  footer?: Maybe<Scalars['String']>;
+  biolinkPageHeader?: Maybe<Scalars['String']>;
+  biolinkPageFooter?: Maybe<Scalars['String']>;
+};
+
+export type AdsSettingsResponse = {
+  __typename?: 'AdsSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<AdsSystemSettings>;
+};
+
+export type AdsSystemSettings = {
+  __typename?: 'AdsSystemSettings';
+  header?: Maybe<Scalars['String']>;
+  footer?: Maybe<Scalars['String']>;
+  biolinkPageHeader?: Maybe<Scalars['String']>;
+  biolinkPageFooter?: Maybe<Scalars['String']>;
 };
 
 export type Billing = {
@@ -168,6 +191,62 @@ export type BlackListResponse = {
   blackList?: Maybe<BlackList>;
 };
 
+export type BusinessSettingsInput = {
+  enableInvoice?: Maybe<Scalars['Boolean']>;
+  name?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  taxType?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+};
+
+export type BusinessSettingsResponse = {
+  __typename?: 'BusinessSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<BusinessSystemSettings>;
+};
+
+export type BusinessSystemSettings = {
+  __typename?: 'BusinessSystemSettings';
+  enableInvoice?: Maybe<Scalars['Boolean']>;
+  name?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  zipCode?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  taxType?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+};
+
+export type CaptchaSettingsInput = {
+  captchaType?: Maybe<Scalars['String']>;
+  enableCaptchaOnLoginPage?: Maybe<Scalars['Boolean']>;
+  enableCaptchaOnRegisterPage?: Maybe<Scalars['Boolean']>;
+  enableCaptchaOnLostPasswordPage?: Maybe<Scalars['Boolean']>;
+  enableCaptchaOnResendActivationPage?: Maybe<Scalars['Boolean']>;
+};
+
+export type CaptchaSettingsResponse = {
+  __typename?: 'CaptchaSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<CaptchaSystemSettings>;
+};
+
+export type CaptchaSystemSettings = {
+  __typename?: 'CaptchaSystemSettings';
+  captchaType?: Maybe<Scalars['String']>;
+  enableCaptchaOnLoginPage?: Maybe<Scalars['Boolean']>;
+  enableCaptchaOnRegisterPage?: Maybe<Scalars['Boolean']>;
+  enableCaptchaOnLostPasswordPage?: Maybe<Scalars['Boolean']>;
+  enableCaptchaOnResendActivationPage?: Maybe<Scalars['Boolean']>;
+};
+
 export type Category = {
   __typename?: 'Category';
   id?: Maybe<Scalars['Int']>;
@@ -239,8 +318,10 @@ export type ConnectionArgs = {
   after?: Maybe<Scalars['String']>;
   /** Search query */
   query?: Maybe<Scalars['String']>;
-  /** Paginate first */
+  /** Paginate first. Do not work for messages. */
   first?: Maybe<Scalars['Float']>;
+  /** Paginate last. Works only for messages. */
+  last?: Maybe<Scalars['Float']>;
 };
 
 export type DefaultResponse = {
@@ -270,11 +351,43 @@ export type EmailInput = {
   email: Scalars['String'];
 };
 
+export type EmailSettingsInput = {
+  fromName?: Maybe<Scalars['String']>;
+  fromEmail?: Maybe<Scalars['String']>;
+};
+
+export type EmailSettingsResponse = {
+  __typename?: 'EmailSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<EmailSystemSettings>;
+};
+
+export type EmailSystemSettings = {
+  __typename?: 'EmailSystemSettings';
+  fromName?: Maybe<Scalars['String']>;
+  fromEmail?: Maybe<Scalars['String']>;
+};
+
 export type ErrorResponse = {
   __typename?: 'ErrorResponse';
   errorCode: Scalars['Int'];
   field?: Maybe<Scalars['String']>;
   message: Scalars['String'];
+};
+
+export type FacebookSettingsInput = {
+  enableFacebookLogin?: Maybe<Scalars['Boolean']>;
+};
+
+export type FacebookSettingsResponse = {
+  __typename?: 'FacebookSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<FacebookSystemSettings>;
+};
+
+export type FacebookSystemSettings = {
+  __typename?: 'FacebookSystemSettings';
+  enableFacebookLogin?: Maybe<Scalars['Boolean']>;
 };
 
 export type Link = {
@@ -312,9 +425,61 @@ export type LinkEdge = {
   cursor: Scalars['String'];
 };
 
+export type LinkSettingsInput = {
+  branding?: Maybe<Scalars['String']>;
+  enableLinkShortenerSystem?: Maybe<Scalars['Boolean']>;
+  enablePhishtank?: Maybe<Scalars['Boolean']>;
+  enableGoogleSafeBrowsing?: Maybe<Scalars['Boolean']>;
+};
+
+export type LinkSettingsResponse = {
+  __typename?: 'LinkSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<LinkSystemSettings>;
+};
+
+export type LinkSystemSettings = {
+  __typename?: 'LinkSystemSettings';
+  branding?: Maybe<Scalars['String']>;
+  enableLinkShortenerSystem?: Maybe<Scalars['Boolean']>;
+  enablePhishtank?: Maybe<Scalars['Boolean']>;
+  enableGoogleSafeBrowsing?: Maybe<Scalars['Boolean']>;
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type MainSettingsInput = {
+  title?: Maybe<Scalars['String']>;
+  defaultLanguage?: Maybe<Scalars['String']>;
+  websiteLogo?: Maybe<Scalars['Upload']>;
+  faviconLogo?: Maybe<Scalars['Upload']>;
+  defaultTimezone?: Maybe<Scalars['String']>;
+  enableEmailConfirmation?: Maybe<Scalars['Boolean']>;
+  enableNewUserRegistration?: Maybe<Scalars['Boolean']>;
+  termsAndConditionsUrl?: Maybe<Scalars['String']>;
+  privacyPolicyUrl?: Maybe<Scalars['String']>;
+};
+
+export type MainSettingsResponse = {
+  __typename?: 'MainSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<MainSystemSettings>;
+};
+
+export type MainSystemSettings = {
+  __typename?: 'MainSystemSettings';
+  title?: Maybe<Scalars['String']>;
+  defaultLanguage?: Maybe<Scalars['String']>;
+  websiteLogoUrl?: Maybe<Scalars['String']>;
+  faviconLogoUrl?: Maybe<Scalars['String']>;
+  defaultTimezone?: Maybe<Scalars['String']>;
+  enableEmailConfirmation?: Maybe<Scalars['Boolean']>;
+  enableNewUserRegistration?: Maybe<Scalars['Boolean']>;
+  termsAndConditionsUrl?: Maybe<Scalars['String']>;
+  privacyPolicyUrl?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -333,6 +498,16 @@ export type Mutation = {
   createPlan: PlanResponse;
   editPlan: PlanResponse;
   changeReportStatus?: Maybe<ReportResponse>;
+  editAdsSettings: AdsSettingsResponse;
+  editBusinessSettings: BusinessSettingsResponse;
+  editCaptchaSettings: CaptchaSettingsResponse;
+  editEmailSettings: EmailSettingsResponse;
+  editFacebookSettings: FacebookSettingsResponse;
+  editLinkSettings: LinkSettingsResponse;
+  editMainSettings: MainSettingsResponse;
+  editNotificationSettings: NotificationSettingsResponse;
+  editPaymentSettings: PaymentSettingsResponse;
+  editSocialSettings: SocialSettingsResponse;
   editSupport?: Maybe<SupportResponse>;
   addTax?: Maybe<TaxResponse>;
   editTax?: Maybe<TaxResponse>;
@@ -412,6 +587,56 @@ export type MutationEditPlanArgs = {
 export type MutationChangeReportStatusArgs = {
   options: ReportStatusInput;
   reportId: Scalars['String'];
+};
+
+
+export type MutationEditAdsSettingsArgs = {
+  options: AdsSettingsInput;
+};
+
+
+export type MutationEditBusinessSettingsArgs = {
+  options: BusinessSettingsInput;
+};
+
+
+export type MutationEditCaptchaSettingsArgs = {
+  options: CaptchaSettingsInput;
+};
+
+
+export type MutationEditEmailSettingsArgs = {
+  options: EmailSettingsInput;
+};
+
+
+export type MutationEditFacebookSettingsArgs = {
+  options: FacebookSettingsInput;
+};
+
+
+export type MutationEditLinkSettingsArgs = {
+  options: LinkSettingsInput;
+};
+
+
+export type MutationEditMainSettingsArgs = {
+  options: MainSettingsInput;
+};
+
+
+export type MutationEditNotificationSettingsArgs = {
+  options: NotificationSettingsInput;
+};
+
+
+export type MutationEditPaymentSettingsArgs = {
+  options: PaymentSettingsInput;
+};
+
+
+export type MutationEditSocialSettingsArgs = {
+  options: SocialSettingsInput;
 };
 
 
@@ -510,6 +735,25 @@ export type NewUsernameInput = {
   ownerId?: Maybe<Scalars['String']>;
 };
 
+export type NotificationSettingsInput = {
+  emailsToBeNotified?: Maybe<Array<Scalars['String']>>;
+  emailOnNewUser?: Maybe<Scalars['Boolean']>;
+  emailOnNewPayment?: Maybe<Scalars['Boolean']>;
+};
+
+export type NotificationSettingsResponse = {
+  __typename?: 'NotificationSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<NotificationSystemSettings>;
+};
+
+export type NotificationSystemSettings = {
+  __typename?: 'NotificationSystemSettings';
+  emailsToBeNotified?: Maybe<Array<Scalars['String']>>;
+  emailOnNewUser?: Maybe<Scalars['Boolean']>;
+  emailOnNewPayment?: Maybe<Scalars['Boolean']>;
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   hasNextPage: Scalars['Boolean'];
@@ -565,6 +809,35 @@ export type PaymentResponse = {
   __typename?: 'PaymentResponse';
   errors?: Maybe<Array<ErrorResponse>>;
   payment?: Maybe<Payment>;
+};
+
+export type PaymentSettingsInput = {
+  enablePaymentSystem?: Maybe<Scalars['Boolean']>;
+  enabledPaymentType?: Maybe<Scalars['String']>;
+  brandName?: Maybe<Scalars['String']>;
+  currency?: Maybe<Scalars['String']>;
+  enableDiscountOrRedeemableCode?: Maybe<Scalars['Boolean']>;
+  enableTaxesAndBilling?: Maybe<Scalars['Boolean']>;
+  enablePaypal?: Maybe<Scalars['Boolean']>;
+  enableStripe?: Maybe<Scalars['Boolean']>;
+};
+
+export type PaymentSettingsResponse = {
+  __typename?: 'PaymentSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<PaymentSystemSettings>;
+};
+
+export type PaymentSystemSettings = {
+  __typename?: 'PaymentSystemSettings';
+  enablePaymentSystem?: Maybe<Scalars['Boolean']>;
+  enabledPaymentType?: Maybe<Scalars['String']>;
+  brandName?: Maybe<Scalars['String']>;
+  currency?: Maybe<Scalars['String']>;
+  enableDiscountOrRedeemableCode?: Maybe<Scalars['Boolean']>;
+  enableTaxesAndBilling?: Maybe<Scalars['Boolean']>;
+  enablePaypal?: Maybe<Scalars['Boolean']>;
+  enableStripe?: Maybe<Scalars['Boolean']>;
 };
 
 export type Plan = {
@@ -679,6 +952,16 @@ export type Query = {
   getAllResolvedReports?: Maybe<ReportConnection>;
   getAllDismissedReports?: Maybe<ReportConnection>;
   getReport?: Maybe<ReportResponse>;
+  getAdsSettings: AdsSettingsResponse;
+  getBusinessSettings: BusinessSettingsResponse;
+  getCaptchaSettings: CaptchaSettingsResponse;
+  getEmailSettings: EmailSettingsResponse;
+  getFacebookSettings: FacebookSettingsResponse;
+  getLinkSettings: LinkSettingsResponse;
+  getMainSettings: MainSettingsResponse;
+  getNotificationSettings: NotificationSettingsResponse;
+  getPaymentSettings: PaymentSettingsResponse;
+  getSocialSettings: SocialSettingsResponse;
   getAllPendingSupports?: Maybe<SupportConnection>;
   getAllResolvedSupports?: Maybe<SupportConnection>;
   getAllDismissedSupports?: Maybe<SupportConnection>;
@@ -969,6 +1252,27 @@ export type SocialMediaProps = {
   featured?: Maybe<Scalars['Boolean']>;
 };
 
+export type SocialSettingsInput = {
+  youtube?: Maybe<Scalars['String']>;
+  facebook?: Maybe<Scalars['String']>;
+  twitter?: Maybe<Scalars['String']>;
+  instagram?: Maybe<Scalars['String']>;
+};
+
+export type SocialSettingsResponse = {
+  __typename?: 'SocialSettingsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  settings?: Maybe<SocialSystemSettings>;
+};
+
+export type SocialSystemSettings = {
+  __typename?: 'SocialSystemSettings';
+  youtube?: Maybe<Scalars['String']>;
+  facebook?: Maybe<Scalars['String']>;
+  twitter?: Maybe<Scalars['String']>;
+  instagram?: Maybe<Scalars['String']>;
+};
+
 export type Support = {
   __typename?: 'Support';
   id: Scalars['String'];
@@ -1047,6 +1351,7 @@ export type TaxResponse = {
   tax?: Maybe<Tax>;
 };
 
+
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['String']>;
@@ -1062,6 +1367,7 @@ export type User = {
   lastUserAgent?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   totalLogin?: Maybe<Scalars['Int']>;
+  currentBiolinkId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   deletedAt?: Maybe<Scalars['String']>;
@@ -1453,6 +1759,25 @@ export type EditAdminRoleMutation = (
   ) }
 );
 
+export type EditAdsSettingsMutationVariables = Exact<{
+  options: AdsSettingsInput;
+}>;
+
+
+export type EditAdsSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editAdsSettings: (
+    { __typename?: 'AdsSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'AdsSystemSettings' }
+      & Pick<AdsSystemSettings, 'header' | 'footer' | 'biolinkPageHeader' | 'biolinkPageFooter'>
+    )> }
+  ) }
+);
+
 export type EditBlackListMutationVariables = Exact<{
   blackListId: Scalars['Int'];
   options: NewBlackListInput;
@@ -1471,6 +1796,44 @@ export type EditBlackListMutation = (
       & Pick<BlackList, 'id' | 'blacklistType' | 'keyword' | 'reason' | 'createdAt'>
     )> }
   )> }
+);
+
+export type EditBusinessSettingsMutationVariables = Exact<{
+  options: BusinessSettingsInput;
+}>;
+
+
+export type EditBusinessSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editBusinessSettings: (
+    { __typename?: 'BusinessSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'BusinessSystemSettings' }
+      & Pick<BusinessSystemSettings, 'enableInvoice' | 'name' | 'address' | 'city' | 'country' | 'zipCode' | 'email' | 'phone' | 'taxType' | 'taxId'>
+    )> }
+  ) }
+);
+
+export type EditCaptchaSettingsMutationVariables = Exact<{
+  options: CaptchaSettingsInput;
+}>;
+
+
+export type EditCaptchaSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editCaptchaSettings: (
+    { __typename?: 'CaptchaSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'CaptchaSystemSettings' }
+      & Pick<CaptchaSystemSettings, 'captchaType' | 'enableCaptchaOnLoginPage' | 'enableCaptchaOnRegisterPage' | 'enableCaptchaOnLostPasswordPage' | 'enableCaptchaOnResendActivationPage'>
+    )> }
+  ) }
 );
 
 export type EditCategoryMutationVariables = Exact<{
@@ -1517,6 +1880,120 @@ export type EditCodeMutation = (
   )> }
 );
 
+export type EditEmailSettingsMutationVariables = Exact<{
+  options: EmailSettingsInput;
+}>;
+
+
+export type EditEmailSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editEmailSettings: (
+    { __typename?: 'EmailSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'EmailSystemSettings' }
+      & Pick<EmailSystemSettings, 'fromName' | 'fromEmail'>
+    )> }
+  ) }
+);
+
+export type EditFacebookSettingsMutationVariables = Exact<{
+  options: FacebookSettingsInput;
+}>;
+
+
+export type EditFacebookSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editFacebookSettings: (
+    { __typename?: 'FacebookSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'FacebookSystemSettings' }
+      & Pick<FacebookSystemSettings, 'enableFacebookLogin'>
+    )> }
+  ) }
+);
+
+export type EditLinkSettingsMutationVariables = Exact<{
+  options: LinkSettingsInput;
+}>;
+
+
+export type EditLinkSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editLinkSettings: (
+    { __typename?: 'LinkSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'LinkSystemSettings' }
+      & Pick<LinkSystemSettings, 'branding' | 'enableLinkShortenerSystem' | 'enablePhishtank' | 'enableGoogleSafeBrowsing'>
+    )> }
+  ) }
+);
+
+export type EditMainSettingsMutationVariables = Exact<{
+  options: MainSettingsInput;
+}>;
+
+
+export type EditMainSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editMainSettings: (
+    { __typename?: 'MainSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'MainSystemSettings' }
+      & Pick<MainSystemSettings, 'title' | 'defaultLanguage' | 'websiteLogoUrl' | 'faviconLogoUrl' | 'defaultTimezone' | 'enableEmailConfirmation' | 'enableNewUserRegistration' | 'termsAndConditionsUrl' | 'privacyPolicyUrl'>
+    )> }
+  ) }
+);
+
+export type EditNotificationSettingsMutationVariables = Exact<{
+  options: NotificationSettingsInput;
+}>;
+
+
+export type EditNotificationSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editNotificationSettings: (
+    { __typename?: 'NotificationSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'NotificationSystemSettings' }
+      & Pick<NotificationSystemSettings, 'emailsToBeNotified' | 'emailOnNewUser' | 'emailOnNewPayment'>
+    )> }
+  ) }
+);
+
+export type EditPaymentSettingsMutationVariables = Exact<{
+  options: PaymentSettingsInput;
+}>;
+
+
+export type EditPaymentSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editPaymentSettings: (
+    { __typename?: 'PaymentSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'PaymentSystemSettings' }
+      & Pick<PaymentSystemSettings, 'enablePaymentSystem' | 'enabledPaymentType' | 'brandName' | 'currency' | 'enableDiscountOrRedeemableCode' | 'enableTaxesAndBilling' | 'enablePaypal' | 'enableStripe'>
+    )> }
+  ) }
+);
+
 export type EditPlanMutationVariables = Exact<{
   id: Scalars['Int'];
   options: PlanInput;
@@ -1537,6 +2014,25 @@ export type EditPlanMutation = (
         { __typename?: 'PlanSettings' }
         & Pick<PlanSettings, 'totalBiolinksLimit' | 'totalLinksLimit' | 'totalCustomDomainLimit' | 'darkModeEnabled' | 'addedToDirectoryEnabled' | 'customBackHalfEnabled' | 'noAdsEnabled' | 'removableBrandingEnabled' | 'customFooterBrandingEnabled' | 'coloredLinksEnabled' | 'googleAnalyticsEnabled' | 'facebookPixelEnabled' | 'emailCaptureEnabled' | 'verifiedCheckmarkEnabled' | 'linksSchedulingEnabled' | 'seoEnabled' | 'socialEnabled' | 'utmParametersEnabled' | 'passwordProtectionEnabled' | 'sensitiveContentWarningEnabled' | 'leapLinkEnabled' | 'donationLinkEnabled'>
       )> }
+    )> }
+  ) }
+);
+
+export type EditSocialSettingsMutationVariables = Exact<{
+  options: SocialSettingsInput;
+}>;
+
+
+export type EditSocialSettingsMutation = (
+  { __typename?: 'Mutation' }
+  & { editSocialSettings: (
+    { __typename?: 'SocialSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'SocialSystemSettings' }
+      & Pick<SocialSystemSettings, 'youtube' | 'facebook' | 'twitter' | 'instagram'>
     )> }
   ) }
 );
@@ -1697,6 +2193,23 @@ export type GetAdminRoleQuery = (
         { __typename?: 'RoleSettings' }
         & Pick<RoleSettings, 'resource' | 'canShowList' | 'canShow' | 'canCreate' | 'canEdit' | 'canDelete'>
       )>> }
+    )> }
+  ) }
+);
+
+export type GetAdsSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAdsSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getAdsSettings: (
+    { __typename?: 'AdsSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'AdsSystemSettings' }
+      & Pick<AdsSystemSettings, 'header' | 'footer' | 'biolinkPageHeader' | 'biolinkPageFooter'>
     )> }
   ) }
 );
@@ -2601,6 +3114,40 @@ export type GetBlackListQuery = (
   )> }
 );
 
+export type GetBusinessSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBusinessSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getBusinessSettings: (
+    { __typename?: 'BusinessSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'BusinessSystemSettings' }
+      & Pick<BusinessSystemSettings, 'enableInvoice' | 'name' | 'address' | 'city' | 'country' | 'zipCode' | 'email' | 'phone' | 'taxType' | 'taxId'>
+    )> }
+  ) }
+);
+
+export type GetCaptchaSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCaptchaSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getCaptchaSettings: (
+    { __typename?: 'CaptchaSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'CaptchaSystemSettings' }
+      & Pick<CaptchaSystemSettings, 'captchaType' | 'enableCaptchaOnLoginPage' | 'enableCaptchaOnRegisterPage' | 'enableCaptchaOnLostPasswordPage' | 'enableCaptchaOnResendActivationPage'>
+    )> }
+  ) }
+);
+
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -2643,6 +3190,91 @@ export type GetCodeQuery = (
   )> }
 );
 
+export type GetEmailSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEmailSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getEmailSettings: (
+    { __typename?: 'EmailSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'EmailSystemSettings' }
+      & Pick<EmailSystemSettings, 'fromName' | 'fromEmail'>
+    )> }
+  ) }
+);
+
+export type GetFacebookSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFacebookSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getFacebookSettings: (
+    { __typename?: 'FacebookSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'FacebookSystemSettings' }
+      & Pick<FacebookSystemSettings, 'enableFacebookLogin'>
+    )> }
+  ) }
+);
+
+export type GetLinkSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLinkSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getLinkSettings: (
+    { __typename?: 'LinkSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'LinkSystemSettings' }
+      & Pick<LinkSystemSettings, 'branding' | 'enableLinkShortenerSystem' | 'enablePhishtank' | 'enableGoogleSafeBrowsing'>
+    )> }
+  ) }
+);
+
+export type GetMainSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMainSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getMainSettings: (
+    { __typename?: 'MainSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'MainSystemSettings' }
+      & Pick<MainSystemSettings, 'title' | 'defaultLanguage' | 'websiteLogoUrl' | 'faviconLogoUrl' | 'defaultTimezone' | 'enableEmailConfirmation' | 'enableNewUserRegistration' | 'termsAndConditionsUrl' | 'privacyPolicyUrl'>
+    )> }
+  ) }
+);
+
+export type GetNotificationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetNotificationSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getNotificationSettings: (
+    { __typename?: 'NotificationSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'NotificationSystemSettings' }
+      & Pick<NotificationSystemSettings, 'emailsToBeNotified' | 'emailOnNewUser' | 'emailOnNewPayment'>
+    )> }
+  ) }
+);
+
 export type GetPaymentQueryVariables = Exact<{
   paymentId: Scalars['String'];
 }>;
@@ -2664,6 +3296,23 @@ export type GetPaymentQuery = (
       )> }
     )> }
   )> }
+);
+
+export type GetPaymentSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPaymentSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getPaymentSettings: (
+    { __typename?: 'PaymentSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'PaymentSystemSettings' }
+      & Pick<PaymentSystemSettings, 'enablePaymentSystem' | 'enabledPaymentType' | 'brandName' | 'currency' | 'enableDiscountOrRedeemableCode' | 'enableTaxesAndBilling' | 'enablePaypal' | 'enableStripe'>
+    )> }
+  ) }
 );
 
 export type GetPlanQueryVariables = Exact<{
@@ -2710,6 +3359,23 @@ export type GetReportQuery = (
       )> }
     )> }
   )> }
+);
+
+export type GetSocialSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSocialSettingsQuery = (
+  { __typename?: 'Query' }
+  & { getSocialSettings: (
+    { __typename?: 'SocialSettingsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, settings?: Maybe<(
+      { __typename?: 'SocialSystemSettings' }
+      & Pick<SocialSystemSettings, 'youtube' | 'facebook' | 'twitter' | 'instagram'>
+    )> }
+  ) }
 );
 
 export type GetSupportQueryVariables = Exact<{
@@ -3165,6 +3831,25 @@ export const EditAdminRoleDocument = gql`
 export function useEditAdminRoleMutation() {
   return Urql.useMutation<EditAdminRoleMutation, EditAdminRoleMutationVariables>(EditAdminRoleDocument);
 };
+export const EditAdsSettingsDocument = gql`
+    mutation EditAdsSettings($options: AdsSettingsInput!) {
+  editAdsSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      header
+      footer
+      biolinkPageHeader
+      biolinkPageFooter
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditAdsSettingsMutation() {
+  return Urql.useMutation<EditAdsSettingsMutation, EditAdsSettingsMutationVariables>(EditAdsSettingsDocument);
+};
 export const EditBlackListDocument = gql`
     mutation EditBlackList($blackListId: Int!, $options: NewBlackListInput!) {
   editBlackList(blackListId: $blackListId, options: $options) {
@@ -3184,6 +3869,51 @@ export const EditBlackListDocument = gql`
 
 export function useEditBlackListMutation() {
   return Urql.useMutation<EditBlackListMutation, EditBlackListMutationVariables>(EditBlackListDocument);
+};
+export const EditBusinessSettingsDocument = gql`
+    mutation EditBusinessSettings($options: BusinessSettingsInput!) {
+  editBusinessSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableInvoice
+      name
+      address
+      city
+      country
+      zipCode
+      email
+      phone
+      taxType
+      taxId
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditBusinessSettingsMutation() {
+  return Urql.useMutation<EditBusinessSettingsMutation, EditBusinessSettingsMutationVariables>(EditBusinessSettingsDocument);
+};
+export const EditCaptchaSettingsDocument = gql`
+    mutation EditCaptchaSettings($options: CaptchaSettingsInput!) {
+  editCaptchaSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      captchaType
+      enableCaptchaOnLoginPage
+      enableCaptchaOnRegisterPage
+      enableCaptchaOnLostPasswordPage
+      enableCaptchaOnResendActivationPage
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditCaptchaSettingsMutation() {
+  return Urql.useMutation<EditCaptchaSettingsMutation, EditCaptchaSettingsMutationVariables>(EditCaptchaSettingsDocument);
 };
 export const EditCategoryDocument = gql`
     mutation EditCategory($id: Int!, $options: NewCategoryInput!) {
@@ -3230,6 +3960,123 @@ export const EditCodeDocument = gql`
 
 export function useEditCodeMutation() {
   return Urql.useMutation<EditCodeMutation, EditCodeMutationVariables>(EditCodeDocument);
+};
+export const EditEmailSettingsDocument = gql`
+    mutation EditEmailSettings($options: EmailSettingsInput!) {
+  editEmailSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      fromName
+      fromEmail
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditEmailSettingsMutation() {
+  return Urql.useMutation<EditEmailSettingsMutation, EditEmailSettingsMutationVariables>(EditEmailSettingsDocument);
+};
+export const EditFacebookSettingsDocument = gql`
+    mutation EditFacebookSettings($options: FacebookSettingsInput!) {
+  editFacebookSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableFacebookLogin
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditFacebookSettingsMutation() {
+  return Urql.useMutation<EditFacebookSettingsMutation, EditFacebookSettingsMutationVariables>(EditFacebookSettingsDocument);
+};
+export const EditLinkSettingsDocument = gql`
+    mutation EditLinkSettings($options: LinkSettingsInput!) {
+  editLinkSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      branding
+      enableLinkShortenerSystem
+      enablePhishtank
+      enableGoogleSafeBrowsing
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditLinkSettingsMutation() {
+  return Urql.useMutation<EditLinkSettingsMutation, EditLinkSettingsMutationVariables>(EditLinkSettingsDocument);
+};
+export const EditMainSettingsDocument = gql`
+    mutation EditMainSettings($options: MainSettingsInput!) {
+  editMainSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      title
+      defaultLanguage
+      websiteLogoUrl
+      faviconLogoUrl
+      defaultTimezone
+      enableEmailConfirmation
+      enableNewUserRegistration
+      termsAndConditionsUrl
+      privacyPolicyUrl
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditMainSettingsMutation() {
+  return Urql.useMutation<EditMainSettingsMutation, EditMainSettingsMutationVariables>(EditMainSettingsDocument);
+};
+export const EditNotificationSettingsDocument = gql`
+    mutation EditNotificationSettings($options: NotificationSettingsInput!) {
+  editNotificationSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      emailsToBeNotified
+      emailOnNewUser
+      emailOnNewPayment
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditNotificationSettingsMutation() {
+  return Urql.useMutation<EditNotificationSettingsMutation, EditNotificationSettingsMutationVariables>(EditNotificationSettingsDocument);
+};
+export const EditPaymentSettingsDocument = gql`
+    mutation EditPaymentSettings($options: PaymentSettingsInput!) {
+  editPaymentSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enablePaymentSystem
+      enabledPaymentType
+      brandName
+      currency
+      enableDiscountOrRedeemableCode
+      enableTaxesAndBilling
+      enablePaypal
+      enableStripe
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditPaymentSettingsMutation() {
+  return Urql.useMutation<EditPaymentSettingsMutation, EditPaymentSettingsMutationVariables>(EditPaymentSettingsDocument);
 };
 export const EditPlanDocument = gql`
     mutation EditPlan($id: Int!, $options: PlanInput!) {
@@ -3281,6 +4128,25 @@ export const EditPlanDocument = gql`
 
 export function useEditPlanMutation() {
   return Urql.useMutation<EditPlanMutation, EditPlanMutationVariables>(EditPlanDocument);
+};
+export const EditSocialSettingsDocument = gql`
+    mutation EditSocialSettings($options: SocialSettingsInput!) {
+  editSocialSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      youtube
+      facebook
+      twitter
+      instagram
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditSocialSettingsMutation() {
+  return Urql.useMutation<EditSocialSettingsMutation, EditSocialSettingsMutationVariables>(EditSocialSettingsDocument);
 };
 export const EditSupportDocument = gql`
     mutation EditSupport($supportId: String!, $options: SupportAdminInput!) {
@@ -3448,6 +4314,25 @@ export const GetAdminRoleDocument = gql`
 
 export function useGetAdminRoleQuery(options: Omit<Urql.UseQueryArgs<GetAdminRoleQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAdminRoleQuery>({ query: GetAdminRoleDocument, ...options });
+};
+export const GetAdsSettingsDocument = gql`
+    query GetAdsSettings {
+  getAdsSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      header
+      footer
+      biolinkPageHeader
+      biolinkPageFooter
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetAdsSettingsQuery(options: Omit<Urql.UseQueryArgs<GetAdsSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAdsSettingsQuery>({ query: GetAdsSettingsDocument, ...options });
 };
 export const GetAllAdminRolesDocument = gql`
     query GetAllAdminRoles {
@@ -4493,6 +5378,51 @@ export const GetBlackListDocument = gql`
 export function useGetBlackListQuery(options: Omit<Urql.UseQueryArgs<GetBlackListQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetBlackListQuery>({ query: GetBlackListDocument, ...options });
 };
+export const GetBusinessSettingsDocument = gql`
+    query GetBusinessSettings {
+  getBusinessSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableInvoice
+      name
+      address
+      city
+      country
+      zipCode
+      email
+      phone
+      taxType
+      taxId
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetBusinessSettingsQuery(options: Omit<Urql.UseQueryArgs<GetBusinessSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetBusinessSettingsQuery>({ query: GetBusinessSettingsDocument, ...options });
+};
+export const GetCaptchaSettingsDocument = gql`
+    query GetCaptchaSettings {
+  getCaptchaSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      captchaType
+      enableCaptchaOnLoginPage
+      enableCaptchaOnRegisterPage
+      enableCaptchaOnLostPasswordPage
+      enableCaptchaOnResendActivationPage
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetCaptchaSettingsQuery(options: Omit<Urql.UseQueryArgs<GetCaptchaSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetCaptchaSettingsQuery>({ query: GetCaptchaSettingsDocument, ...options });
+};
 export const GetCategoryDocument = gql`
     query GetCategory($id: Int!) {
   getCategory(id: $id) {
@@ -4539,6 +5469,100 @@ export const GetCodeDocument = gql`
 export function useGetCodeQuery(options: Omit<Urql.UseQueryArgs<GetCodeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCodeQuery>({ query: GetCodeDocument, ...options });
 };
+export const GetEmailSettingsDocument = gql`
+    query GetEmailSettings {
+  getEmailSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      fromName
+      fromEmail
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetEmailSettingsQuery(options: Omit<Urql.UseQueryArgs<GetEmailSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetEmailSettingsQuery>({ query: GetEmailSettingsDocument, ...options });
+};
+export const GetFacebookSettingsDocument = gql`
+    query GetFacebookSettings {
+  getFacebookSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableFacebookLogin
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetFacebookSettingsQuery(options: Omit<Urql.UseQueryArgs<GetFacebookSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetFacebookSettingsQuery>({ query: GetFacebookSettingsDocument, ...options });
+};
+export const GetLinkSettingsDocument = gql`
+    query GetLinkSettings {
+  getLinkSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      branding
+      enableLinkShortenerSystem
+      enablePhishtank
+      enableGoogleSafeBrowsing
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetLinkSettingsQuery(options: Omit<Urql.UseQueryArgs<GetLinkSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetLinkSettingsQuery>({ query: GetLinkSettingsDocument, ...options });
+};
+export const GetMainSettingsDocument = gql`
+    query GetMainSettings {
+  getMainSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      title
+      defaultLanguage
+      websiteLogoUrl
+      faviconLogoUrl
+      defaultTimezone
+      enableEmailConfirmation
+      enableNewUserRegistration
+      termsAndConditionsUrl
+      privacyPolicyUrl
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetMainSettingsQuery(options: Omit<Urql.UseQueryArgs<GetMainSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetMainSettingsQuery>({ query: GetMainSettingsDocument, ...options });
+};
+export const GetNotificationSettingsDocument = gql`
+    query GetNotificationSettings {
+  getNotificationSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      emailsToBeNotified
+      emailOnNewUser
+      emailOnNewPayment
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetNotificationSettingsQuery(options: Omit<Urql.UseQueryArgs<GetNotificationSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetNotificationSettingsQuery>({ query: GetNotificationSettingsDocument, ...options });
+};
 export const GetPaymentDocument = gql`
     query GetPayment($paymentId: String!) {
   getPayment(paymentId: $paymentId) {
@@ -4581,6 +5605,29 @@ export const GetPaymentDocument = gql`
 
 export function useGetPaymentQuery(options: Omit<Urql.UseQueryArgs<GetPaymentQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetPaymentQuery>({ query: GetPaymentDocument, ...options });
+};
+export const GetPaymentSettingsDocument = gql`
+    query GetPaymentSettings {
+  getPaymentSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enablePaymentSystem
+      enabledPaymentType
+      brandName
+      currency
+      enableDiscountOrRedeemableCode
+      enableTaxesAndBilling
+      enablePaypal
+      enableStripe
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetPaymentSettingsQuery(options: Omit<Urql.UseQueryArgs<GetPaymentSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetPaymentSettingsQuery>({ query: GetPaymentSettingsDocument, ...options });
 };
 export const GetPlanDocument = gql`
     query GetPlan($id: Int!) {
@@ -4657,6 +5704,25 @@ export const GetReportDocument = gql`
 
 export function useGetReportQuery(options: Omit<Urql.UseQueryArgs<GetReportQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetReportQuery>({ query: GetReportDocument, ...options });
+};
+export const GetSocialSettingsDocument = gql`
+    query GetSocialSettings {
+  getSocialSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      youtube
+      facebook
+      twitter
+      instagram
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetSocialSettingsQuery(options: Omit<Urql.UseQueryArgs<GetSocialSettingsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSocialSettingsQuery>({ query: GetSocialSettingsDocument, ...options });
 };
 export const GetSupportDocument = gql`
     query GetSupport($supportId: String!) {

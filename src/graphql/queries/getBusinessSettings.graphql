@@ -1,0 +1,19 @@
+query GetBusinessSettings {
+  getBusinessSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableInvoice
+      name
+      address
+      city
+      country
+      zipCode
+      email
+      phone
+      taxType
+      taxId
+    }
+  }
+}

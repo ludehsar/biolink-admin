@@ -1,0 +1,13 @@
+query GetSocialSettings {
+  getSocialSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      youtube
+      facebook
+      twitter
+      instagram
+    }
+  }
+}

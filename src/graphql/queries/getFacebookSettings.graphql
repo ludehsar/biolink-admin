@@ -1,0 +1,10 @@
+query GetFacebookSettings {
+  getFacebookSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      enableFacebookLogin
+    }
+  }
+}

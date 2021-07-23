@@ -1,0 +1,12 @@
+mutation EditNotificationSettings($options: NotificationSettingsInput!) {
+  editNotificationSettings(options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      emailsToBeNotified
+      emailOnNewUser
+      emailOnNewPayment
+    }
+  }
+}

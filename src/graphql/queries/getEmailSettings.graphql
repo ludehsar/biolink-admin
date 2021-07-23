@@ -1,0 +1,11 @@
+query GetEmailSettings {
+  getEmailSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      fromName
+      fromEmail
+    }
+  }
+}

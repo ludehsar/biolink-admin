@@ -1,0 +1,13 @@
+query GetLinkSettings {
+  getLinkSettings {
+    errors {
+      ...ReceivedErrors
+    }
+    settings {
+      branding
+      enableLinkShortenerSystem
+      enablePhishtank
+      enableGoogleSafeBrowsing
+    }
+  }
+}
