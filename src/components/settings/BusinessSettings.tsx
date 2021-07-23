@@ -1,13 +1,20 @@
+import Swal from 'sweetalert2'
 import axios from 'axios'
 import { Formik } from 'formik'
 import React, { useCallback, useEffect, useState } from 'react'
 import Select from 'react-select'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form, Row, Col } from 'reactstrap'
+import {
+  useEditBusinessSettingsMutation,
+  useGetBusinessSettingsQuery,
+} from '../../generated/graphql'
 
 const BusinessSettings: React.FC = () => {
   const [availableCountries, setAvailableCountries] = useState<{ value: string; label: string }[]>(
     []
   )
+  const [{ data }] = useGetBusinessSettingsQuery()
+  const [, editBusinessSettings] = useEditBusinessSettingsMutation()
 
   const fetchCountries = useCallback(async () => {
     const countryData = await axios.get('https://restcountries.eu/rest/v2/all')
@@ -29,19 +36,69 @@ const BusinessSettings: React.FC = () => {
     <Formik
       enableReinitialize={true}
       initialValues={{
-        enableInvoice: 'false',
-        name: '',
-        address: '',
-        city: '',
-        zipCode: '',
-        country: '',
-        email: '',
-        phone: '',
-        taxType: '',
-        taxId: '',
+        enableInvoice:
+          data?.getBusinessSettings.settings?.enableInvoice === true ? 'true' : 'false',
+        name: data?.getBusinessSettings.settings?.name || '',
+        address: data?.getBusinessSettings.settings?.address || '',
+        city: data?.getBusinessSettings.settings?.city || '',
+        zipCode: data?.getBusinessSettings.settings?.zipCode || '',
+        country: data?.getBusinessSettings.settings?.country || '',
+        email: data?.getBusinessSettings.settings?.email || '',
+        phone: data?.getBusinessSettings.settings?.phone || '',
+        taxType: data?.getBusinessSettings.settings?.taxType || '',
+        taxId: data?.getBusinessSettings.settings?.taxId || '',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editBusinessSettings({
+          options: {
+            address: values.address,
+            city: values.city,
+            country: values.country,
+            email: values.email,
+            enableInvoice: values.enableInvoice === 'true' ? true : false,
+            name: values.name,
+            phone: values.phone,
+            taxId: values.taxId,
+            taxType: values.taxType,
+            zipCode: values.zipCode,
+          },
+        })
+
+        if (
+          response.data?.editBusinessSettings.errors &&
+          response.data.editBusinessSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data?.editBusinessSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editBusinessSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited business settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              address: response.data.editBusinessSettings.settings.address || '',
+              city: response.data.editBusinessSettings.settings.city || '',
+              country: response.data.editBusinessSettings.settings.country || '',
+              email: response.data.editBusinessSettings.settings.email || '',
+              enableInvoice:
+                response.data.editBusinessSettings.settings.enableInvoice === true
+                  ? 'true'
+                  : 'false',
+              name: response.data.editBusinessSettings.settings.name || '',
+              phone: response.data.editBusinessSettings.settings.phone || '',
+              taxId: response.data.editBusinessSettings.settings.taxId || '',
+              taxType: response.data.editBusinessSettings.settings.taxType || '',
+              zipCode: response.data.editBusinessSettings.settings.zipCode || '',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
@@ -121,10 +178,7 @@ const BusinessSettings: React.FC = () => {
               <FormGroup>
                 <label htmlFor="country">Country</label>
                 <Select
-                  defaultValue={{
-                    label: values.country,
-                    value: values.country,
-                  }}
+                  value={availableCountries.filter((country) => country.label === values.country)}
                   name="country"
                   id="country"
                   options={availableCountries}
