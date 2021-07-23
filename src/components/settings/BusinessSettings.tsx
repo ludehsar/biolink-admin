@@ -55,7 +55,7 @@ const BusinessSettings: React.FC = () => {
             city: values.city,
             country: values.country,
             email: values.email,
-            enableInvoice: values.enableInvoice === 'true' ? true : false,
+            enableInvoice: values.enableInvoice === 'true',
             name: values.name,
             phone: values.phone,
             taxId: values.taxId,

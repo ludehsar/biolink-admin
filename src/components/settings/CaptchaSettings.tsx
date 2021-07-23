@@ -1,20 +1,85 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import { useEditCaptchaSettingsMutation, useGetCaptchaSettingsQuery } from '../../generated/graphql'
 
 const CaptchaSettings: React.FC = () => {
+  const [{ data }] = useGetCaptchaSettingsQuery()
+  const [, editCaptchaSettings] = useEditCaptchaSettingsMutation()
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        captchaType: 'basic',
-        enableCaptchaOnLoginPage: 'false',
-        enableCaptchaOnRegisterPage: 'false',
-        enableCaptchaOnLostPasswordPage: 'false',
-        enableCaptchaOnResendActivationPage: 'false',
+        captchaType: data?.getCaptchaSettings.settings?.captchaType || 'basic',
+        enableCaptchaOnLoginPage:
+          data?.getCaptchaSettings.settings?.enableCaptchaOnLoginPage === true ? 'true' : 'false',
+        enableCaptchaOnRegisterPage:
+          data?.getCaptchaSettings.settings?.enableCaptchaOnRegisterPage === true
+            ? 'true'
+            : 'false',
+        enableCaptchaOnLostPasswordPage:
+          data?.getCaptchaSettings.settings?.enableCaptchaOnLostPasswordPage === true
+            ? 'true'
+            : 'false',
+        enableCaptchaOnResendActivationPage:
+          data?.getCaptchaSettings.settings?.enableCaptchaOnResendActivationPage === true
+            ? 'true'
+            : 'false',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editCaptchaSettings({
+          options: {
+            captchaType: values.captchaType,
+            enableCaptchaOnLoginPage: values.enableCaptchaOnLoginPage === 'true',
+            enableCaptchaOnLostPasswordPage: values.enableCaptchaOnLostPasswordPage === 'true',
+            enableCaptchaOnRegisterPage: values.enableCaptchaOnRegisterPage === 'true',
+            enableCaptchaOnResendActivationPage:
+              values.enableCaptchaOnResendActivationPage === 'true',
+          },
+        })
+
+        if (
+          response.data?.editCaptchaSettings.errors &&
+          response.data.editCaptchaSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data?.editCaptchaSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editCaptchaSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited captcha settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              captchaType: response.data.editCaptchaSettings.settings.captchaType || 'basic',
+              enableCaptchaOnLoginPage:
+                response.data.editCaptchaSettings.settings.enableCaptchaOnLoginPage === true
+                  ? 'true'
+                  : 'false',
+              enableCaptchaOnLostPasswordPage:
+                response.data.editCaptchaSettings.settings.enableCaptchaOnLostPasswordPage === true
+                  ? 'true'
+                  : 'false',
+              enableCaptchaOnRegisterPage:
+                response.data.editCaptchaSettings.settings.enableCaptchaOnRegisterPage === true
+                  ? 'true'
+                  : 'false',
+              enableCaptchaOnResendActivationPage:
+                response.data.editCaptchaSettings.settings.enableCaptchaOnResendActivationPage ===
+                true
+                  ? 'true'
+                  : 'false',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
