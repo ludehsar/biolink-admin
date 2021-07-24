@@ -1,19 +1,58 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import { useEditSocialSettingsMutation, useGetSocialSettingsQuery } from '../../generated/graphql'
 
 const SocialSettings: React.FC = () => {
+  const [{ data }] = useGetSocialSettingsQuery()
+  const [, editSocialSettings] = useEditSocialSettingsMutation()
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        youtube: '',
-        facebook: '',
-        twitter: '',
-        instagram: '',
+        youtube: data?.getSocialSettings.settings?.youtube || '',
+        facebook: data?.getSocialSettings.settings?.facebook || '',
+        twitter: data?.getSocialSettings.settings?.twitter || '',
+        instagram: data?.getSocialSettings.settings?.instagram || '',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editSocialSettings({
+          options: {
+            facebook: values.facebook,
+            instagram: values.instagram,
+            twitter: values.twitter,
+            youtube: values.youtube,
+          },
+        })
+
+        if (
+          response.data?.editSocialSettings.errors &&
+          response.data.editSocialSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editSocialSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editSocialSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              youtube: response.data.editSocialSettings.settings.youtube || '',
+              facebook: response.data.editSocialSettings.settings.facebook || '',
+              twitter: response.data.editSocialSettings.settings.twitter || '',
+              instagram: response.data.editSocialSettings.settings.instagram || '',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
