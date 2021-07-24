@@ -32,7 +32,7 @@ const AdsSettings: React.FC = () => {
         ) {
           Swal.fire({
             title: 'Error!',
-            text: response.data?.editAdsSettings.errors[0].message,
+            text: response.data.editAdsSettings.errors[0].message,
             icon: 'error',
           })
         }

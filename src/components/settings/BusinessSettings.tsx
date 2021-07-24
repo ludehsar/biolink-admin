@@ -70,7 +70,7 @@ const BusinessSettings: React.FC = () => {
         ) {
           Swal.fire({
             title: 'Error!',
-            text: response.data?.editBusinessSettings.errors[0].message,
+            text: response.data.editBusinessSettings.errors[0].message,
             icon: 'error',
           })
         }

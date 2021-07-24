@@ -1,17 +1,51 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import { useEditEmailSettingsMutation, useGetEmailSettingsQuery } from '../../generated/graphql'
 
 const EmailSettings: React.FC = () => {
+  const [{ data }] = useGetEmailSettingsQuery()
+  const [, editEmailSettings] = useEditEmailSettingsMutation()
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        fromName: '',
-        fromEmail: '',
+        fromName: data?.getEmailSettings.settings?.fromName || '',
+        fromEmail: data?.getEmailSettings.settings?.fromEmail || '',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editEmailSettings({
+          options: {
+            fromEmail: values.fromEmail,
+            fromName: values.fromName,
+          },
+        })
+
+        if (
+          response.data?.editEmailSettings.errors &&
+          response.data.editEmailSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editEmailSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editEmailSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              fromEmail: response.data.editEmailSettings.settings.fromEmail || '',
+              fromName: response.data.editEmailSettings.settings.fromName || '',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
