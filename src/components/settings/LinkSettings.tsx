@@ -1,19 +1,68 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import { useEditLinkSettingsMutation, useGetLinkSettingsQuery } from '../../generated/graphql'
 
 const LinkSettings: React.FC = () => {
+  const [{ data }] = useGetLinkSettingsQuery()
+  const [, editLinkSettings] = useEditLinkSettingsMutation()
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        branding: '',
-        enableLinkShortenerSystem: 'false',
-        enablePhishtank: 'false',
-        enableGoogleSafeBrowsing: 'false',
+        branding: data?.getLinkSettings.settings?.branding || '',
+        enableLinkShortenerSystem:
+          data?.getLinkSettings.settings?.enableLinkShortenerSystem === true ? 'true' : 'false',
+        enablePhishtank:
+          data?.getLinkSettings.settings?.enablePhishtank === true ? 'true' : 'false',
+        enableGoogleSafeBrowsing:
+          data?.getLinkSettings.settings?.enableGoogleSafeBrowsing === true ? 'true' : 'false',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editLinkSettings({
+          options: {
+            branding: values.branding,
+            enableGoogleSafeBrowsing: values.enableGoogleSafeBrowsing === 'true',
+            enableLinkShortenerSystem: values.enableLinkShortenerSystem === 'true',
+            enablePhishtank: values.enablePhishtank === 'true',
+          },
+        })
+
+        if (
+          response.data?.editLinkSettings.errors &&
+          response.data.editLinkSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editLinkSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editLinkSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              branding: response.data.editLinkSettings.settings.branding || '',
+              enableGoogleSafeBrowsing:
+                response.data.editLinkSettings.settings.enableGoogleSafeBrowsing === true
+                  ? 'true'
+                  : 'false',
+              enableLinkShortenerSystem:
+                response.data.editLinkSettings.settings.enableLinkShortenerSystem === true
+                  ? 'true'
+                  : 'false',
+              enablePhishtank:
+                response.data.editLinkSettings.settings.enablePhishtank === true ? 'true' : 'false',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
