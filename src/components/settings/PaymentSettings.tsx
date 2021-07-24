@@ -1,23 +1,86 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import { useEditPaymentSettingsMutation, useGetPaymentSettingsQuery } from '../../generated/graphql'
 
 const PaymentSettings: React.FC = () => {
+  const [{ data }] = useGetPaymentSettingsQuery()
+  const [, editPaymentSettings] = useEditPaymentSettingsMutation()
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        enablePaymentSystem: 'false',
-        enabledPaymentType: 'Both',
-        brandName: '',
-        currency: 'usd',
-        enableDiscountOrRedeemableCode: 'false',
-        enableTaxesAndBilling: 'false',
-        enablePaypal: 'false',
-        enableStripe: 'false',
+        enablePaymentSystem:
+          data?.getPaymentSettings.settings?.enablePaymentSystem === true ? 'true' : 'false',
+        enabledPaymentType: data?.getPaymentSettings.settings?.enabledPaymentType || 'Both',
+        brandName: data?.getPaymentSettings.settings?.brandName || '',
+        currency: data?.getPaymentSettings.settings?.currency || 'usd',
+        enableDiscountOrRedeemableCode:
+          data?.getPaymentSettings.settings?.enableDiscountOrRedeemableCode === true
+            ? 'true'
+            : 'false',
+        enableTaxesAndBilling:
+          data?.getPaymentSettings.settings?.enableTaxesAndBilling === true ? 'true' : 'false',
+        enablePaypal: data?.getPaymentSettings.settings?.enablePaypal === true ? 'true' : 'false',
+        enableStripe: data?.getPaymentSettings.settings?.enableStripe === true ? 'true' : 'false',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editPaymentSettings({
+          options: {
+            enablePaymentSystem: values.enablePaymentSystem === 'true',
+            enabledPaymentType: values.enabledPaymentType || 'Both',
+            brandName: values.brandName || '',
+            currency: values.currency || 'usd',
+            enableDiscountOrRedeemableCode: values.enableDiscountOrRedeemableCode === 'true',
+            enableTaxesAndBilling: values.enableTaxesAndBilling === 'true',
+            enablePaypal: values.enablePaypal === 'true',
+            enableStripe: values.enableStripe === 'true',
+          },
+        })
+
+        if (
+          response.data?.editPaymentSettings.errors &&
+          response.data.editPaymentSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editPaymentSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editPaymentSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              enablePaymentSystem:
+                response.data.editPaymentSettings.settings.enablePaymentSystem === true
+                  ? 'true'
+                  : 'false',
+              enabledPaymentType:
+                response.data.editPaymentSettings.settings.enabledPaymentType || 'Both',
+              brandName: response.data.editPaymentSettings.settings.brandName || '',
+              currency: response.data.editPaymentSettings.settings.currency || 'usd',
+              enableDiscountOrRedeemableCode:
+                response.data.editPaymentSettings.settings.enableDiscountOrRedeemableCode === true
+                  ? 'true'
+                  : 'false',
+              enableTaxesAndBilling:
+                response.data.editPaymentSettings.settings.enableTaxesAndBilling === true
+                  ? 'true'
+                  : 'false',
+              enablePaypal:
+                response.data.editPaymentSettings.settings.enablePaypal === true ? 'true' : 'false',
+              enableStripe:
+                response.data.editPaymentSettings.settings.enableStripe === true ? 'true' : 'false',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
