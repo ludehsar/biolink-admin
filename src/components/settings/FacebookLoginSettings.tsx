@@ -1,16 +1,56 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import {
+  useEditFacebookSettingsMutation,
+  useGetFacebookSettingsQuery,
+} from '../../generated/graphql'
 
 const FacebookLoginSettings: React.FC = () => {
+  const [{ data }] = useGetFacebookSettingsQuery()
+  const [, editFacebookSettings] = useEditFacebookSettingsMutation()
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        enableFacebookLogin: 'false',
+        enableFacebookLogin:
+          data?.getFacebookSettings.settings?.enableFacebookLogin === true ? 'true' : 'false',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editFacebookSettings({
+          options: {
+            enableFacebookLogin: values.enableFacebookLogin === 'true',
+          },
+        })
+
+        if (
+          response.data?.editFacebookSettings.errors &&
+          response.data.editFacebookSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editFacebookSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editFacebookSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              enableFacebookLogin:
+                response.data.editFacebookSettings.settings.enableFacebookLogin === true
+                  ? 'true'
+                  : 'false',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
