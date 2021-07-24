@@ -1,24 +1,76 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import { useEditMainSettingsMutation, useGetMainSettingsQuery } from '../../generated/graphql'
 
 const MainSettings: React.FC = () => {
+  const [{ data }] = useGetMainSettingsQuery()
+  const [, editMainSettings] = useEditMainSettingsMutation()
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        title: '',
-        defaultLanguage: 'english',
-        websiteLogoUrl: '',
-        faviconLogoUrl: '',
-        defaultTimezone: 'utc',
-        enableEmailConfirmation: 'false',
-        enableNewUserRegistration: 'false',
-        termsAndConditionsUrl: '',
-        privacyPolicyUrl: '',
+        title: data?.getMainSettings.settings?.title || '',
+        defaultLanguage: data?.getMainSettings.settings?.defaultLanguage || 'english',
+        defaultTimezone: data?.getMainSettings.settings?.defaultTimezone || 'utc',
+        enableEmailConfirmation:
+          data?.getMainSettings.settings?.enableEmailConfirmation === true ? 'true' : 'false',
+        enableNewUserRegistration:
+          data?.getMainSettings.settings?.enableNewUserRegistration === true ? 'true' : 'false',
+        termsAndConditionsUrl: data?.getMainSettings.settings?.termsAndConditionsUrl || '',
+        privacyPolicyUrl: data?.getMainSettings.settings?.privacyPolicyUrl || '',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editMainSettings({
+          options: {
+            title: values.title || '',
+            defaultLanguage: values.defaultLanguage || '',
+            defaultTimezone: values.defaultTimezone || '',
+            enableEmailConfirmation: values.enableEmailConfirmation === 'true',
+            enableNewUserRegistration: values.enableNewUserRegistration === 'true',
+            termsAndConditionsUrl: values.termsAndConditionsUrl || '',
+            privacyPolicyUrl: values.privacyPolicyUrl || '',
+          },
+        })
+
+        if (
+          response.data?.editMainSettings.errors &&
+          response.data.editMainSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editMainSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editMainSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              title: response.data.editMainSettings.settings.title || '',
+              defaultLanguage: response.data.editMainSettings.settings.defaultLanguage || '',
+              defaultTimezone: response.data.editMainSettings.settings.defaultTimezone || '',
+              enableEmailConfirmation:
+                response.data.editMainSettings.settings.enableEmailConfirmation === true
+                  ? 'true'
+                  : 'false',
+              enableNewUserRegistration:
+                response.data.editMainSettings.settings.enableNewUserRegistration === true
+                  ? 'true'
+                  : 'false',
+              termsAndConditionsUrl:
+                response.data.editMainSettings.settings.termsAndConditionsUrl || '',
+              privacyPolicyUrl: response.data.editMainSettings.settings.privacyPolicyUrl || '',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
@@ -51,30 +103,6 @@ const MainSettings: React.FC = () => {
                 >
                   <option value="english">English</option>
                 </Input>
-              </FormGroup>
-
-              <FormGroup>
-                <label htmlFor="logo">Website Logo</label>
-                <Input
-                  type="text"
-                  name="logo"
-                  id="logo"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.websiteLogoUrl}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <label htmlFor="favicon">Favicon</label>
-                <Input
-                  type="text"
-                  name="favicon"
-                  id="favicon"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.faviconLogoUrl}
-                />
               </FormGroup>
 
               <FormGroup>

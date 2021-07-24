@@ -1,5 +1,6 @@
 import { ClientOptions, dedupExchange, fetchExchange } from 'urql'
 import { cacheExchange } from '@urql/exchange-graphcache'
+import { multipartFetchExchange } from '@urql/exchange-multipart-fetch'
 
 import { GRAPHQL_ENDPOINT } from '../config/app'
 import { LoginMutation, MeQuery, MeDocument, LogoutMutation } from '../generated/graphql'
@@ -47,5 +48,6 @@ export const createUrqlClient = (ssrExchange: any): ClientOptions => ({
     }),
     ssrExchange,
     fetchExchange,
+    multipartFetchExchange,
   ],
 })

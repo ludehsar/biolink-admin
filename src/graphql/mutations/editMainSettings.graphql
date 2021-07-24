@@ -6,8 +6,6 @@ mutation EditMainSettings($options: MainSettingsInput!) {
     settings {
       title
       defaultLanguage
-      websiteLogoUrl
-      faviconLogoUrl
       defaultTimezone
       enableEmailConfirmation
       enableNewUserRegistration

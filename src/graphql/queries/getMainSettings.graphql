@@ -6,8 +6,6 @@ query GetMainSettings {
     settings {
       title
       defaultLanguage
-      websiteLogoUrl
-      faviconLogoUrl
       defaultTimezone
       enableEmailConfirmation
       enableNewUserRegistration

@@ -12,8 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
 };
 
 export type AdminRole = {
@@ -454,8 +452,6 @@ export type LoginInput = {
 export type MainSettingsInput = {
   title?: Maybe<Scalars['String']>;
   defaultLanguage?: Maybe<Scalars['String']>;
-  websiteLogo?: Maybe<Scalars['Upload']>;
-  faviconLogo?: Maybe<Scalars['Upload']>;
   defaultTimezone?: Maybe<Scalars['String']>;
   enableEmailConfirmation?: Maybe<Scalars['Boolean']>;
   enableNewUserRegistration?: Maybe<Scalars['Boolean']>;
@@ -473,8 +469,6 @@ export type MainSystemSettings = {
   __typename?: 'MainSystemSettings';
   title?: Maybe<Scalars['String']>;
   defaultLanguage?: Maybe<Scalars['String']>;
-  websiteLogoUrl?: Maybe<Scalars['String']>;
-  faviconLogoUrl?: Maybe<Scalars['String']>;
   defaultTimezone?: Maybe<Scalars['String']>;
   enableEmailConfirmation?: Maybe<Scalars['Boolean']>;
   enableNewUserRegistration?: Maybe<Scalars['Boolean']>;
@@ -1351,7 +1345,6 @@ export type TaxResponse = {
   tax?: Maybe<Tax>;
 };
 
-
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['String']>;
@@ -1951,7 +1944,7 @@ export type EditMainSettingsMutation = (
       & ReceivedErrorsFragment
     )>>, settings?: Maybe<(
       { __typename?: 'MainSystemSettings' }
-      & Pick<MainSystemSettings, 'title' | 'defaultLanguage' | 'websiteLogoUrl' | 'faviconLogoUrl' | 'defaultTimezone' | 'enableEmailConfirmation' | 'enableNewUserRegistration' | 'termsAndConditionsUrl' | 'privacyPolicyUrl'>
+      & Pick<MainSystemSettings, 'title' | 'defaultLanguage' | 'defaultTimezone' | 'enableEmailConfirmation' | 'enableNewUserRegistration' | 'termsAndConditionsUrl' | 'privacyPolicyUrl'>
     )> }
   ) }
 );
@@ -3253,7 +3246,7 @@ export type GetMainSettingsQuery = (
       & ReceivedErrorsFragment
     )>>, settings?: Maybe<(
       { __typename?: 'MainSystemSettings' }
-      & Pick<MainSystemSettings, 'title' | 'defaultLanguage' | 'websiteLogoUrl' | 'faviconLogoUrl' | 'defaultTimezone' | 'enableEmailConfirmation' | 'enableNewUserRegistration' | 'termsAndConditionsUrl' | 'privacyPolicyUrl'>
+      & Pick<MainSystemSettings, 'title' | 'defaultLanguage' | 'defaultTimezone' | 'enableEmailConfirmation' | 'enableNewUserRegistration' | 'termsAndConditionsUrl' | 'privacyPolicyUrl'>
     )> }
   ) }
 );
@@ -4022,8 +4015,6 @@ export const EditMainSettingsDocument = gql`
     settings {
       title
       defaultLanguage
-      websiteLogoUrl
-      faviconLogoUrl
       defaultTimezone
       enableEmailConfirmation
       enableNewUserRegistration
@@ -5530,8 +5521,6 @@ export const GetMainSettingsDocument = gql`
     settings {
       title
       defaultLanguage
-      websiteLogoUrl
-      faviconLogoUrl
       defaultTimezone
       enableEmailConfirmation
       enableNewUserRegistration
