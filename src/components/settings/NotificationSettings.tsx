@@ -1,18 +1,72 @@
+import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
+import {
+  useEditNotificationSettingsMutation,
+  useGetNotificationSettingsQuery,
+} from '../../generated/graphql'
 
 const NotificationSettings: React.FC = () => {
+  const [{ data }] = useGetNotificationSettingsQuery()
+  const [, editNotificationSettings] = useEditNotificationSettingsMutation()
+
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        emailsToBeNotified: [].join('\n').toString(),
-        emailOnNewUser: 'false',
-        emailOnNewPayment: 'false',
+        emailsToBeNotified: (data?.getNotificationSettings.settings?.emailsToBeNotified || [])
+          .join('\n')
+          .toString(),
+        emailOnNewUser:
+          data?.getNotificationSettings.settings?.emailOnNewUser === true ? 'true' : 'false',
+        emailOnNewPayment:
+          data?.getNotificationSettings.settings?.emailOnNewPayment === true ? 'true' : 'false',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        alert(JSON.stringify(values))
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const response = await editNotificationSettings({
+          options: {
+            emailOnNewPayment: values.emailOnNewPayment === 'true',
+            emailOnNewUser: values.emailOnNewUser === 'true',
+            emailsToBeNotified: values.emailsToBeNotified.split('\n'),
+          },
+        })
+
+        if (
+          response.data?.editNotificationSettings.errors &&
+          response.data.editNotificationSettings.errors.length > 0
+        ) {
+          Swal.fire({
+            title: 'Error!',
+            text: response.data.editNotificationSettings.errors[0].message,
+            icon: 'error',
+          })
+        }
+
+        if (response.data?.editNotificationSettings.settings) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Successfully edited email settings',
+            icon: 'success',
+          })
+          resetForm({
+            values: {
+              emailsToBeNotified: (
+                response.data.editNotificationSettings.settings.emailsToBeNotified || []
+              )
+                .join('\n')
+                .toString(),
+              emailOnNewUser:
+                response.data.editNotificationSettings.settings.emailOnNewUser === true
+                  ? 'true'
+                  : 'false',
+              emailOnNewPayment:
+                response.data.editNotificationSettings.settings.emailOnNewPayment === true
+                  ? 'true'
+                  : 'false',
+            },
+          })
+        }
         setSubmitting(false)
         return
       }}
