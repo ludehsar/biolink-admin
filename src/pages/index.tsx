@@ -11,39 +11,29 @@ import SummaryCard from '../components/SummaryCard/SummaryCard'
 import {
   useGetDashboardTotalCountsQuery,
   useGetLast30DaysEarningChartDataQuery,
+  useGetUsersAndAdminsCountDataQuery,
 } from '../generated/graphql'
 import moment from 'moment'
-
-const barOptions = {
-  scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
-  },
-}
 
 const IndexPage: NextPage = () => {
   const [{ data: countData }] = useGetDashboardTotalCountsQuery()
   const [{ data: last30DaysEarningData }] = useGetLast30DaysEarningChartDataQuery()
+  const [{ data: usersAdminsCountData }] = useGetUsersAndAdminsCountDataQuery()
 
   const barData = {
     labels:
       last30DaysEarningData?.getLast30DaysEarningChartData.result?.map((data) =>
-        moment.unix(parseInt(data.date || '0') / 100).format('DD MMM')
+        moment.unix(parseInt(data.date || '0') / 1000).format('DD MMM')
       ) || [],
     datasets: [
       {
         label: 'Earned',
         barPercentage: 1.0,
-        categoryPercentage: 0.8,
+        categoryPercentage: 0.9,
         // maxBarThickness: 32,
         data:
           last30DaysEarningData?.getLast30DaysEarningChartData.result?.map(
-            (data) => (data.earned || 0) / 1000
+            (data) => (data.earned || 0) / 100
           ) || [],
         backgroundColor: ['rgb(80, 137, 198)'],
         borderColor: ['rgb(80, 137, 198)'],
@@ -57,7 +47,10 @@ const IndexPage: NextPage = () => {
     datasets: [
       {
         label: '# of Users and Admins',
-        data: [19, 2],
+        data: [
+          usersAdminsCountData?.getUsersAndAdminsCountData.result?.totalUsers,
+          usersAdminsCountData?.getUsersAndAdminsCountData.result?.totalAdmins,
+        ],
         backgroundColor: ['rgb(3, 83, 151)', 'rgb(255, 170, 76)'],
         borderColor: ['rgb(3, 83, 151)', 'rgb(255, 170, 76)'],
         borderWidth: 1,
@@ -145,7 +138,7 @@ const IndexPage: NextPage = () => {
                 <h3 className="mb-0">Last 30 Days Earnings</h3>
               </CardHeader>
               <CardBody>
-                <Bar data={barData} options={barOptions} />
+                <Bar data={barData} />
               </CardBody>
             </Card>
           </Col>

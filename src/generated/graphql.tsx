@@ -968,6 +968,7 @@ export type Query = {
   getCode?: Maybe<CodeResponse>;
   getDashboardTotalCounts: DashboardTotalCountsResponse;
   getLast30DaysEarningChartData: EarningChartResponse;
+  getUsersAndAdminsCountData: UsersAdminsCountResponse;
   getAllLinks?: Maybe<LinkConnection>;
   getAllEmbeds?: Maybe<LinkConnection>;
   getAllStripePayments?: Maybe<PaymentConnection>;
@@ -1497,6 +1498,18 @@ export type UsernameResponse = {
   __typename?: 'UsernameResponse';
   errors?: Maybe<Array<ErrorResponse>>;
   username?: Maybe<Username>;
+};
+
+export type UsersAdminsCount = {
+  __typename?: 'UsersAdminsCount';
+  totalUsers?: Maybe<Scalars['Int']>;
+  totalAdmins?: Maybe<Scalars['Int']>;
+};
+
+export type UsersAdminsCountResponse = {
+  __typename?: 'UsersAdminsCountResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  result?: Maybe<UsersAdminsCount>;
 };
 
 export type Verification = {
@@ -3584,6 +3597,23 @@ export type GetUsernameQuery = (
       )> }
     )> }
   )> }
+);
+
+export type GetUsersAndAdminsCountDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersAndAdminsCountDataQuery = (
+  { __typename?: 'Query' }
+  & { getUsersAndAdminsCountData: (
+    { __typename?: 'UsersAdminsCountResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, result?: Maybe<(
+      { __typename?: 'UsersAdminsCount' }
+      & Pick<UsersAdminsCount, 'totalUsers' | 'totalAdmins'>
+    )> }
+  ) }
 );
 
 export type GetVerificationQueryVariables = Exact<{
@@ -6040,6 +6070,23 @@ export const GetUsernameDocument = gql`
 
 export function useGetUsernameQuery(options: Omit<Urql.UseQueryArgs<GetUsernameQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUsernameQuery>({ query: GetUsernameDocument, ...options });
+};
+export const GetUsersAndAdminsCountDataDocument = gql`
+    query GetUsersAndAdminsCountData {
+  getUsersAndAdminsCountData {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      totalUsers
+      totalAdmins
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetUsersAndAdminsCountDataQuery(options: Omit<Urql.UseQueryArgs<GetUsersAndAdminsCountDataQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUsersAndAdminsCountDataQuery>({ query: GetUsersAndAdminsCountDataDocument, ...options });
 };
 export const GetVerificationDocument = gql`
     query GetVerification($verificationId: String!) {
