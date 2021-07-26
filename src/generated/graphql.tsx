@@ -984,6 +984,7 @@ export type Query = {
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
+  getUserSummaryCounts?: Maybe<UserTotalCountsResponse>;
   getAllUsernames?: Maybe<UsernameConnection>;
   getAllPremiumUsernames?: Maybe<UsernameConnection>;
   getAllTrademarkUsernames?: Maybe<UsernameConnection>;
@@ -1148,6 +1149,11 @@ export type QueryGetAllAdminsArgs = {
 
 export type QueryGetUserArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryGetUserSummaryCountsArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -1431,6 +1437,20 @@ export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<ErrorResponse>>;
   user?: Maybe<User>;
+};
+
+export type UserTotalCounts = {
+  __typename?: 'UserTotalCounts';
+  totalBiolinks?: Maybe<Scalars['Int']>;
+  totalShortenedLinks?: Maybe<Scalars['Int']>;
+  totalReferralCodes?: Maybe<Scalars['Int']>;
+  totalPayed?: Maybe<Scalars['Int']>;
+};
+
+export type UserTotalCountsResponse = {
+  __typename?: 'UserTotalCountsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  result?: Maybe<UserTotalCounts>;
 };
 
 export type Username = {
@@ -3487,6 +3507,25 @@ export type GetUserQuery = (
         { __typename?: 'AdminRole' }
         & Pick<AdminRole, 'id' | 'roleName'>
       )> }
+    )> }
+  )> }
+);
+
+export type GetUserSummaryCountsQueryVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GetUserSummaryCountsQuery = (
+  { __typename?: 'Query' }
+  & { getUserSummaryCounts?: Maybe<(
+    { __typename?: 'UserTotalCountsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, result?: Maybe<(
+      { __typename?: 'UserTotalCounts' }
+      & Pick<UserTotalCounts, 'totalBiolinks' | 'totalShortenedLinks' | 'totalReferralCodes' | 'totalPayed'>
     )> }
   )> }
 );
@@ -5906,6 +5945,25 @@ export const GetUserDocument = gql`
 
 export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetUserQuery>({ query: GetUserDocument, ...options });
+};
+export const GetUserSummaryCountsDocument = gql`
+    query GetUserSummaryCounts($userId: String!) {
+  getUserSummaryCounts(userId: $userId) {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      totalBiolinks
+      totalShortenedLinks
+      totalReferralCodes
+      totalPayed
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetUserSummaryCountsQuery(options: Omit<Urql.UseQueryArgs<GetUserSummaryCountsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetUserSummaryCountsQuery>({ query: GetUserSummaryCountsDocument, ...options });
 };
 export const GetUsernameDocument = gql`
     query GetUsername($usernameId: String!) {

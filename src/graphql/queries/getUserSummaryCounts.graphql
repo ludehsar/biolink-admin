@@ -1,0 +1,13 @@
+query GetUserSummaryCounts($userId: String!) {
+  getUserSummaryCounts(userId: $userId) {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      totalBiolinks
+      totalShortenedLinks
+      totalReferralCodes
+      totalPayed
+    }
+  }
+}
