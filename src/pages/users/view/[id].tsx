@@ -44,8 +44,8 @@ const ViewUsersPage: NextPage = () => {
           <Col lg="6" xl="3">
             <SummaryCard
               count={userSummaryData?.getUserSummaryCounts?.result?.totalPayed || 0}
-              title="Payments"
-              icon="fas fa-money-check-alt"
+              title="Paid"
+              icon="fas fa-dollar-sign"
               iconBackgroundClassName="bg-success"
             />
           </Col>

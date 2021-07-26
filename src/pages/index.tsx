@@ -1,16 +1,69 @@
 import React from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
+import { Bar, Pie } from 'react-chartjs-2'
+import { Row, Col, Container, Card, CardHeader, CardBody } from 'reactstrap'
 
 import AdminLayout from '../layouts/Admin.layout'
 import AdminHeader from '../components/Header/AdminHeader'
 import { createUrqlClient } from '../utils/createUrqlClient'
-import { Row, Col } from 'reactstrap'
 import SummaryCard from '../components/SummaryCard/SummaryCard'
-import { useGetDashboardTotalCountsQuery } from '../generated/graphql'
+import {
+  useGetDashboardTotalCountsQuery,
+  useGetLast30DaysEarningChartDataQuery,
+} from '../generated/graphql'
+import moment from 'moment'
+
+const barOptions = {
+  scales: {
+    yAxes: [
+      {
+        ticks: {
+          beginAtZero: true,
+        },
+      },
+    ],
+  },
+}
 
 const IndexPage: NextPage = () => {
   const [{ data: countData }] = useGetDashboardTotalCountsQuery()
+  const [{ data: last30DaysEarningData }] = useGetLast30DaysEarningChartDataQuery()
+
+  const barData = {
+    labels:
+      last30DaysEarningData?.getLast30DaysEarningChartData.result?.map((data) =>
+        moment.unix(parseInt(data.date || '0') / 100).format('DD MMM')
+      ) || [],
+    datasets: [
+      {
+        label: 'Earned',
+        barPercentage: 1.0,
+        categoryPercentage: 0.8,
+        // maxBarThickness: 32,
+        data:
+          last30DaysEarningData?.getLast30DaysEarningChartData.result?.map(
+            (data) => (data.earned || 0) / 1000
+          ) || [],
+        backgroundColor: ['rgb(80, 137, 198)'],
+        borderColor: ['rgb(80, 137, 198)'],
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  const pieData = {
+    labels: ['User', 'Admin'],
+    datasets: [
+      {
+        label: '# of Users and Admins',
+        data: [19, 2],
+        backgroundColor: ['rgb(3, 83, 151)', 'rgb(255, 170, 76)'],
+        borderColor: ['rgb(3, 83, 151)', 'rgb(255, 170, 76)'],
+        borderWidth: 1,
+      },
+    ],
+  }
 
   return (
     <AdminLayout>
@@ -35,7 +88,7 @@ const IndexPage: NextPage = () => {
           <Col lg="6" xl="3">
             <SummaryCard
               count={countData?.getDashboardTotalCounts.result?.totalBiolinkPageViewsTracked || 0}
-              title="Biolinks Pageview"
+              title="Biolink Pageview"
               icon="fas fa-binoculars"
               iconBackgroundClassName="bg-danger"
             />
@@ -84,6 +137,30 @@ const IndexPage: NextPage = () => {
           </Col>
         </Row>
       </AdminHeader>
+      <Container className="mt--7" fluid>
+        <Row>
+          <Col xl={8}>
+            <Card className="shadow">
+              <CardHeader className="bg-transparent">
+                <h3 className="mb-0">Last 30 Days Earnings</h3>
+              </CardHeader>
+              <CardBody>
+                <Bar data={barData} options={barOptions} />
+              </CardBody>
+            </Card>
+          </Col>
+          <Col xl={4}>
+            <Card className="shadow">
+              <CardHeader className="bg-transparent">
+                <h3 className="mb-0">User / Admin</h3>
+              </CardHeader>
+              <CardBody>
+                <Pie data={pieData} />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </AdminLayout>
   )
 }

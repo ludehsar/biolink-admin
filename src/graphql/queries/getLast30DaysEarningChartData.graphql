@@ -1,0 +1,11 @@
+query GetLast30DaysEarningChartData {
+  getLast30DaysEarningChartData {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      earned
+      date
+    }
+  }
+}

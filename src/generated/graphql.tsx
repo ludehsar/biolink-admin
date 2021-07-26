@@ -357,6 +357,18 @@ export type Domain = {
   deletedAt?: Maybe<Scalars['String']>;
 };
 
+export type EarningChartResponse = {
+  __typename?: 'EarningChartResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  result?: Maybe<Array<EarningChartValue>>;
+};
+
+export type EarningChartValue = {
+  __typename?: 'EarningChartValue';
+  earned?: Maybe<Scalars['Int']>;
+  date?: Maybe<Scalars['String']>;
+};
+
 export type EditUserInput = {
   email: Scalars['String'];
   adminRoleId?: Maybe<Scalars['Float']>;
@@ -955,6 +967,7 @@ export type Query = {
   getAllReferrals?: Maybe<CodeConnection>;
   getCode?: Maybe<CodeResponse>;
   getDashboardTotalCounts: DashboardTotalCountsResponse;
+  getLast30DaysEarningChartData: EarningChartResponse;
   getAllLinks?: Maybe<LinkConnection>;
   getAllEmbeds?: Maybe<LinkConnection>;
   getAllStripePayments?: Maybe<PaymentConnection>;
@@ -3270,6 +3283,23 @@ export type GetFacebookSettingsQuery = (
       { __typename?: 'FacebookSystemSettings' }
       & Pick<FacebookSystemSettings, 'enableFacebookLogin'>
     )> }
+  ) }
+);
+
+export type GetLast30DaysEarningChartDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLast30DaysEarningChartDataQuery = (
+  { __typename?: 'Query' }
+  & { getLast30DaysEarningChartData: (
+    { __typename?: 'EarningChartResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, result?: Maybe<Array<(
+      { __typename?: 'EarningChartValue' }
+      & Pick<EarningChartValue, 'earned' | 'date'>
+    )>> }
   ) }
 );
 
@@ -5590,6 +5620,23 @@ export const GetFacebookSettingsDocument = gql`
 
 export function useGetFacebookSettingsQuery(options: Omit<Urql.UseQueryArgs<GetFacebookSettingsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetFacebookSettingsQuery>({ query: GetFacebookSettingsDocument, ...options });
+};
+export const GetLast30DaysEarningChartDataDocument = gql`
+    query GetLast30DaysEarningChartData {
+  getLast30DaysEarningChartData {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      earned
+      date
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetLast30DaysEarningChartDataQuery(options: Omit<Urql.UseQueryArgs<GetLast30DaysEarningChartDataQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetLast30DaysEarningChartDataQuery>({ query: GetLast30DaysEarningChartDataDocument, ...options });
 };
 export const GetLinkSettingsDocument = gql`
     query GetLinkSettings {
