@@ -122,7 +122,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalEarned || 0}
+              count={(countData?.getDashboardTotalCounts.result?.totalEarned || 0) / 100}
               title="Total Earned"
               icon="fas fa-dollar-sign"
               iconBackgroundClassName="bg-success"
