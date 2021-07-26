@@ -322,6 +322,24 @@ export type ConnectionArgs = {
   last?: Maybe<Scalars['Float']>;
 };
 
+export type DashboardTotalCounts = {
+  __typename?: 'DashboardTotalCounts';
+  totalBiolinks?: Maybe<Scalars['Int']>;
+  totalShortenedLinks?: Maybe<Scalars['Int']>;
+  totalBiolinkPageViewsTracked?: Maybe<Scalars['Int']>;
+  totalLinkClickViewsTracked?: Maybe<Scalars['Int']>;
+  totalUsers?: Maybe<Scalars['Int']>;
+  totalReferralCodes?: Maybe<Scalars['Int']>;
+  totalTransactionsMade?: Maybe<Scalars['Int']>;
+  totalEarned?: Maybe<Scalars['Int']>;
+};
+
+export type DashboardTotalCountsResponse = {
+  __typename?: 'DashboardTotalCountsResponse';
+  errors?: Maybe<Array<ErrorResponse>>;
+  result?: Maybe<DashboardTotalCounts>;
+};
+
 export type DefaultResponse = {
   __typename?: 'DefaultResponse';
   errors?: Maybe<Array<ErrorResponse>>;
@@ -936,6 +954,7 @@ export type Query = {
   getAllDiscounts?: Maybe<CodeConnection>;
   getAllReferrals?: Maybe<CodeConnection>;
   getCode?: Maybe<CodeResponse>;
+  getDashboardTotalCounts: DashboardTotalCountsResponse;
   getAllLinks?: Maybe<LinkConnection>;
   getAllEmbeds?: Maybe<LinkConnection>;
   getAllStripePayments?: Maybe<PaymentConnection>;
@@ -3181,6 +3200,23 @@ export type GetCodeQuery = (
       )> }
     )> }
   )> }
+);
+
+export type GetDashboardTotalCountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDashboardTotalCountsQuery = (
+  { __typename?: 'Query' }
+  & { getDashboardTotalCounts: (
+    { __typename?: 'DashboardTotalCountsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, result?: Maybe<(
+      { __typename?: 'DashboardTotalCounts' }
+      & Pick<DashboardTotalCounts, 'totalBiolinkPageViewsTracked' | 'totalBiolinks' | 'totalEarned' | 'totalLinkClickViewsTracked' | 'totalReferralCodes' | 'totalShortenedLinks' | 'totalTransactionsMade' | 'totalUsers'>
+    )> }
+  ) }
 );
 
 export type GetEmailSettingsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -5459,6 +5495,29 @@ export const GetCodeDocument = gql`
 
 export function useGetCodeQuery(options: Omit<Urql.UseQueryArgs<GetCodeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCodeQuery>({ query: GetCodeDocument, ...options });
+};
+export const GetDashboardTotalCountsDocument = gql`
+    query GetDashboardTotalCounts {
+  getDashboardTotalCounts {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      totalBiolinkPageViewsTracked
+      totalBiolinks
+      totalEarned
+      totalLinkClickViewsTracked
+      totalReferralCodes
+      totalShortenedLinks
+      totalTransactionsMade
+      totalUsers
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useGetDashboardTotalCountsQuery(options: Omit<Urql.UseQueryArgs<GetDashboardTotalCountsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetDashboardTotalCountsQuery>({ query: GetDashboardTotalCountsDocument, ...options });
 };
 export const GetEmailSettingsDocument = gql`
     query GetEmailSettings {

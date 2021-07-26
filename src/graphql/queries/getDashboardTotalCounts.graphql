@@ -1,0 +1,17 @@
+query GetDashboardTotalCounts {
+  getDashboardTotalCounts {
+    errors {
+      ...ReceivedErrors
+    }
+    result {
+      totalBiolinkPageViewsTracked
+      totalBiolinks
+      totalEarned
+      totalLinkClickViewsTracked
+      totalReferralCodes
+      totalShortenedLinks
+      totalTransactionsMade
+      totalUsers
+    }
+  }
+}
