@@ -39,18 +39,6 @@ query GetUser($id: String!) {
         profilePhotoUrl
         displayName
       }
-      activities {
-        id
-        ipAddress
-        cityName
-        countryCode
-        browserName
-        browserLanguage
-        deviceType
-        osName
-        description
-        createdAt
-      }
       links {
         id
         linkType

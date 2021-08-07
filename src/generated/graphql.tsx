@@ -1405,15 +1405,12 @@ export type User = {
   deletedAt?: Maybe<Scalars['String']>;
   biolinks?: Maybe<Array<Biolink>>;
   domains?: Maybe<Array<Domain>>;
-  activities?: Maybe<Array<UserLogs>>;
   links?: Maybe<Array<Link>>;
   plan?: Maybe<Plan>;
   usernames?: Maybe<Array<Username>>;
   payments?: Maybe<Array<Payment>>;
   codes?: Maybe<Array<Code>>;
   referrals?: Maybe<Array<Referral>>;
-  reports?: Maybe<Array<Report>>;
-  supports?: Maybe<Array<Support>>;
   adminRole?: Maybe<AdminRole>;
 };
 
@@ -1429,22 +1426,6 @@ export type UserEdge = {
   node: User;
   /** Used in `before` and `after` args */
   cursor: Scalars['String'];
-};
-
-export type UserLogs = {
-  __typename?: 'UserLogs';
-  id?: Maybe<Scalars['String']>;
-  ipAddress?: Maybe<Scalars['String']>;
-  cityName?: Maybe<Scalars['String']>;
-  countryCode?: Maybe<Scalars['String']>;
-  browserName?: Maybe<Scalars['String']>;
-  browserLanguage?: Maybe<Scalars['String']>;
-  deviceType?: Maybe<Scalars['String']>;
-  osName?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  showInActivity?: Maybe<Scalars['Boolean']>;
-  createdAt?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
 };
 
 export type UserResponse = {
@@ -3537,9 +3518,6 @@ export type GetUserQuery = (
           { __typename?: 'Username' }
           & Pick<Username, 'id' | 'username'>
         )> }
-      )>>, activities?: Maybe<Array<(
-        { __typename?: 'UserLogs' }
-        & Pick<UserLogs, 'id' | 'ipAddress' | 'cityName' | 'countryCode' | 'browserName' | 'browserLanguage' | 'deviceType' | 'osName' | 'description' | 'createdAt'>
       )>>, links?: Maybe<Array<(
         { __typename?: 'Link' }
         & Pick<Link, 'id' | 'linkType' | 'linkTitle' | 'url' | 'shortenedUrl' | 'note' | 'createdAt' | 'updatedAt'>
@@ -5984,18 +5962,6 @@ export const GetUserDocument = gql`
         }
         profilePhotoUrl
         displayName
-      }
-      activities {
-        id
-        ipAddress
-        cityName
-        countryCode
-        browserName
-        browserLanguage
-        deviceType
-        osName
-        description
-        createdAt
       }
       links {
         id
