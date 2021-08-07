@@ -60,6 +60,10 @@ const links: ILink[] = [
         name: 'Admins',
         href: '/users/admins',
       },
+      {
+        name: 'Deleted Accounts',
+        href: '/users/trash',
+      },
     ],
   },
   {
