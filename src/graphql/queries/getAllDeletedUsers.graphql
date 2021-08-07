@@ -1,0 +1,23 @@
+query GetAllDeletedUsers($options:ConnectionArgs!) {
+  getAllDeletedUsers(options: $options) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        email
+        lastActiveTill
+        language
+        lastIPAddress
+        country
+        createdAt
+        deletedAt
+      }
+      cursor
+    }
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}

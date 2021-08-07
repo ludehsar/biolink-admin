@@ -537,6 +537,7 @@ export type Mutation = {
   editTax?: Maybe<TaxResponse>;
   addNewUser?: Maybe<DefaultResponse>;
   editUser?: Maybe<DefaultResponse>;
+  deleteUser?: Maybe<DefaultResponse>;
   addUsername?: Maybe<UsernameResponse>;
   editUsername?: Maybe<UsernameResponse>;
   changeVerificationStatus?: Maybe<VerificationResponse>;
@@ -688,6 +689,11 @@ export type MutationAddNewUserArgs = {
 
 export type MutationEditUserArgs = {
   options: EditUserInput;
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteUserArgs = {
   id: Scalars['String'];
 };
 
@@ -997,6 +1003,7 @@ export type Query = {
   getTax?: Maybe<TaxResponse>;
   getAllUsers?: Maybe<UserConnection>;
   getAllAdmins?: Maybe<UserConnection>;
+  getAllDeletedUsers?: Maybe<UserConnection>;
   getUser?: Maybe<UserResponse>;
   getUserSummaryCounts?: Maybe<UserTotalCountsResponse>;
   getAllUsernames?: Maybe<UsernameConnection>;
@@ -1157,6 +1164,11 @@ export type QueryGetAllUsersArgs = {
 
 
 export type QueryGetAllAdminsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllDeletedUsersArgs = {
   options: ConnectionArgs;
 };
 
@@ -1772,6 +1784,22 @@ export type CreatePlanMutation = (
       )> }
     )> }
   ) }
+);
+
+export type DeleteUserMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteUserMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteUser?: Maybe<(
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  )> }
 );
 
 export type EditAdminRoleMutationVariables = Exact<{
@@ -2436,6 +2464,32 @@ export type GetAlLCategoriesQuery = (
         { __typename?: 'Category' }
         & Pick<Category, 'id' | 'categoryName' | 'createdAt' | 'updatedAt' | 'deletedAt'>
       ) }
+    )>> }
+  )> }
+);
+
+export type GetAllDeletedUsersQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllDeletedUsersQuery = (
+  { __typename?: 'Query' }
+  & { getAllDeletedUsers?: Maybe<(
+    { __typename?: 'UserConnection' }
+    & { pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & PageInfoFragment
+    )>, edges?: Maybe<Array<(
+      { __typename?: 'UserEdge' }
+      & Pick<UserEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email' | 'lastActiveTill' | 'language' | 'lastIPAddress' | 'country' | 'createdAt' | 'deletedAt'>
+      ) }
+    )>>, errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
     )>> }
   )> }
 );
@@ -3909,6 +3963,19 @@ export const CreatePlanDocument = gql`
 export function useCreatePlanMutation() {
   return Urql.useMutation<CreatePlanMutation, CreatePlanMutationVariables>(CreatePlanDocument);
 };
+export const DeleteUserDocument = gql`
+    mutation DeleteUser($id: String!) {
+  deleteUser(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useDeleteUserMutation() {
+  return Urql.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument);
+};
 export const EditAdminRoleDocument = gql`
     mutation EditAdminRole($id: Int!, $options: NewAdminRoleInput!) {
   editAdminRole(id: $id, options: $options) {
@@ -4635,6 +4702,36 @@ ${PageInfoFragmentDoc}`;
 
 export function useGetAlLCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAlLCategoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAlLCategoriesQuery>({ query: GetAlLCategoriesDocument, ...options });
+};
+export const GetAllDeletedUsersDocument = gql`
+    query GetAllDeletedUsers($options: ConnectionArgs!) {
+  getAllDeletedUsers(options: $options) {
+    pageInfo {
+      ...PageInfo
+    }
+    edges {
+      node {
+        id
+        email
+        lastActiveTill
+        language
+        lastIPAddress
+        country
+        createdAt
+        deletedAt
+      }
+      cursor
+    }
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${PageInfoFragmentDoc}
+${ReceivedErrorsFragmentDoc}`;
+
+export function useGetAllDeletedUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllDeletedUsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllDeletedUsersQuery>({ query: GetAllDeletedUsersDocument, ...options });
 };
 export const GetAllDirectoriesDocument = gql`
     query GetAllDirectories($options: ConnectionArgs!) {
