@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'
 import { useCallback } from 'react'
 import { Card, CardHeader, CardBody, Row, Col, FormGroup, Label, Input, Button } from 'reactstrap'
 import { useDeleteUserMutation, User } from '../../generated/graphql'
+import Link from 'next/link'
 
 export interface UserDetailsProps {
   user?: User
@@ -53,15 +54,21 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
   return (
     <Card className="shadow">
       <CardHeader className="bg-transparent">
-        <h3 className="mb-0 float-left">User Details</h3>
-        <Button
-          className="float-right"
-          color="danger"
-          size="sm"
-          onClick={showDeleteUserConfirmBoxAndDeleteUser}
-        >
-          Delete
-        </Button>
+        <Row>
+          <Col xs={8}>
+            <h3 className="mb-0">User Details</h3>
+          </Col>
+          <Col className="text-right" xs={4}>
+            <Link href={'/users/edit/' + user?.id}>
+              <Button color="primary" href={'/users/edit/' + user?.id} size="sm">
+                Edit
+              </Button>
+            </Link>
+            <Button color="danger" size="sm" onClick={showDeleteUserConfirmBoxAndDeleteUser}>
+              Delete
+            </Button>
+          </Col>
+        </Row>
       </CardHeader>
       <CardBody>
         <Row>
