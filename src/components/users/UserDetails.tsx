@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { Card, CardHeader, CardBody, Row, Col, FormGroup, Label, Input, Button } from 'reactstrap'
 import { useDeleteUserMutation, User } from '../../generated/graphql'
 import Link from 'next/link'
+import router from 'next/router'
 
 export interface UserDetailsProps {
   user?: User
@@ -42,11 +43,13 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
           icon: 'error',
         })
       } else {
-        Swal.fire({
+        await Swal.fire({
           title: 'Success!',
           text: 'Successfully deleted the user',
           icon: 'success',
         })
+
+        router.push('/users')
       }
     }
   }, [deleteUser, user?.id])
