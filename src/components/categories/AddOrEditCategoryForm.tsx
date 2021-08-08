@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import ErrorPage from 'next/error'
 import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form } from 'reactstrap'
 import InputField from '../InputField/InputField'
@@ -8,12 +8,14 @@ import {
   useEditCategoryMutation,
   useCreateCategoryMutation,
   useGetCategoryQuery,
+  useDeleteCategoryMutation,
 } from '../../generated/graphql'
 import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import Link from 'next/link'
 import router from 'next/router'
+import Swal from 'sweetalert2'
 
 interface AddOrEditUsersFormProps {
   addErrors: (errors: ErrorResponse[]) => void
@@ -24,7 +26,48 @@ interface AddOrEditUsersFormProps {
 const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
   const [, createCategory] = useCreateCategoryMutation()
   const [, editCategory] = useEditCategoryMutation()
+  const [, deleteCategory] = useDeleteCategoryMutation()
   const [{ data }] = useGetCategoryQuery({ variables: { id: id as number } })
+
+  const showDeleteCategoryConfirmBoxAndDeleteCategory = useCallback(async () => {
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete this category?',
+      text: 'This request cannot be undone',
+      showDenyButton: true,
+      confirmButtonText: `Confirm`,
+      denyButtonText: `Not sure`,
+      confirmButtonColor: '#d33',
+      denyButtonColor: '#3085d6',
+    })
+
+    if (result.isConfirmed) {
+      const response = await deleteCategory({
+        id: id as number,
+      })
+
+      if (response.data?.deleteCategory?.errors && response.data.deleteCategory.errors.length > 0) {
+        Swal.fire({
+          title: 'Error!',
+          text: response.data.deleteCategory.errors[0].message,
+          icon: 'error',
+        })
+      } else if (response.error) {
+        Swal.fire({
+          title: 'Error!',
+          text: response.error.message,
+          icon: 'error',
+        })
+      } else {
+        await Swal.fire({
+          title: 'Success!',
+          text: 'Successfully deleted the user',
+          icon: 'success',
+        })
+
+        router.push('/categories')
+      }
+    }
+  }, [deleteCategory, id])
 
   return variant === 'Add' || data?.getCategory?.category ? (
     <Container className="mt--7" fluid>
@@ -38,6 +81,13 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
                     {variant === 'Add' ? 'Create New Category' : 'Edit Category'}
                   </h3>
                   <div className="float-right">
+                    <Button
+                      color="danger"
+                      size="sm"
+                      onClick={showDeleteCategoryConfirmBoxAndDeleteCategory}
+                    >
+                      Delete
+                    </Button>
                     <Link href="/categories">
                       <Button color="primary" size="sm">
                         Back
