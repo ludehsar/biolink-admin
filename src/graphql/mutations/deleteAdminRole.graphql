@@ -1,0 +1,7 @@
+mutation DeleteAdminRole($id: Int!) {
+  deleteAdminRole(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}

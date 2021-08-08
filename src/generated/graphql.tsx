@@ -510,6 +510,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createAdminRole: AdminRoleResponse;
   editAdminRole: AdminRoleResponse;
+  deleteAdminRole: DefaultResponse;
   login: UserResponse;
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
@@ -517,6 +518,7 @@ export type Mutation = {
   editBlackList?: Maybe<BlackListResponse>;
   createCategory?: Maybe<CategoryResponse>;
   editCategory?: Maybe<CategoryResponse>;
+  deleteCategory?: Maybe<DefaultResponse>;
   addCode?: Maybe<CodeResponse>;
   editCode?: Maybe<CodeResponse>;
   createPlan: PlanResponse;
@@ -555,6 +557,11 @@ export type MutationEditAdminRoleArgs = {
 };
 
 
+export type MutationDeleteAdminRoleArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type MutationLoginArgs = {
   options: LoginInput;
 };
@@ -583,6 +590,11 @@ export type MutationCreateCategoryArgs = {
 
 export type MutationEditCategoryArgs = {
   options: NewCategoryInput;
+  id: Scalars['Int'];
+};
+
+
+export type MutationDeleteCategoryArgs = {
   id: Scalars['Int'];
 };
 
@@ -1784,6 +1796,38 @@ export type CreatePlanMutation = (
       )> }
     )> }
   ) }
+);
+
+export type DeleteAdminRoleMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteAdminRoleMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteAdminRole: (
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  ) }
+);
+
+export type DeleteCategoryMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteCategory?: Maybe<(
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  )> }
 );
 
 export type DeleteUserMutationVariables = Exact<{
@@ -3962,6 +4006,32 @@ export const CreatePlanDocument = gql`
 
 export function useCreatePlanMutation() {
   return Urql.useMutation<CreatePlanMutation, CreatePlanMutationVariables>(CreatePlanDocument);
+};
+export const DeleteAdminRoleDocument = gql`
+    mutation DeleteAdminRole($id: Int!) {
+  deleteAdminRole(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useDeleteAdminRoleMutation() {
+  return Urql.useMutation<DeleteAdminRoleMutation, DeleteAdminRoleMutationVariables>(DeleteAdminRoleDocument);
+};
+export const DeleteCategoryDocument = gql`
+    mutation DeleteCategory($id: Int!) {
+  deleteCategory(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useDeleteCategoryMutation() {
+  return Urql.useMutation<DeleteCategoryMutation, DeleteCategoryMutationVariables>(DeleteCategoryDocument);
 };
 export const DeleteUserDocument = gql`
     mutation DeleteUser($id: String!) {

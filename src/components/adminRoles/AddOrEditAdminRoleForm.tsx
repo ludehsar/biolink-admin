@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import ErrorPage from 'next/error'
+import Swal from 'sweetalert2'
 import {
   Container,
   Row,
@@ -18,6 +19,7 @@ import {
   ErrorResponse,
   RoleSettingsInput,
   useCreateAdminRoleMutation,
+  useDeleteAdminRoleMutation,
   useEditAdminRoleMutation,
   useGetAdminRoleQuery,
 } from '../../generated/graphql'
@@ -40,7 +42,51 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
 }) => {
   const [, addAdminRole] = useCreateAdminRoleMutation()
   const [, editAdminRole] = useEditAdminRoleMutation()
+  const [, deleteAdminRole] = useDeleteAdminRoleMutation()
   const [{ data }] = useGetAdminRoleQuery({ variables: { id: id as number } })
+
+  const showDeleteAdminRoleConfirmBoxAndDeleteAdminRole = useCallback(async () => {
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete this admin role?',
+      text: 'This request cannot be undone',
+      showDenyButton: true,
+      confirmButtonText: `Confirm`,
+      denyButtonText: `Not sure`,
+      confirmButtonColor: '#d33',
+      denyButtonColor: '#3085d6',
+    })
+
+    if (result.isConfirmed) {
+      const response = await deleteAdminRole({
+        id: id as number,
+      })
+
+      if (
+        response.data?.deleteAdminRole?.errors &&
+        response.data.deleteAdminRole.errors.length > 0
+      ) {
+        Swal.fire({
+          title: 'Error!',
+          text: response.data.deleteAdminRole.errors[0].message,
+          icon: 'error',
+        })
+      } else if (response.error) {
+        Swal.fire({
+          title: 'Error!',
+          text: response.error.message,
+          icon: 'error',
+        })
+      } else {
+        await Swal.fire({
+          title: 'Success!',
+          text: 'Successfully deleted the user',
+          icon: 'success',
+        })
+
+        router.push('/admin-roles')
+      }
+    }
+  }, [deleteAdminRole, id])
 
   return variant === 'Add' || data?.getAdminRole.adminRole ? (
     <Container className="mt--7" fluid>
@@ -54,6 +100,15 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                     {variant === 'Add' ? 'Create New Admin Role' : 'Edit Admin Role'}
                   </h3>
                   <div className="float-right">
+                    {variant === 'Edit' && (
+                      <Button
+                        color="danger"
+                        size="sm"
+                        onClick={showDeleteAdminRoleConfirmBoxAndDeleteAdminRole}
+                      >
+                        Delete
+                      </Button>
+                    )}
                     <Link href="/admin-roles">
                       <Button color="primary" size="sm">
                         Back
