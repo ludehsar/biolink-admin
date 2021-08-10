@@ -1,0 +1,76 @@
+mutation EditBiolink($id: String!, $options: UpdateBiolinkProfileInput!) {
+  editBiolink(id: $id, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    biolink {
+      id
+      profilePhotoUrl
+      coverPhotoUrl
+      displayName
+      city
+      state
+      country
+      latitude
+      longitude
+      bio
+      settings {
+        enableDarkMode
+        showEmail
+        email
+        showPhone
+        phone
+        enableColoredContactButtons
+        addedToDirectory
+        directoryBio
+        enableColoredSocialMediaIcons
+        socialAccountStyleType
+        socialAccounts {
+          platform
+          icon
+          link
+        }
+        enableFacebookPixel
+        facebookPixelId
+        enableGoogleAnalytics
+        googleAnalyticsCode
+        enableEmailCapture
+        emailCaptureId
+        enableUtmParameters
+        utmSource
+        utmMedium
+        utmCampaign
+        blockSearchEngineIndexing
+        pageTitle
+        metaDescription
+        opengraphImageUrl
+        removeDefaultBranding
+        enableCustomBranding
+        customBrandingName
+        customBrandingUrl
+        enablePasswordProtection
+        enableSensitiveContentWarning
+      }
+      verificationStatus
+      verifiedGovernmentId
+      verifiedEmail
+      verifiedPhoneNumber
+      verifiedWorkEmail
+      featured
+      changedUsername
+      createdAt
+      username {
+        id
+        username
+      }
+      user {
+        id
+        email
+      }
+      category {
+        id
+        categoryName
+      }
+    }
+  }
+}

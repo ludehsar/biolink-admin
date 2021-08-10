@@ -514,6 +514,7 @@ export type Mutation = {
   login: UserResponse;
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
+  editBiolink: BiolinkResponse;
   addBlackList?: Maybe<BlackListResponse>;
   editBlackList?: Maybe<BlackListResponse>;
   createCategory?: Maybe<CategoryResponse>;
@@ -569,6 +570,12 @@ export type MutationLoginArgs = {
 
 export type MutationSendForgotPasswordEmailArgs = {
   options: EmailInput;
+};
+
+
+export type MutationEditBiolinkArgs = {
+  options: UpdateBiolinkProfileInput;
+  id: Scalars['String'];
 };
 
 
@@ -1406,6 +1413,15 @@ export type TaxResponse = {
   __typename?: 'TaxResponse';
   errors?: Maybe<Array<ErrorResponse>>;
   tax?: Maybe<Tax>;
+};
+
+export type UpdateBiolinkProfileInput = {
+  displayName?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
+  categoryId?: Maybe<Scalars['Float']>;
 };
 
 export type User = {
@@ -2282,6 +2298,43 @@ export type LogoutMutation = (
       { __typename?: 'ErrorResponse' }
       & ReceivedErrorsFragment
     )>> }
+  ) }
+);
+
+export type EditBiolinkMutationVariables = Exact<{
+  id: Scalars['String'];
+  options: UpdateBiolinkProfileInput;
+}>;
+
+
+export type EditBiolinkMutation = (
+  { __typename?: 'Mutation' }
+  & { editBiolink: (
+    { __typename?: 'BiolinkResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>>, biolink?: Maybe<(
+      { __typename?: 'Biolink' }
+      & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'coverPhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'latitude' | 'longitude' | 'bio' | 'verificationStatus' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'featured' | 'changedUsername' | 'createdAt'>
+      & { settings?: Maybe<(
+        { __typename?: 'BiolinkSettings' }
+        & Pick<BiolinkSettings, 'enableDarkMode' | 'showEmail' | 'email' | 'showPhone' | 'phone' | 'enableColoredContactButtons' | 'addedToDirectory' | 'directoryBio' | 'enableColoredSocialMediaIcons' | 'socialAccountStyleType' | 'enableFacebookPixel' | 'facebookPixelId' | 'enableGoogleAnalytics' | 'googleAnalyticsCode' | 'enableEmailCapture' | 'emailCaptureId' | 'enableUtmParameters' | 'utmSource' | 'utmMedium' | 'utmCampaign' | 'blockSearchEngineIndexing' | 'pageTitle' | 'metaDescription' | 'opengraphImageUrl' | 'removeDefaultBranding' | 'enableCustomBranding' | 'customBrandingName' | 'customBrandingUrl' | 'enablePasswordProtection' | 'enableSensitiveContentWarning'>
+        & { socialAccounts?: Maybe<Array<(
+          { __typename?: 'SocialMediaProps' }
+          & Pick<SocialMediaProps, 'platform' | 'icon' | 'link'>
+        )>> }
+      )>, username?: Maybe<(
+        { __typename?: 'Username' }
+        & Pick<Username, 'id' | 'username'>
+      )>, user?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'email'>
+      )>, category?: Maybe<(
+        { __typename?: 'Category' }
+        & Pick<Category, 'id' | 'categoryName'>
+      )> }
+    )> }
   ) }
 );
 
@@ -4527,6 +4580,88 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const EditBiolinkDocument = gql`
+    mutation EditBiolink($id: String!, $options: UpdateBiolinkProfileInput!) {
+  editBiolink(id: $id, options: $options) {
+    errors {
+      ...ReceivedErrors
+    }
+    biolink {
+      id
+      profilePhotoUrl
+      coverPhotoUrl
+      displayName
+      city
+      state
+      country
+      latitude
+      longitude
+      bio
+      settings {
+        enableDarkMode
+        showEmail
+        email
+        showPhone
+        phone
+        enableColoredContactButtons
+        addedToDirectory
+        directoryBio
+        enableColoredSocialMediaIcons
+        socialAccountStyleType
+        socialAccounts {
+          platform
+          icon
+          link
+        }
+        enableFacebookPixel
+        facebookPixelId
+        enableGoogleAnalytics
+        googleAnalyticsCode
+        enableEmailCapture
+        emailCaptureId
+        enableUtmParameters
+        utmSource
+        utmMedium
+        utmCampaign
+        blockSearchEngineIndexing
+        pageTitle
+        metaDescription
+        opengraphImageUrl
+        removeDefaultBranding
+        enableCustomBranding
+        customBrandingName
+        customBrandingUrl
+        enablePasswordProtection
+        enableSensitiveContentWarning
+      }
+      verificationStatus
+      verifiedGovernmentId
+      verifiedEmail
+      verifiedPhoneNumber
+      verifiedWorkEmail
+      featured
+      changedUsername
+      createdAt
+      username {
+        id
+        username
+      }
+      user {
+        id
+        email
+      }
+      category {
+        id
+        categoryName
+      }
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useEditBiolinkMutation() {
+  return Urql.useMutation<EditBiolinkMutation, EditBiolinkMutationVariables>(EditBiolinkDocument);
 };
 export const GetAdminRoleDocument = gql`
     query GetAdminRole($id: Int!) {
