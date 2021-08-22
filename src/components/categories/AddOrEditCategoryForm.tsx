@@ -60,7 +60,7 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
       } else {
         await Swal.fire({
           title: 'Success!',
-          text: 'Successfully deleted the user',
+          text: 'Successfully deleted the category',
           icon: 'success',
         })
 

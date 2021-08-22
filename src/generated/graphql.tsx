@@ -515,6 +515,7 @@ export type Mutation = {
   sendForgotPasswordEmail: DefaultResponse;
   logout: DefaultResponse;
   editBiolink: BiolinkResponse;
+  removeBiolink: DefaultResponse;
   addBlackList?: Maybe<BlackListResponse>;
   editBlackList?: Maybe<BlackListResponse>;
   createCategory?: Maybe<CategoryResponse>;
@@ -575,6 +576,11 @@ export type MutationSendForgotPasswordEmailArgs = {
 
 export type MutationEditBiolinkArgs = {
   options: UpdateBiolinkProfileInput;
+  id: Scalars['String'];
+};
+
+
+export type MutationRemoveBiolinkArgs = {
   id: Scalars['String'];
 };
 
@@ -2293,6 +2299,22 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & { logout: (
+    { __typename?: 'DefaultResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'ErrorResponse' }
+      & ReceivedErrorsFragment
+    )>> }
+  ) }
+);
+
+export type RemoveBiolinkMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type RemoveBiolinkMutation = (
+  { __typename?: 'Mutation' }
+  & { removeBiolink: (
     { __typename?: 'DefaultResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'ErrorResponse' }
@@ -4580,6 +4602,19 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const RemoveBiolinkDocument = gql`
+    mutation RemoveBiolink($id: String!) {
+  removeBiolink(id: $id) {
+    errors {
+      ...ReceivedErrors
+    }
+  }
+}
+    ${ReceivedErrorsFragmentDoc}`;
+
+export function useRemoveBiolinkMutation() {
+  return Urql.useMutation<RemoveBiolinkMutation, RemoveBiolinkMutationVariables>(RemoveBiolinkDocument);
 };
 export const EditBiolinkDocument = gql`
     mutation EditBiolink($id: String!, $options: UpdateBiolinkProfileInput!) {

@@ -79,7 +79,7 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
       } else {
         await Swal.fire({
           title: 'Success!',
-          text: 'Successfully deleted the user',
+          text: 'Successfully deleted the admin role',
           icon: 'success',
         })
 
