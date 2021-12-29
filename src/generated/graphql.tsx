@@ -309,7 +309,7 @@ export type CodeResponse = {
   code?: Maybe<Code>;
 };
 
-export type ConnectionArgs = {
+export type ConnectionArgsOld = {
   /** Paginate before created at timestamp as opaque cursor */
   before?: Maybe<Scalars['String']>;
   /** Paginate after created at timestamp as opaque cursor */
@@ -1048,13 +1048,13 @@ export type QueryGetAdminRoleArgs = {
 
 
 export type QueryGetAllBiolinksArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllDirectoriesArgs = {
   categoryIds?: Maybe<Array<Scalars['Int']>>;
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1064,17 +1064,17 @@ export type QueryGetBiolinkArgs = {
 
 
 export type QueryGetAllBlackListedBadWordsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllBlackListedEmailsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllBlackListedUsernamesArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1084,7 +1084,7 @@ export type QueryGetBlackListArgs = {
 
 
 export type QueryGetAllCategoriesArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1094,12 +1094,12 @@ export type QueryGetCategoryArgs = {
 
 
 export type QueryGetAllDiscountsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllReferralsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1109,17 +1109,17 @@ export type QueryGetCodeArgs = {
 
 
 export type QueryGetAllLinksArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllEmbedsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllStripePaymentsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1134,17 +1134,17 @@ export type QueryGetPlanArgs = {
 
 
 export type QueryGetAllPendingReportsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllResolvedReportsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllDismissedReportsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1154,17 +1154,17 @@ export type QueryGetReportArgs = {
 
 
 export type QueryGetAllPendingSupportsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllResolvedSupportsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllDismissedSupportsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1174,7 +1174,7 @@ export type QueryGetSupportArgs = {
 
 
 export type QueryGetAllTaxesArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1184,17 +1184,17 @@ export type QueryGetTaxArgs = {
 
 
 export type QueryGetAllUsersArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllAdminsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllDeletedUsersArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1209,17 +1209,17 @@ export type QueryGetUserSummaryCountsArgs = {
 
 
 export type QueryGetAllUsernamesArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllPremiumUsernamesArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllTrademarkUsernamesArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -1229,17 +1229,17 @@ export type QueryGetUsernameArgs = {
 
 
 export type QueryGetAllPendingVerificationsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllVerifiedVerificationsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
 export type QueryGetAllRejectedVerificationsArgs = {
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 };
 
 
@@ -2418,7 +2418,7 @@ export type GetAllAdminRolesQuery = (
 );
 
 export type GetAllAdminsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2448,7 +2448,7 @@ export type GetAllAdminsQuery = (
 );
 
 export type GetAllBiolinksQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2484,7 +2484,7 @@ export type GetAllBiolinksQuery = (
 );
 
 export type GetAllBlackListedBadWordsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2510,7 +2510,7 @@ export type GetAllBlackListedBadWordsQuery = (
 );
 
 export type GetAllBlackListedEmailsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2536,7 +2536,7 @@ export type GetAllBlackListedEmailsQuery = (
 );
 
 export type GetAllBlackListedUsernamesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2562,7 +2562,7 @@ export type GetAllBlackListedUsernamesQuery = (
 );
 
 export type GetAlLCategoriesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2588,7 +2588,7 @@ export type GetAlLCategoriesQuery = (
 );
 
 export type GetAllDeletedUsersQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2614,7 +2614,7 @@ export type GetAllDeletedUsersQuery = (
 );
 
 export type GetAllDirectoriesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2650,7 +2650,7 @@ export type GetAllDirectoriesQuery = (
 );
 
 export type GetAllDiscountsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2680,7 +2680,7 @@ export type GetAllDiscountsQuery = (
 );
 
 export type GetAllDismissedReportsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2710,7 +2710,7 @@ export type GetAllDismissedReportsQuery = (
 );
 
 export type GetAllDismissedSupportsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2740,7 +2740,7 @@ export type GetAllDismissedSupportsQuery = (
 );
 
 export type GetAllEmbedsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2770,7 +2770,7 @@ export type GetAllEmbedsQuery = (
 );
 
 export type GetAllLinksQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2800,7 +2800,7 @@ export type GetAllLinksQuery = (
 );
 
 export type GetAllPendingReportsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2830,7 +2830,7 @@ export type GetAllPendingReportsQuery = (
 );
 
 export type GetAllPendingSupportsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2860,7 +2860,7 @@ export type GetAllPendingSupportsQuery = (
 );
 
 export type GetAllPendingVerificationsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2917,7 +2917,7 @@ export type GetAllPlansQuery = (
 );
 
 export type GetAllPremiumUsernamesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2950,7 +2950,7 @@ export type GetAllPremiumUsernamesQuery = (
 );
 
 export type GetAllReferralsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -2980,7 +2980,7 @@ export type GetAllReferralsQuery = (
 );
 
 export type GetAllRejectedVerificationsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3020,7 +3020,7 @@ export type GetAllRejectedVerificationsQuery = (
 );
 
 export type GetAllResolvedReportsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3050,7 +3050,7 @@ export type GetAllResolvedReportsQuery = (
 );
 
 export type GetAllResolvedSupportsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3080,7 +3080,7 @@ export type GetAllResolvedSupportsQuery = (
 );
 
 export type GetAllStripePaymentsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3110,7 +3110,7 @@ export type GetAllStripePaymentsQuery = (
 );
 
 export type GetAllTaxesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3136,7 +3136,7 @@ export type GetAllTaxesQuery = (
 );
 
 export type GetAllTrademarkUsernamesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3169,7 +3169,7 @@ export type GetAllTrademarkUsernamesQuery = (
 );
 
 export type GetAllUsernamesQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3202,7 +3202,7 @@ export type GetAllUsernamesQuery = (
 );
 
 export type GetAllUsersQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -3232,7 +3232,7 @@ export type GetAllUsersQuery = (
 );
 
 export type GetAllVerifiedVerificationsQueryVariables = Exact<{
-  options: ConnectionArgs;
+  options: ConnectionArgsOld;
 }>;
 
 
@@ -4766,7 +4766,7 @@ export function useGetAllAdminRolesQuery(options: Omit<Urql.UseQueryArgs<GetAllA
   return Urql.useQuery<GetAllAdminRolesQuery>({ query: GetAllAdminRolesDocument, ...options });
 };
 export const GetAllAdminsDocument = gql`
-    query GetAllAdmins($options: ConnectionArgs!) {
+    query GetAllAdmins($options: ConnectionArgsOld!) {
   getAllAdmins(options: $options) {
     pageInfo {
       ...PageInfo
@@ -4797,7 +4797,7 @@ export function useGetAllAdminsQuery(options: Omit<Urql.UseQueryArgs<GetAllAdmin
   return Urql.useQuery<GetAllAdminsQuery>({ query: GetAllAdminsDocument, ...options });
 };
 export const GetAllBiolinksDocument = gql`
-    query GetAllBiolinks($options: ConnectionArgs!) {
+    query GetAllBiolinks($options: ConnectionArgsOld!) {
   getAllBiolinks(options: $options) {
     errors {
       ...ReceivedErrors
@@ -4839,7 +4839,7 @@ export function useGetAllBiolinksQuery(options: Omit<Urql.UseQueryArgs<GetAllBio
   return Urql.useQuery<GetAllBiolinksQuery>({ query: GetAllBiolinksDocument, ...options });
 };
 export const GetAllBlackListedBadWordsDocument = gql`
-    query GetAllBlackListedBadWords($options: ConnectionArgs!) {
+    query GetAllBlackListedBadWords($options: ConnectionArgsOld!) {
   getAllBlackListedBadWords(options: $options) {
     errors {
       ...ReceivedErrors
@@ -4865,7 +4865,7 @@ export function useGetAllBlackListedBadWordsQuery(options: Omit<Urql.UseQueryArg
   return Urql.useQuery<GetAllBlackListedBadWordsQuery>({ query: GetAllBlackListedBadWordsDocument, ...options });
 };
 export const GetAllBlackListedEmailsDocument = gql`
-    query GetAllBlackListedEmails($options: ConnectionArgs!) {
+    query GetAllBlackListedEmails($options: ConnectionArgsOld!) {
   getAllBlackListedEmails(options: $options) {
     errors {
       ...ReceivedErrors
@@ -4891,7 +4891,7 @@ export function useGetAllBlackListedEmailsQuery(options: Omit<Urql.UseQueryArgs<
   return Urql.useQuery<GetAllBlackListedEmailsQuery>({ query: GetAllBlackListedEmailsDocument, ...options });
 };
 export const GetAllBlackListedUsernamesDocument = gql`
-    query GetAllBlackListedUsernames($options: ConnectionArgs!) {
+    query GetAllBlackListedUsernames($options: ConnectionArgsOld!) {
   getAllBlackListedUsernames(options: $options) {
     errors {
       ...ReceivedErrors
@@ -4917,7 +4917,7 @@ export function useGetAllBlackListedUsernamesQuery(options: Omit<Urql.UseQueryAr
   return Urql.useQuery<GetAllBlackListedUsernamesQuery>({ query: GetAllBlackListedUsernamesDocument, ...options });
 };
 export const GetAlLCategoriesDocument = gql`
-    query GetAlLCategories($options: ConnectionArgs!) {
+    query GetAlLCategories($options: ConnectionArgsOld!) {
   getAllCategories(options: $options) {
     errors {
       ...ReceivedErrors
@@ -4944,7 +4944,7 @@ export function useGetAlLCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAlLC
   return Urql.useQuery<GetAlLCategoriesQuery>({ query: GetAlLCategoriesDocument, ...options });
 };
 export const GetAllDeletedUsersDocument = gql`
-    query GetAllDeletedUsers($options: ConnectionArgs!) {
+    query GetAllDeletedUsers($options: ConnectionArgsOld!) {
   getAllDeletedUsers(options: $options) {
     pageInfo {
       ...PageInfo
@@ -4974,7 +4974,7 @@ export function useGetAllDeletedUsersQuery(options: Omit<Urql.UseQueryArgs<GetAl
   return Urql.useQuery<GetAllDeletedUsersQuery>({ query: GetAllDeletedUsersDocument, ...options });
 };
 export const GetAllDirectoriesDocument = gql`
-    query GetAllDirectories($options: ConnectionArgs!) {
+    query GetAllDirectories($options: ConnectionArgsOld!) {
   getAllDirectories(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5016,7 +5016,7 @@ export function useGetAllDirectoriesQuery(options: Omit<Urql.UseQueryArgs<GetAll
   return Urql.useQuery<GetAllDirectoriesQuery>({ query: GetAllDirectoriesDocument, ...options });
 };
 export const GetAllDiscountsDocument = gql`
-    query GetAllDiscounts($options: ConnectionArgs!) {
+    query GetAllDiscounts($options: ConnectionArgsOld!) {
   getAllDiscounts(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5049,7 +5049,7 @@ export function useGetAllDiscountsQuery(options: Omit<Urql.UseQueryArgs<GetAllDi
   return Urql.useQuery<GetAllDiscountsQuery>({ query: GetAllDiscountsDocument, ...options });
 };
 export const GetAllDismissedReportsDocument = gql`
-    query GetAllDismissedReports($options: ConnectionArgs!) {
+    query GetAllDismissedReports($options: ConnectionArgsOld!) {
   getAllDismissedReports(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5081,7 +5081,7 @@ export function useGetAllDismissedReportsQuery(options: Omit<Urql.UseQueryArgs<G
   return Urql.useQuery<GetAllDismissedReportsQuery>({ query: GetAllDismissedReportsDocument, ...options });
 };
 export const GetAllDismissedSupportsDocument = gql`
-    query GetAllDismissedSupports($options: ConnectionArgs!) {
+    query GetAllDismissedSupports($options: ConnectionArgsOld!) {
   getAllDismissedSupports(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5114,7 +5114,7 @@ export function useGetAllDismissedSupportsQuery(options: Omit<Urql.UseQueryArgs<
   return Urql.useQuery<GetAllDismissedSupportsQuery>({ query: GetAllDismissedSupportsDocument, ...options });
 };
 export const GetAllEmbedsDocument = gql`
-    query GetAllEmbeds($options: ConnectionArgs!) {
+    query GetAllEmbeds($options: ConnectionArgsOld!) {
   getAllEmbeds(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5146,7 +5146,7 @@ export function useGetAllEmbedsQuery(options: Omit<Urql.UseQueryArgs<GetAllEmbed
   return Urql.useQuery<GetAllEmbedsQuery>({ query: GetAllEmbedsDocument, ...options });
 };
 export const GetAllLinksDocument = gql`
-    query GetAllLinks($options: ConnectionArgs!) {
+    query GetAllLinks($options: ConnectionArgsOld!) {
   getAllLinks(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5178,7 +5178,7 @@ export function useGetAllLinksQuery(options: Omit<Urql.UseQueryArgs<GetAllLinksQ
   return Urql.useQuery<GetAllLinksQuery>({ query: GetAllLinksDocument, ...options });
 };
 export const GetAllPendingReportsDocument = gql`
-    query GetAllPendingReports($options: ConnectionArgs!) {
+    query GetAllPendingReports($options: ConnectionArgsOld!) {
   getAllPendingReports(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5210,7 +5210,7 @@ export function useGetAllPendingReportsQuery(options: Omit<Urql.UseQueryArgs<Get
   return Urql.useQuery<GetAllPendingReportsQuery>({ query: GetAllPendingReportsDocument, ...options });
 };
 export const GetAllPendingSupportsDocument = gql`
-    query GetAllPendingSupports($options: ConnectionArgs!) {
+    query GetAllPendingSupports($options: ConnectionArgsOld!) {
   getAllPendingSupports(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5243,7 +5243,7 @@ export function useGetAllPendingSupportsQuery(options: Omit<Urql.UseQueryArgs<Ge
   return Urql.useQuery<GetAllPendingSupportsQuery>({ query: GetAllPendingSupportsDocument, ...options });
 };
 export const GetAllPendingVerificationsDocument = gql`
-    query GetAllPendingVerifications($options: ConnectionArgs!) {
+    query GetAllPendingVerifications($options: ConnectionArgsOld!) {
   getAllPendingVerifications(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5314,7 +5314,7 @@ export function useGetAllPlansQuery(options: Omit<Urql.UseQueryArgs<GetAllPlansQ
   return Urql.useQuery<GetAllPlansQuery>({ query: GetAllPlansDocument, ...options });
 };
 export const GetAllPremiumUsernamesDocument = gql`
-    query GetAllPremiumUsernames($options: ConnectionArgs!) {
+    query GetAllPremiumUsernames($options: ConnectionArgsOld!) {
   getAllPremiumUsernames(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5348,7 +5348,7 @@ export function useGetAllPremiumUsernamesQuery(options: Omit<Urql.UseQueryArgs<G
   return Urql.useQuery<GetAllPremiumUsernamesQuery>({ query: GetAllPremiumUsernamesDocument, ...options });
 };
 export const GetAllReferralsDocument = gql`
-    query GetAllReferrals($options: ConnectionArgs!) {
+    query GetAllReferrals($options: ConnectionArgsOld!) {
   getAllReferrals(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5381,7 +5381,7 @@ export function useGetAllReferralsQuery(options: Omit<Urql.UseQueryArgs<GetAllRe
   return Urql.useQuery<GetAllReferralsQuery>({ query: GetAllReferralsDocument, ...options });
 };
 export const GetAllRejectedVerificationsDocument = gql`
-    query GetAllRejectedVerifications($options: ConnectionArgs!) {
+    query GetAllRejectedVerifications($options: ConnectionArgsOld!) {
   getAllRejectedVerifications(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5431,7 +5431,7 @@ export function useGetAllRejectedVerificationsQuery(options: Omit<Urql.UseQueryA
   return Urql.useQuery<GetAllRejectedVerificationsQuery>({ query: GetAllRejectedVerificationsDocument, ...options });
 };
 export const GetAllResolvedReportsDocument = gql`
-    query GetAllResolvedReports($options: ConnectionArgs!) {
+    query GetAllResolvedReports($options: ConnectionArgsOld!) {
   getAllResolvedReports(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5463,7 +5463,7 @@ export function useGetAllResolvedReportsQuery(options: Omit<Urql.UseQueryArgs<Ge
   return Urql.useQuery<GetAllResolvedReportsQuery>({ query: GetAllResolvedReportsDocument, ...options });
 };
 export const GetAllResolvedSupportsDocument = gql`
-    query GetAllResolvedSupports($options: ConnectionArgs!) {
+    query GetAllResolvedSupports($options: ConnectionArgsOld!) {
   getAllResolvedSupports(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5496,7 +5496,7 @@ export function useGetAllResolvedSupportsQuery(options: Omit<Urql.UseQueryArgs<G
   return Urql.useQuery<GetAllResolvedSupportsQuery>({ query: GetAllResolvedSupportsDocument, ...options });
 };
 export const GetAllStripePaymentsDocument = gql`
-    query GetAllStripePayments($options: ConnectionArgs!) {
+    query GetAllStripePayments($options: ConnectionArgsOld!) {
   getAllStripePayments(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5538,7 +5538,7 @@ export function useGetAllStripePaymentsQuery(options: Omit<Urql.UseQueryArgs<Get
   return Urql.useQuery<GetAllStripePaymentsQuery>({ query: GetAllStripePaymentsDocument, ...options });
 };
 export const GetAllTaxesDocument = gql`
-    query GetAllTaxes($options: ConnectionArgs!) {
+    query GetAllTaxes($options: ConnectionArgsOld!) {
   getAllTaxes(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5568,7 +5568,7 @@ export function useGetAllTaxesQuery(options: Omit<Urql.UseQueryArgs<GetAllTaxesQ
   return Urql.useQuery<GetAllTaxesQuery>({ query: GetAllTaxesDocument, ...options });
 };
 export const GetAllTrademarkUsernamesDocument = gql`
-    query GetAllTrademarkUsernames($options: ConnectionArgs!) {
+    query GetAllTrademarkUsernames($options: ConnectionArgsOld!) {
   getAllTrademarkUsernames(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5602,7 +5602,7 @@ export function useGetAllTrademarkUsernamesQuery(options: Omit<Urql.UseQueryArgs
   return Urql.useQuery<GetAllTrademarkUsernamesQuery>({ query: GetAllTrademarkUsernamesDocument, ...options });
 };
 export const GetAllUsernamesDocument = gql`
-    query GetAllUsernames($options: ConnectionArgs!) {
+    query GetAllUsernames($options: ConnectionArgsOld!) {
   getAllUsernames(options: $options) {
     errors {
       ...ReceivedErrors
@@ -5636,7 +5636,7 @@ export function useGetAllUsernamesQuery(options: Omit<Urql.UseQueryArgs<GetAllUs
   return Urql.useQuery<GetAllUsernamesQuery>({ query: GetAllUsernamesDocument, ...options });
 };
 export const GetAllUsersDocument = gql`
-    query GetAllUsers($options: ConnectionArgs!) {
+    query GetAllUsers($options: ConnectionArgsOld!) {
   getAllUsers(options: $options) {
     pageInfo {
       ...PageInfo
@@ -5668,7 +5668,7 @@ export function useGetAllUsersQuery(options: Omit<Urql.UseQueryArgs<GetAllUsersQ
   return Urql.useQuery<GetAllUsersQuery>({ query: GetAllUsersDocument, ...options });
 };
 export const GetAllVerifiedVerificationsDocument = gql`
-    query GetAllVerifiedVerifications($options: ConnectionArgs!) {
+    query GetAllVerifiedVerifications($options: ConnectionArgsOld!) {
   getAllVerifiedVerifications(options: $options) {
     errors {
       ...ReceivedErrors

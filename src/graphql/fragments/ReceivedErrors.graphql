@@ -1,5 +1,0 @@
-fragment ReceivedErrors on ErrorResponse {
-  errorCode
-  field
-  message
-}
