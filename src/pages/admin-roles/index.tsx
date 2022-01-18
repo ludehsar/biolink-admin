@@ -1,103 +1,112 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
+import Link from 'next/link'
+import moment from 'moment'
 
 import AdminHeader from '../../components/Header/AdminHeader'
 import AdminLayout from '../../layouts/Admin.layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
-import {
-  Button,
-  Card,
-  CardHeader,
-  Col,
-  Container,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Row,
-  Table,
-  UncontrolledDropdown,
-} from 'reactstrap'
-import Link from 'next/link'
-import moment from 'moment'
+import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap'
 import { useGetAllAdminRolesQuery } from '../../generated/graphql'
+import DataTable from '../../components/DataTable/DataTable'
+
+const columns = [
+  {
+    name: 'ID',
+    selector: 'id',
+  },
+  {
+    name: 'Role Name',
+    selector: 'roleName',
+  },
+  {
+    name: 'Role Description',
+    selector: 'roleDescription',
+  },
+  {
+    name: 'Created',
+    selector: 'createdAt',
+  },
+  {
+    name: 'Last Updated',
+    selector: 'updatedAt',
+  },
+  {
+    name: '',
+    selector: 'action',
+  },
+]
 
 const AdminRolesIndexPage: NextPage = () => {
-  const [{ data }] = useGetAllAdminRolesQuery()
+  const [after, setAfter] = useState<string>('')
+  const [before, setBefore] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>('')
+  const [{ data }] = useGetAllAdminRolesQuery({
+    variables: {
+      options: {
+        afterCursor: after,
+        beforeCursor: before,
+        limit: 10,
+        order: 'ASC',
+        query: searchText,
+      },
+    },
+  })
+
+  const gotoPrevPage = useCallback(() => {
+    setBefore(data?.getAllAdminRoles.cursor.beforeCursor || '')
+    setAfter('')
+  }, [data?.getAllAdminRoles.cursor.beforeCursor])
+
+  const gotoNextPage = useCallback(() => {
+    setAfter(data?.getAllAdminRoles.cursor.afterCursor || '')
+    setBefore('')
+  }, [data?.getAllAdminRoles.cursor.afterCursor])
+
+  const adminRoleData =
+    data?.getAllAdminRoles.data.map((item) => ({
+      id: item.id,
+      roleName: item.roleName,
+      roleDescription: item.roleDescription,
+      createdAt: moment.unix(parseInt(item.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(item.updatedAt || '') / 1000).format('DD-MM-YYYY'),
+      action: (
+        <UncontrolledDropdown>
+          <DropdownToggle
+            className="btn-icon-only text-light"
+            href="#pablo"
+            role="button"
+            size="sm"
+            color=""
+            onClick={(e) => e.preventDefault()}
+          >
+            <i className="fas fa-ellipsis-v" />
+          </DropdownToggle>
+          <DropdownMenu className="dropdown-menu-arrow" right>
+            <Link href={'/admin-roles/edit/' + item.id}>
+              <DropdownItem href={'/admin-roles/edit/' + item.id}>Edit</DropdownItem>
+            </Link>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      ),
+    })) || []
 
   return (
     <AdminLayout>
       <AdminHeader />
-      <Container className="mt--7" fluid>
-        <Row>
-          <div className="col">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row>
-                  <Col>
-                    <h3 className="mb-0 float-left">Admin Roles</h3>
-                    <div className="float-right">
-                      <Link href="/admin-roles/add">
-                        <Button color="primary" size="sm">
-                          Add New
-                        </Button>
-                      </Link>
-                    </div>
-                  </Col>
-                </Row>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Role Name</th>
-                    <th scope="col">Role Description</th>
-                    <th scope="col">Role Created At</th>
-                    <th scope="col">Role Updated At</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {data?.getAllAdminRoles.adminRoles?.map((role, key) => (
-                    <tr key={key}>
-                      <td>{role.id}</td>
-                      <td>{role.roleName}</td>
-                      <td>{role.roleDescription}</td>
-                      <td>
-                        {moment.unix(parseInt(role.createdAt || '') / 1000).format('DD-MM-YYYY')}
-                      </td>
-                      <td>
-                        {moment.unix(parseInt(role.updatedAt || '') / 1000).format('DD-MM-YYYY')}
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            <Link href={'/admin-roles/edit/' + role.id}>
-                              <DropdownItem href={'/admin-roles/edit/' + role.id}>
-                                Edit
-                              </DropdownItem>
-                            </Link>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Card>
-          </div>
-        </Row>
-      </Container>
+      <DataTable
+        title="User"
+        newButton={true}
+        newButtonLink={'/admin-roles/add'}
+        columns={columns}
+        data={adminRoleData}
+        hasNextPage={!!data?.getAllAdminRoles.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllAdminRoles.cursor.beforeCursor}
+        nextButtonAction={gotoNextPage}
+        prevButtonAction={gotoPrevPage}
+        setSearchText={(text) => setSearchText(text)}
+      />
     </AdminLayout>
   )
 }

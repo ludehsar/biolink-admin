@@ -1,13 +1,17 @@
-import { ErrorResponse } from '../../generated/graphql'
 import { ADD_ERRORS, REMOVE_ERROR } from '../actions/errorAction'
+
+export interface ErrorProps {
+  key: number
+  message: string
+}
 
 interface ErrorAction {
   type: string
-  payload: ErrorResponse[] | number | null
+  payload: string | number | null
 }
 
 export interface ErrorState {
-  errors: ErrorResponse[]
+  errors: ErrorProps[]
 }
 
 const initialState = {
@@ -23,14 +27,20 @@ const errorReducer = (
     case ADD_ERRORS:
       return {
         ...state,
-        errors: state.errors.concat(payload as ErrorResponse[]),
+        errors: [
+          {
+            key: new Date().getTime() * Math.random(),
+            message: payload as string,
+          },
+          ...state.errors,
+        ],
       }
 
     // Error loading
     case REMOVE_ERROR:
       return {
         ...state,
-        errors: state.errors.filter((error) => error.errorCode !== (payload as number)),
+        errors: state.errors.filter((error) => error.key !== (payload as number)),
       }
 
     // Return default state

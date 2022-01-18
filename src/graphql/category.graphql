@@ -1,0 +1,39 @@
+fragment CategoryFragment on Category {
+  id
+  categoryName
+  featured
+  createdAt
+  updatedAt
+  deletedAt
+}
+query GetAllCategories($options: ConnectionArgs!) {
+  getAllCategories(options: $options) {
+    data {
+      ...CategoryFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetCategory($categoryId: String!) {
+  getCategory(id: $categoryId) {
+    ...CategoryFragment
+  }
+}
+mutation CreateCategory($input: NewCategoryInput!) {
+  createCategory(options: $input) {
+    ...CategoryFragment
+  }
+}
+mutation EditCategory($categoryId: String!, $input: NewCategoryInput!) {
+  editCategory(id: $categoryId, options: $input) {
+    ...CategoryFragment
+  }
+}
+mutation DeleteCategory($categoryId: String!) {
+  deleteCategory(id: $categoryId) {
+    ...CategoryFragment
+  }
+}

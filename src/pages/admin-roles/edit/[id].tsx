@@ -14,7 +14,7 @@ const EditAdminRolePage: NextPage = () => {
   return (
     <AdminLayout>
       <AdminHeader />
-      <AddOrEditAdminRoleForm variant="Edit" id={parseInt(id as string)} />
+      <AddOrEditAdminRoleForm variant="Edit" id={id as string} />
     </AdminLayout>
   )
 }

@@ -51,28 +51,36 @@ const TaxesIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllTaxesQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllTaxes?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllTaxes?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllTaxes?.pageInfo?.startCursor])
+  }, [data?.getAllTaxes?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllTaxes?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllTaxes?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllTaxes?.pageInfo?.endCursor])
+  }, [data?.getAllTaxes?.cursor.afterCursor])
 
   const userData =
-    data?.getAllTaxes?.edges?.map((edge) => ({
-      internalName: edge.node.internalName,
-      name: edge.node.name,
-      value: edge.node.value,
-      valueType: edge.node.valueType,
-      type: edge.node.type,
-      billingFor: edge.node.billingFor,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+    data?.getAllTaxes?.data.map((tax) => ({
+      internalName: tax.internalName,
+      name: tax.name,
+      value: tax.value,
+      valueType: tax.valueType,
+      type: tax.type,
+      billingFor: tax.billingFor,
+      createdAt: moment.unix(parseInt(tax.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -86,11 +94,11 @@ const TaxesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/taxes/view/' + edge.node.id}>
-              <DropdownItem href={'/taxes/view/' + edge.node.id}>View Details</DropdownItem>
+            <Link href={'/taxes/view/' + tax.id}>
+              <DropdownItem href={'/taxes/view/' + tax.id}>View Details</DropdownItem>
             </Link>
-            <Link href={'/taxes/edit/' + edge.node.id}>
-              <DropdownItem href={'/taxes/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/taxes/edit/' + tax.id}>
+              <DropdownItem href={'/taxes/edit/' + tax.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -106,8 +114,8 @@ const TaxesIndexPage: NextPage = () => {
         newButtonLink="/taxes/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllTaxes?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllTaxes?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllTaxes?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllTaxes?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

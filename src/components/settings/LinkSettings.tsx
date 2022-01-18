@@ -2,25 +2,37 @@ import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
-import { useEditLinkSettingsMutation, useGetLinkSettingsQuery } from '../../generated/graphql'
+import {
+  LinkSystemSettings,
+  useEditLinkSettingsMutation,
+  useGetSettingsByKeyQuery,
+} from '../../generated/graphql'
 
 const LinkSettings: React.FC = () => {
-  const [{ data }] = useGetLinkSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'links' },
+  })
   const [, editLinkSettings] = useEditLinkSettingsMutation()
 
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        branding: data?.getLinkSettings.settings?.branding || '',
+        branding: (data?.getSettingsByKey as LinkSystemSettings)?.branding || '',
         enableLinkShortenerSystem:
-          data?.getLinkSettings.settings?.enableLinkShortenerSystem === true ? 'true' : 'false',
+          (data?.getSettingsByKey as LinkSystemSettings)?.enableLinkShortenerSystem === true
+            ? 'true'
+            : 'false',
         enablePhishtank:
-          data?.getLinkSettings.settings?.enablePhishtank === true ? 'true' : 'false',
+          (data?.getSettingsByKey as LinkSystemSettings)?.enablePhishtank === true
+            ? 'true'
+            : 'false',
         enableGoogleSafeBrowsing:
-          data?.getLinkSettings.settings?.enableGoogleSafeBrowsing === true ? 'true' : 'false',
+          (data?.getSettingsByKey as LinkSystemSettings)?.enableGoogleSafeBrowsing === true
+            ? 'true'
+            : 'false',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editLinkSettings({
           options: {
             branding: values.branding,
@@ -30,38 +42,35 @@ const LinkSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editLinkSettings.errors &&
-          response.data.editLinkSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editLinkSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editLinkSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              branding: response.data.editLinkSettings.settings.branding || '',
-              enableGoogleSafeBrowsing:
-                response.data.editLinkSettings.settings.enableGoogleSafeBrowsing === true
-                  ? 'true'
-                  : 'false',
-              enableLinkShortenerSystem:
-                response.data.editLinkSettings.settings.enableLinkShortenerSystem === true
-                  ? 'true'
-                  : 'false',
-              enablePhishtank:
-                response.data.editLinkSettings.settings.enablePhishtank === true ? 'true' : 'false',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     branding: response.data.editLinkSettings.settings.branding || '',
+          //     enableGoogleSafeBrowsing:
+          //       response.data.editLinkSettings.settings.enableGoogleSafeBrowsing === true
+          //         ? 'true'
+          //         : 'false',
+          //     enableLinkShortenerSystem:
+          //       response.data.editLinkSettings.settings.enableLinkShortenerSystem === true
+          //         ? 'true'
+          //         : 'false',
+          //     enablePhishtank:
+          //       response.data.editLinkSettings.settings.enablePhishtank === true ? 'true' : 'false',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

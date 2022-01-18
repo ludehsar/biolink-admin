@@ -15,7 +15,6 @@ import {
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
   PlanInput,
   useCreatePlanMutation,
   useEditPlanMutation,
@@ -28,15 +27,15 @@ import Link from 'next/link'
 import router from 'next/router'
 
 interface AddOrEditUsersFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
-  id?: number
+  id?: string
 }
 
 const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
   const [, createPlan] = useCreatePlanMutation()
   const [, editPlan] = useEditPlanMutation()
-  const [{ data }] = useGetPlanQuery({ variables: { id: id as number } })
+  const [{ data }] = useGetPlanQuery({ variables: { planId: id as string } })
 
   return (
     <Container className="mt--7" fluid>
@@ -63,82 +62,62 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
               enableReinitialize={true}
               initialValues={
                 {
-                  name: variant === 'Add' ? '' : data?.getPlan.plan?.name,
-                  monthlyPrice: variant === 'Add' ? 0.0 : data?.getPlan.plan?.monthlyPrice,
-                  monthlyPriceStripeId:
-                    variant === 'Add' ? '' : data?.getPlan.plan?.monthlyPriceStripeId,
-                  annualPrice: variant === 'Add' ? 0.0 : data?.getPlan.plan?.annualPrice,
-                  annualPriceStripeId:
-                    variant === 'Add' ? '' : data?.getPlan.plan?.annualPriceStripeId,
-                  visibilityStatus:
-                    variant === 'Add' ? false : data?.getPlan.plan?.visibilityStatus,
+                  name: variant === 'Add' ? '' : data?.getPlan.name,
+                  monthlyPrice: variant === 'Add' ? 0.0 : data?.getPlan.monthlyPrice,
+                  monthlyPriceStripeId: variant === 'Add' ? '' : data?.getPlan.monthlyPriceStripeId,
+                  annualPrice: variant === 'Add' ? 0.0 : data?.getPlan.annualPrice,
+                  annualPriceStripeId: variant === 'Add' ? '' : data?.getPlan.annualPriceStripeId,
+                  visibilityStatus: variant === 'Add' ? false : data?.getPlan.visibilityStatus,
 
                   // settings
                   totalBiolinksLimit:
-                    variant === 'Add' ? 0 : data?.getPlan.plan?.settings?.totalBiolinksLimit,
+                    variant === 'Add' ? 0 : data?.getPlan.settings?.totalBiolinksLimit,
                   totalCustomDomainLimit:
-                    variant === 'Add' ? 0 : data?.getPlan.plan?.settings?.totalCustomDomainLimit,
-                  totalLinksLimit:
-                    variant === 'Add' ? 0 : data?.getPlan.plan?.settings?.totalLinksLimit,
+                    variant === 'Add' ? 0 : data?.getPlan.settings?.totalCustomDomainLimit,
+                  totalLinksLimit: variant === 'Add' ? 0 : data?.getPlan.settings?.totalLinksLimit,
                   addedToDirectoryEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.addedToDirectoryEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.addedToDirectoryEnabled,
                   coloredLinksEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.coloredLinksEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.coloredLinksEnabled,
                   customBackHalfEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.customBackHalfEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.customBackHalfEnabled,
                   customFooterBrandingEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.customFooterBrandingEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.customFooterBrandingEnabled,
                   darkModeEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.darkModeEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.darkModeEnabled,
                   emailCaptureEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.emailCaptureEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.emailCaptureEnabled,
                   facebookPixelEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.facebookPixelEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.facebookPixelEnabled,
                   googleAnalyticsEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.googleAnalyticsEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.googleAnalyticsEnabled,
                   leapLinkEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.leapLinkEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.leapLinkEnabled,
                   linksSchedulingEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.linksSchedulingEnabled,
-                  noAdsEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.noAdsEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.linksSchedulingEnabled,
+                  noAdsEnabled: variant === 'Add' ? false : data?.getPlan.settings?.noAdsEnabled,
                   passwordProtectionEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.passwordProtectionEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.passwordProtectionEnabled,
                   removableBrandingEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.removableBrandingEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.removableBrandingEnabled,
                   sensitiveContentWarningEnabled:
                     variant === 'Add'
                       ? false
-                      : data?.getPlan.plan?.settings?.sensitiveContentWarningEnabled,
-                  seoEnabled: variant === 'Add' ? false : data?.getPlan.plan?.settings?.seoEnabled,
-                  socialEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.socialEnabled,
+                      : data?.getPlan.settings?.sensitiveContentWarningEnabled,
+                  seoEnabled: variant === 'Add' ? false : data?.getPlan.settings?.seoEnabled,
+                  socialEnabled: variant === 'Add' ? false : data?.getPlan.settings?.socialEnabled,
                   utmParametersEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.utmParametersEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.utmParametersEnabled,
                   verifiedCheckmarkEnabled:
-                    variant === 'Add'
-                      ? false
-                      : data?.getPlan.plan?.settings?.verifiedCheckmarkEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.verifiedCheckmarkEnabled,
                   donationLinkEnabled:
-                    variant === 'Add' ? false : data?.getPlan.plan?.settings?.donationLinkEnabled,
+                    variant === 'Add' ? false : data?.getPlan.settings?.donationLinkEnabled,
                 } as PlanInput
               }
               onSubmit={async (values, { setSubmitting }) => {
                 if (variant === 'Add') {
                   const response = await createPlan({
-                    options: {
+                    input: {
                       addedToDirectoryEnabled: values.addedToDirectoryEnabled,
                       annualPrice: values.annualPrice,
                       annualPriceStripeId: values.annualPriceStripeId,
@@ -170,15 +149,15 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
                     },
                   })
 
-                  if (response.data?.createPlan?.errors) {
-                    addErrors(response.data.createPlan.errors)
+                  if (response.error) {
+                    addErrors(response.error.message)
                   } else {
                     router.push('/plans')
                   }
                 } else {
                   const response = await editPlan({
-                    id: id as number,
-                    options: {
+                    planId: id as string,
+                    input: {
                       addedToDirectoryEnabled: values.addedToDirectoryEnabled,
                       annualPrice: values.annualPrice,
                       annualPriceStripeId: values.annualPriceStripeId,
@@ -210,8 +189,8 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
                     },
                   })
 
-                  if (response.data?.editPlan?.errors) {
-                    addErrors(response.data.editPlan.errors)
+                  if (response.error) {
+                    addErrors(response.error.message)
                   } else {
                     router.push('/plans')
                   }
@@ -735,9 +714,10 @@ const AddOrEditPlanForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, v
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditPlanForm)

@@ -12,11 +12,11 @@ import {
   DropdownItem,
 } from 'reactstrap'
 
-import { useGetAllDirectoriesQuery } from '../../../generated/graphql'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
-import DataTable from '../../../components/DataTable/DataTable'
-import AdminHeader from '../../../components/Header/AdminHeader'
+import { useGetAllDirectoriesQuery } from '../../generated/graphql'
+import AdminLayout from '../../layouts/Admin.layout'
+import { createUrqlClient } from '../../utils/createUrqlClient'
+import DataTable from '../../components/DataTable/DataTable'
+import AdminHeader from '../../components/Header/AdminHeader'
 
 const columns = [
   {
@@ -58,43 +58,51 @@ const DirectoriesIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllDirectoriesQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllDirectories?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllDirectories?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllDirectories?.pageInfo?.startCursor])
+  }, [data?.getAllDirectories?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllDirectories?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllDirectories?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllDirectories?.pageInfo?.endCursor])
+  }, [data?.getAllDirectories?.cursor.afterCursor])
 
   const directoryData =
-    data?.getAllDirectories?.edges?.map((edge) => ({
+    data?.getAllDirectories?.data.map((directory) => ({
       usernameWithProfilePhoto: (
         <Media className="align-items-center">
           <Link href="#">
             <a className="avatar rounded-circle mr-3" href="#" onClick={(e) => e.preventDefault()}>
-              <img alt="Biolink User Profile" src={edge.node.profilePhotoUrl as string} />
+              <img alt="Biolink User Profile" src={directory.profilePhotoUrl as string} />
             </a>
           </Link>
           <Media>
-            <span className="mb-0 text-sm">{edge.node.username?.username}</span>
+            <span className="mb-0 text-sm">{directory.username?.username}</span>
           </Media>
         </Media>
       ),
-      displayName: edge.node.displayName,
+      displayName: directory.displayName,
       email: (
-        <Link href={'/users/view/' + edge.node.user?.id}>
-          <a href={'/users/view/' + edge.node.user?.id}>{edge.node.user?.email}</a>
+        <Link href={'/users/view/' + directory.user?.id}>
+          <a href={'/users/view/' + directory.user?.id}>{directory.user?.email}</a>
         </Link>
       ),
-      category: edge.node.category?.categoryName,
-      country: edge.node.country,
-      verificationStatus: <Badge color="primary">{edge.node.verificationStatus}</Badge>,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      category: directory.category?.categoryName,
+      country: directory.country,
+      verificationStatus: <Badge color="primary">{directory.verificationStatus}</Badge>,
+      createdAt: moment.unix(parseInt(directory.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -108,11 +116,11 @@ const DirectoriesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/biolinks/view/' + edge.node.id}>
-              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            <Link href={'/biolinks/view/' + directory.id}>
+              <DropdownItem href={'/users/view/' + directory.id}>View Details</DropdownItem>
             </Link>
-            <Link href={'/users/edit/' + edge.node.id}>
-              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/users/edit/' + directory.id}>
+              <DropdownItem href={'/users/edit/' + directory.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -128,8 +136,8 @@ const DirectoriesIndexPage: NextPage = () => {
         newButtonLink={'/users/add'}
         columns={columns}
         data={directoryData}
-        hasNextPage={data?.getAllDirectories?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllDirectories?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllDirectories?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllDirectories?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

@@ -3,12 +3,15 @@ import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
 import {
+  FacebookSystemSettings,
   useEditFacebookSettingsMutation,
-  useGetFacebookSettingsQuery,
+  useGetSettingsByKeyQuery,
 } from '../../generated/graphql'
 
 const FacebookLoginSettings: React.FC = () => {
-  const [{ data }] = useGetFacebookSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'facebook_login' },
+  })
   const [, editFacebookSettings] = useEditFacebookSettingsMutation()
 
   return (
@@ -16,40 +19,39 @@ const FacebookLoginSettings: React.FC = () => {
       enableReinitialize={true}
       initialValues={{
         enableFacebookLogin:
-          data?.getFacebookSettings.settings?.enableFacebookLogin === true ? 'true' : 'false',
+          (data?.getSettingsByKey as FacebookSystemSettings)?.enableFacebookLogin === true
+            ? 'true'
+            : 'false',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editFacebookSettings({
           options: {
             enableFacebookLogin: values.enableFacebookLogin === 'true',
           },
         })
 
-        if (
-          response.data?.editFacebookSettings.errors &&
-          response.data.editFacebookSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editFacebookSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editFacebookSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              enableFacebookLogin:
-                response.data.editFacebookSettings.settings.enableFacebookLogin === true
-                  ? 'true'
-                  : 'false',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     enableFacebookLogin:
+          //       response.data.editFacebookSettings.settings.enableFacebookLogin === true
+          //         ? 'true'
+          //         : 'false',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

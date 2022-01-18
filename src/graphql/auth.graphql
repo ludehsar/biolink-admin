@@ -1,0 +1,49 @@
+fragment AuthUser on User {
+  id
+  name
+  email
+  adminRole {
+    id
+    roleName
+    roleDescription
+    roleSettings {
+      resource
+      canShowList
+      canShow
+      canCreate
+      canEdit
+      canDelete
+    }
+  }
+}
+
+mutation LoginAdmin($options: LoginInput!) {
+  loginAdmin(options: $options) {
+    user {
+      ...AuthUser
+    }
+    access {
+      token
+      expires
+    }
+  }
+}
+
+mutation Logout {
+  logout
+}
+
+query Me {
+  me {
+    ...AuthUser
+  }
+}
+
+mutation RefreshToken {
+  refreshToken {
+    access {
+      token
+      expires
+    }
+  }
+}

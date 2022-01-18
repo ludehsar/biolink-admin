@@ -16,34 +16,25 @@ import {
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
   RoleSettingsInput,
   useCreateAdminRoleMutation,
   useDeleteAdminRoleMutation,
   useEditAdminRoleMutation,
   useGetAdminRoleQuery,
 } from '../../generated/graphql'
-import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
-import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
 import Link from 'next/link'
 import router from 'next/router'
 
 interface AddOrEditAdminRoleFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
   variant: 'Add' | 'Edit'
-  id?: number
+  id?: string
 }
 
-const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
-  addErrors,
-  id,
-  variant,
-}) => {
+const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({ id, variant }) => {
   const [, addAdminRole] = useCreateAdminRoleMutation()
   const [, editAdminRole] = useEditAdminRoleMutation()
   const [, deleteAdminRole] = useDeleteAdminRoleMutation()
-  const [{ data }] = useGetAdminRoleQuery({ variables: { id: id as number } })
+  const [{ data }] = useGetAdminRoleQuery({ variables: { roleId: id as string } })
 
   const showDeleteAdminRoleConfirmBoxAndDeleteAdminRole = useCallback(async () => {
     const result = await Swal.fire({
@@ -56,21 +47,12 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
       denyButtonColor: '#3085d6',
     })
 
-    if (result.isConfirmed) {
+    if (result.isConfirmed && id !== '1') {
       const response = await deleteAdminRole({
-        id: id as number,
+        roleId: id as string,
       })
 
-      if (
-        response.data?.deleteAdminRole?.errors &&
-        response.data.deleteAdminRole.errors.length > 0
-      ) {
-        Swal.fire({
-          title: 'Error!',
-          text: response.data.deleteAdminRole.errors[0].message,
-          icon: 'error',
-        })
-      } else if (response.error) {
+      if (response.error) {
         Swal.fire({
           title: 'Error!',
           text: response.error.message,
@@ -88,7 +70,7 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
     }
   }, [deleteAdminRole, id])
 
-  return variant === 'Add' || data?.getAdminRole.adminRole ? (
+  return variant === 'Add' || data?.getAdminRole ? (
     <Container className="mt--7" fluid>
       <Row>
         <div className="col">
@@ -100,7 +82,7 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                     {variant === 'Add' ? 'Create New Admin Role' : 'Edit Admin Role'}
                   </h3>
                   <div className="float-right">
-                    {variant === 'Edit' && (
+                    {variant === 'Edit' && id !== '1' && (
                       <Button
                         color="danger"
                         size="sm"
@@ -121,42 +103,39 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
             <Formik
               enableReinitialize={true}
               initialValues={{
-                roleName:
-                  variant === 'Add' ? '' : (data?.getAdminRole.adminRole?.roleName as string),
+                roleName: variant === 'Add' ? '' : (data?.getAdminRole?.roleName as string),
                 roleDescription:
-                  variant === 'Add'
-                    ? ''
-                    : (data?.getAdminRole.adminRole?.roleDescription as string),
+                  variant === 'Add' ? '' : (data?.getAdminRole?.roleDescription as string),
 
                 // biolink
                 biolinkCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'biolink'
                       )?.canCreate,
                 biolinkCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'biolink'
                       )?.canDelete,
                 biolinkCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'biolink'
                       )?.canEdit,
                 biolinkCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'biolink'
                       )?.canShow,
                 biolinkCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'biolink'
                       )?.canShowList,
 
@@ -164,31 +143,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 blackListCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'black_list'
                       )?.canCreate,
                 blackListCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'black_list'
                       )?.canDelete,
                 blackListCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'black_list'
                       )?.canEdit,
                 blackListCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'black_list'
                       )?.canShow,
                 blackListCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'black_list'
                       )?.canShowList,
 
@@ -196,31 +175,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 categoryCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'category'
                       )?.canCreate,
                 categoryCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'category'
                       )?.canDelete,
                 categoryCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'category'
                       )?.canEdit,
                 categoryCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'category'
                       )?.canShow,
                 categoryCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'category'
                       )?.canShowList,
 
@@ -228,31 +207,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 codeCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'code'
                       )?.canCreate,
                 codeCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'code'
                       )?.canDelete,
                 codeCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'code'
                       )?.canEdit,
                 codeCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'code'
                       )?.canShow,
                 codeCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'code'
                       )?.canShowList,
 
@@ -260,31 +239,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 domainCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'domain'
                       )?.canCreate,
                 domainCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'domain'
                       )?.canDelete,
                 domainCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'domain'
                       )?.canEdit,
                 domainCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'domain'
                       )?.canShow,
                 domainCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'domain'
                       )?.canShowList,
 
@@ -292,31 +271,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 linkCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'link'
                       )?.canCreate,
                 linkCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'link'
                       )?.canDelete,
                 linkCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'link'
                       )?.canEdit,
                 linkCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'link'
                       )?.canShow,
                 linkCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'link'
                       )?.canShowList,
 
@@ -324,31 +303,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 planCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'plan'
                       )?.canCreate,
                 planCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'plan'
                       )?.canDelete,
                 planCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'plan'
                       )?.canEdit,
                 planCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'plan'
                       )?.canShow,
                 planCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'plan'
                       )?.canShowList,
 
@@ -356,31 +335,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 premiumUsernameCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'username'
                       )?.canCreate,
                 premiumUsernameCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'username'
                       )?.canDelete,
                 premiumUsernameCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'username'
                       )?.canEdit,
                 premiumUsernameCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'username'
                       )?.canShow,
                 premiumUsernameCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'username'
                       )?.canShowList,
 
@@ -388,31 +367,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 taxCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'tax'
                       )?.canCreate,
                 taxCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'tax'
                       )?.canDelete,
                 taxCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'tax'
                       )?.canEdit,
                 taxCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'tax'
                       )?.canShow,
                 taxCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'tax'
                       )?.canShowList,
 
@@ -420,31 +399,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 userCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user'
                       )?.canCreate,
                 userCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user'
                       )?.canDelete,
                 userCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user'
                       )?.canEdit,
                 userCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user'
                       )?.canShow,
                 userCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user'
                       )?.canShowList,
 
@@ -452,31 +431,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 userLogCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user_log'
                       )?.canCreate,
                 userLogCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user_log'
                       )?.canDelete,
                 userLogCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user_log'
                       )?.canEdit,
                 userLogCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user_log'
                       )?.canShow,
                 userLogCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'user_log'
                       )?.canShowList,
 
@@ -484,31 +463,31 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
                 verificationCanCreate:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'verification'
                       )?.canCreate,
                 verificationCanDelete:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'verification'
                       )?.canDelete,
                 verificationCanEdit:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'verification'
                       )?.canEdit,
                 verificationCanShow:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'verification'
                       )?.canShow,
                 verificationCanShowList:
                   variant === 'Add'
                     ? false
-                    : data?.getAdminRole.adminRole?.roleSettings?.find(
+                    : data?.getAdminRole?.roleSettings?.find(
                         (settings) => settings.resource === 'verification'
                       )?.canShowList,
               }}
@@ -614,30 +593,32 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
 
                 if (variant === 'Add') {
                   const response = await addAdminRole({
-                    options: {
+                    input: {
                       roleName: values.roleName,
                       roleDescription: values.roleDescription,
                       roleSettings,
                     },
                   })
 
-                  if (response.data?.createAdminRole?.errors) {
-                    addErrors(response.data.createAdminRole.errors)
+                  if (response.error) {
+                    // TODO: show error
+                    console.log(response.error.message)
                   } else {
                     router.push('/admin-roles')
                   }
                 } else {
                   const response = await editAdminRole({
-                    id: id as number,
-                    options: {
+                    roleId: id as string,
+                    input: {
                       roleName: values.roleName,
                       roleDescription: values.roleDescription,
                       roleSettings,
                     },
                   })
 
-                  if (response.data?.editAdminRole?.errors) {
-                    addErrors(response.data.editAdminRole.errors)
+                  if (response.error) {
+                    // TODO: show error
+                    console.log(response.error.message)
                   } else {
                     router.push('/admin-roles')
                   }
@@ -1254,12 +1235,4 @@ const AddOrEditAdminRoleForm: React.FC<AddOrEditAdminRoleFormProps> = ({
   )
 }
 
-const mapDispatchToProps = (
-  dispatch: Dispatch
-): {
-  addErrors: (errors: ErrorResponse[]) => void
-} => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
-})
-
-export default connect(null, mapDispatchToProps)(AddOrEditAdminRoleForm)
+export default AddOrEditAdminRoleForm

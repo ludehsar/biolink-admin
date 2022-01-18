@@ -43,30 +43,38 @@ const PremiumUsernamesIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllPremiumUsernamesQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllPremiumUsernames?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllPremiumUsernames?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllPremiumUsernames?.pageInfo?.startCursor])
+  }, [data?.getAllPremiumUsernames?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllPremiumUsernames?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllPremiumUsernames?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllPremiumUsernames?.pageInfo?.endCursor])
+  }, [data?.getAllPremiumUsernames?.cursor.afterCursor])
 
   const userData =
-    data?.getAllPremiumUsernames?.edges?.map((edge) => ({
-      username: edge.node.username,
-      expireDate: moment(edge.node.expireDate).format('DD-MM-YYYY'),
+    data?.getAllPremiumUsernames?.data.map((username) => ({
+      username: username.username,
+      expireDate: moment(username.expireDate).format('DD-MM-YYYY'),
       email: (
-        <Link href={'/users/view/' + edge.node.owner?.id}>
-          <a href={'/users/view/' + edge.node.owner?.id}>{edge.node.owner?.email}</a>
+        <Link href={'/users/view/' + username.owner?.id}>
+          <a href={'/users/view/' + username.owner?.id}>{username.owner?.email}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
-      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(username.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(username.updatedAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -80,8 +88,8 @@ const PremiumUsernamesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/usernames/edit/' + edge.node.id}>
-              <DropdownItem href={'/usernames/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/usernames/edit/' + username.id}>
+              <DropdownItem href={'/usernames/edit/' + username.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -97,8 +105,8 @@ const PremiumUsernamesIndexPage: NextPage = () => {
         newButtonLink="/usernames/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllPremiumUsernames?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllPremiumUsernames?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllPremiumUsernames?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllPremiumUsernames?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

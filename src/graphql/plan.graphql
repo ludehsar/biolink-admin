@@ -1,0 +1,79 @@
+fragment PlanDetails on Plan {
+  id
+  name
+  monthlyPrice
+  monthlyPriceStripeId
+  annualPrice
+  annualPriceStripeId
+  settings {
+    totalBiolinksLimit
+    totalLinksLimit
+    totalCustomDomainLimit
+    darkModeEnabled
+    addedToDirectoryEnabled
+    customBackHalfEnabled
+    noAdsEnabled
+    removableBrandingEnabled
+    customFooterBrandingEnabled
+    coloredLinksEnabled
+    googleAnalyticsEnabled
+    facebookPixelEnabled
+    emailCaptureEnabled
+    verifiedCheckmarkEnabled
+    linksSchedulingEnabled
+    seoEnabled
+    socialEnabled
+    utmParametersEnabled
+    passwordProtectionEnabled
+    sensitiveContentWarningEnabled
+    leapLinkEnabled
+    donationLinkEnabled
+  }
+  enabledStatus
+  visibilityStatus
+  createdAt
+  updatedAt
+  deletedAt
+}
+fragment PlanListDetails on Plan {
+  id
+  name
+  monthlyPrice
+  annualPrice
+  enabledStatus
+  visibilityStatus
+  createdAt
+  updatedAt
+  deletedAt
+}
+query GetAllPlans($options: ConnectionArgs!) {
+  getAllPlans(options: $options) {
+    data {
+      ...PlanListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetPlan($planId: String!) {
+  getPlan(id: $planId) {
+    ...PlanDetails
+  }
+}
+mutation CreatePlan($input: PlanInput!) {
+  createPlan(options: $input) {
+    ...PlanDetails
+  }
+}
+mutation EditPlan($planId: String!, $input: PlanInput!) {
+  editPlan(id: $planId, options: $input) {
+    ...PlanDetails
+  }
+}
+mutation DeletePlan($planId: String!) {
+  deletePlan(id: $planId) {
+    ...PlanDetails
+  }
+}

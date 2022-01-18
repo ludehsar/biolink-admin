@@ -47,31 +47,39 @@ const ResolvedReportsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllResolvedReportsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllResolvedReports?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllResolvedReports?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllResolvedReports?.pageInfo?.startCursor])
+  }, [data?.getAllResolvedReports?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllResolvedReports?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllResolvedReports?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllResolvedReports?.pageInfo?.endCursor])
+  }, [data?.getAllResolvedReports?.cursor.afterCursor])
 
   const userData =
-    data?.getAllResolvedReports?.edges?.map((edge) => ({
-      firstName: edge.node.firstName,
-      lastName: edge.node.lastName,
-      email: edge.node.email,
-      reportedUrl: edge.node.reportedUrl,
+    data?.getAllResolvedReports?.data.map((report) => ({
+      firstName: report.firstName,
+      lastName: report.lastName,
+      email: report.email,
+      reportedUrl: report.reportedUrl,
       reporter: (
-        <Link href={'/users/view/' + edge.node.reporter?.id}>
-          <a href={'/users/view/' + edge.node.reporter?.id}>{edge.node.reporter?.email}</a>
+        <Link href={'/users/view/' + report.reporter?.id}>
+          <a href={'/users/view/' + report.reporter?.id}>{report.reporter?.email}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(report.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -85,8 +93,8 @@ const ResolvedReportsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/reports/details/' + edge.node.id}>
-              <DropdownItem href={'/reports/details/' + edge.node.id}>Details</DropdownItem>
+            <Link href={'/reports/details/' + report.id}>
+              <DropdownItem href={'/reports/details/' + report.id}>Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -100,8 +108,8 @@ const ResolvedReportsIndexPage: NextPage = () => {
         title="Resolved Reports"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllResolvedReports?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllResolvedReports?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllResolvedReports?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllResolvedReports?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

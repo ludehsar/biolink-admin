@@ -51,32 +51,40 @@ const ResolvedSupportsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllResolvedSupportsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllResolvedSupports?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllResolvedSupports?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllResolvedSupports?.pageInfo?.startCursor])
+  }, [data?.getAllResolvedSupports?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllResolvedSupports?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllResolvedSupports?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllResolvedSupports?.pageInfo?.endCursor])
+  }, [data?.getAllResolvedSupports?.cursor.afterCursor])
 
   const userData =
-    data?.getAllResolvedSupports?.edges?.map((edge) => ({
-      fullName: edge.node.fullName,
-      email: edge.node.email,
-      phoneNumber: edge.node.phoneNumber,
-      company: edge.node.company,
-      subject: edge.node.subject,
+    data?.getAllResolvedSupports?.data.map((support) => ({
+      fullName: support.fullName,
+      email: support.email,
+      phoneNumber: support.phoneNumber,
+      company: support.company,
+      subject: support.subject,
       user: (
-        <Link href={'/users/view/' + edge.node.user?.id}>
-          <a href={'/users/view/' + edge.node.user?.id}>{edge.node.user?.email}</a>
+        <Link href={'/users/view/' + support.user?.id}>
+          <a href={'/users/view/' + support.user?.id}>{support.user?.email}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(support.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -90,8 +98,8 @@ const ResolvedSupportsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/supports/details/' + edge.node.id}>
-              <DropdownItem href={'/supports/details/' + edge.node.id}>Details</DropdownItem>
+            <Link href={'/supports/details/' + support.id}>
+              <DropdownItem href={'/supports/details/' + support.id}>Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -105,8 +113,8 @@ const ResolvedSupportsIndexPage: NextPage = () => {
         title="Resolved Supports"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllResolvedSupports?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllResolvedSupports?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllResolvedSupports?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllResolvedSupports?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

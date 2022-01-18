@@ -1,0 +1,58 @@
+fragment CodeFragment on Code {
+  id
+  type
+  code
+  discount
+  quantity
+  expireDate
+  createdAt
+  updatedAt
+  deletedAt
+  referrer {
+    id
+    name
+    email
+  }
+}
+query GetAllDiscounts($options: ConnectionArgs!) {
+  getAllDiscounts(options: $options) {
+    data {
+      ...CodeFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllReferrals($options: ConnectionArgs!) {
+  getAllReferrals(options: $options) {
+    data {
+      ...CodeFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetCode($codeId: String!) {
+  getCode(codeId: $codeId) {
+    ...CodeFragment
+  }
+}
+mutation CreateCode($input: NewCodeInput!) {
+  addCode(options: $input) {
+    ...CodeFragment
+  }
+}
+mutation EditCode($codeId: String!, $input: NewCodeInput!) {
+  editCode(codeId: $codeId, options: $input) {
+    ...CodeFragment
+  }
+}
+mutation DeleteCode($codeId: String!) {
+  deleteCode(codeId: $codeId) {
+    ...CodeFragment
+  }
+}

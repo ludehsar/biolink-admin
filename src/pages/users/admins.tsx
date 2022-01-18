@@ -17,14 +17,6 @@ const columns = [
     selector: 'email',
   },
   {
-    name: 'Language',
-    selector: 'language',
-  },
-  {
-    name: 'IP Address',
-    selector: 'lastIpAddress',
-  },
-  {
     name: 'Country',
     selector: 'country',
   },
@@ -47,27 +39,33 @@ const AdminsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllAdminsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllAdmins?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllAdmins?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllAdmins?.pageInfo?.startCursor])
+  }, [data?.getAllAdmins?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllAdmins?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllAdmins?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllAdmins?.pageInfo?.endCursor])
+  }, [data?.getAllAdmins?.cursor.afterCursor])
 
   const userData =
-    data?.getAllAdmins?.edges?.map((edge) => ({
-      email: edge.node.email,
-      language: edge.node.language,
-      lastIpAddress: edge.node.lastIPAddress,
-      country: edge.node.country,
-      adminRole: <Badge color="primary">{edge.node.adminRole?.roleName || 'Not Loaded'}</Badge>,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+    data?.getAllAdmins?.data.map((user) => ({
+      email: user.email,
+      country: user.country,
+      adminRole: <Badge color="primary">{user.adminRole?.roleName || 'Not Loaded'}</Badge>,
+      createdAt: moment.unix(parseInt(user.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -81,11 +79,11 @@ const AdminsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/users/view/' + edge.node.id}>
-              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            <Link href={'/users/view/' + user.id}>
+              <DropdownItem href={'/users/view/' + user.id}>View Details</DropdownItem>
             </Link>
-            <Link href={'/users/edit/' + edge.node.id}>
-              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/users/edit/' + user.id}>
+              <DropdownItem href={'/users/edit/' + user.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -99,8 +97,8 @@ const AdminsIndexPage: NextPage = () => {
         title="Admins"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllAdmins?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllAdmins?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllAdmins?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllAdmins?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

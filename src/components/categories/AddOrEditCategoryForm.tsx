@@ -4,7 +4,6 @@ import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form } from 
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
   useEditCategoryMutation,
   useCreateCategoryMutation,
   useGetCategoryQuery,
@@ -18,16 +17,16 @@ import router from 'next/router'
 import Swal from 'sweetalert2'
 
 interface AddOrEditUsersFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
-  id?: number
+  id?: string
 }
 
 const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
   const [, createCategory] = useCreateCategoryMutation()
   const [, editCategory] = useEditCategoryMutation()
   const [, deleteCategory] = useDeleteCategoryMutation()
-  const [{ data }] = useGetCategoryQuery({ variables: { id: id as number } })
+  const [{ data }] = useGetCategoryQuery({ variables: { categoryId: id as string } })
 
   const showDeleteCategoryConfirmBoxAndDeleteCategory = useCallback(async () => {
     const result = await Swal.fire({
@@ -42,16 +41,10 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
 
     if (result.isConfirmed) {
       const response = await deleteCategory({
-        id: id as number,
+        categoryId: id as string,
       })
 
-      if (response.data?.deleteCategory?.errors && response.data.deleteCategory.errors.length > 0) {
-        Swal.fire({
-          title: 'Error!',
-          text: response.data.deleteCategory.errors[0].message,
-          icon: 'error',
-        })
-      } else if (response.error) {
+      if (response.error) {
         Swal.fire({
           title: 'Error!',
           text: response.error.message,
@@ -69,7 +62,7 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
     }
   }, [deleteCategory, id])
 
-  return variant === 'Add' || data?.getCategory?.category ? (
+  return variant === 'Add' || data?.getCategory ? (
     <Container className="mt--7" fluid>
       <Row>
         <div className="col">
@@ -100,31 +93,31 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
             <Formik
               enableReinitialize={true}
               initialValues={{
-                categoryName: variant === 'Add' ? '' : data?.getCategory?.category?.categoryName,
+                categoryName: variant === 'Add' ? '' : data?.getCategory?.categoryName,
               }}
               onSubmit={async (values, { setSubmitting }) => {
                 if (variant === 'Add') {
                   const response = await createCategory({
-                    options: {
+                    input: {
                       categoryName: values.categoryName,
                     },
                   })
 
-                  if (response.data?.createCategory?.errors) {
-                    addErrors(response.data.createCategory.errors)
+                  if (response.error) {
+                    addErrors(response.error.message)
                   } else {
                     router.push('/categories')
                   }
                 } else {
                   const response = await editCategory({
-                    id: id as number,
-                    options: {
+                    categoryId: id as string,
+                    input: {
                       categoryName: values.categoryName,
                     },
                   })
 
-                  if (response.data?.editCategory?.errors) {
-                    addErrors(response.data.editCategory.errors)
+                  if (response.error) {
+                    addErrors(response.error.message)
                   } else {
                     router.push('/categories')
                   }
@@ -173,9 +166,10 @@ const AddOrEditCategoryForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, i
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditCategoryForm)

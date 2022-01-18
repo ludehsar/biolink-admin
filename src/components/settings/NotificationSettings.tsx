@@ -3,27 +3,36 @@ import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
 import {
+  NotificationSystemSettings,
   useEditNotificationSettingsMutation,
-  useGetNotificationSettingsQuery,
+  useGetSettingsByKeyQuery,
 } from '../../generated/graphql'
 
 const NotificationSettings: React.FC = () => {
-  const [{ data }] = useGetNotificationSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'email_notification' },
+  })
   const [, editNotificationSettings] = useEditNotificationSettingsMutation()
 
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        emailsToBeNotified: (data?.getNotificationSettings.settings?.emailsToBeNotified || [])
+        emailsToBeNotified: (
+          (data?.getSettingsByKey as NotificationSystemSettings)?.emailsToBeNotified || []
+        )
           .join('\n')
           .toString(),
         emailOnNewUser:
-          data?.getNotificationSettings.settings?.emailOnNewUser === true ? 'true' : 'false',
+          (data?.getSettingsByKey as NotificationSystemSettings)?.emailOnNewUser === true
+            ? 'true'
+            : 'false',
         emailOnNewPayment:
-          data?.getNotificationSettings.settings?.emailOnNewPayment === true ? 'true' : 'false',
+          (data?.getSettingsByKey as NotificationSystemSettings)?.emailOnNewPayment === true
+            ? 'true'
+            : 'false',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editNotificationSettings({
           options: {
             emailOnNewPayment: values.emailOnNewPayment === 'true',
@@ -32,40 +41,37 @@ const NotificationSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editNotificationSettings.errors &&
-          response.data.editNotificationSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editNotificationSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editNotificationSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              emailsToBeNotified: (
-                response.data.editNotificationSettings.settings.emailsToBeNotified || []
-              )
-                .join('\n')
-                .toString(),
-              emailOnNewUser:
-                response.data.editNotificationSettings.settings.emailOnNewUser === true
-                  ? 'true'
-                  : 'false',
-              emailOnNewPayment:
-                response.data.editNotificationSettings.settings.emailOnNewPayment === true
-                  ? 'true'
-                  : 'false',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     emailsToBeNotified: (
+          //       response.data.editNotificationSettings.settings.emailsToBeNotified || []
+          //     )
+          //       .join('\n')
+          //       .toString(),
+          //     emailOnNewUser:
+          //       response.data.editNotificationSettings.settings.emailOnNewUser === true
+          //         ? 'true'
+          //         : 'false',
+          //     emailOnNewPayment:
+          //       response.data.editNotificationSettings.settings.emailOnNewPayment === true
+          //         ? 'true'
+          //         : 'false',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

@@ -23,25 +23,21 @@ import {
 
 import AdminLayout from '../../../layouts/Admin.layout'
 import { createUrqlClient } from '../../../utils/createUrqlClient'
-import {
-  useGetSupportQuery,
-  useEditSupportMutation,
-  ErrorResponse,
-} from '../../../generated/graphql'
+import { useGetSupportQuery, useReplyToSupportMutation } from '../../../generated/graphql'
 import AdminHeader from '../../../components/Header/AdminHeader'
 import { ADD_ERRORS_REQUESTED } from '../../../redux/actions/errorAction'
 
 interface SupportDetailsPageProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 }
 
 const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) => {
   const router = useRouter()
   const { id } = router.query
   const [{ data }] = useGetSupportQuery({ variables: { supportId: (id as string) || '' } })
-  const [, editSupport] = useEditSupportMutation()
+  const [, editSupport] = useReplyToSupportMutation()
 
-  return data?.getSupport?.support ? (
+  return data?.getSupport ? (
     <AdminLayout>
       <AdminHeader />
       <Container className="mt--7" fluid>
@@ -65,8 +61,8 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                           User
                         </label>
                         <div>
-                          <Link href={'/users/view/' + data.getSupport.support.user?.id}>
-                            <a>{data.getSupport.support.user?.email}</a>
+                          <Link href={'/users/view/' + data.getSupport.user?.id}>
+                            <a>{data.getSupport.user?.email}</a>
                           </Link>
                         </div>
                       </FormGroup>
@@ -80,7 +76,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getSupport.support.fullName || ''}
+                          value={data.getSupport.fullName || ''}
                           id="input-full-name"
                           placeholder="Full Name"
                           type="text"
@@ -97,7 +93,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getSupport.support.email || ''}
+                          value={data.getSupport.email || ''}
                           id="input-email"
                           placeholder="Email Address"
                           type="email"
@@ -112,7 +108,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getSupport.support.phoneNumber || ''}
+                          value={data.getSupport.phoneNumber || ''}
                           id="input-phone-number"
                           placeholder="Phone Number"
                           type="tel"
@@ -129,7 +125,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getSupport.support.company || ''}
+                          value={data.getSupport.company || ''}
                           id="input-company"
                           placeholder="Company"
                           type="text"
@@ -150,7 +146,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getSupport.support.subject || ''}
+                          value={data.getSupport.subject || ''}
                           id="input-subject"
                           placeholder="Subject"
                           type="text"
@@ -167,7 +163,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getSupport.support.message || ''}
+                          value={data.getSupport.message || ''}
                           id="input-message"
                           placeholder="Message"
                           rows="4"
@@ -184,20 +180,20 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                   <Formik
                     enableReinitialize
                     initialValues={{
-                      status: data.getSupport.support.status,
-                      supportReply: data.getSupport.support.supportReply,
+                      status: data.getSupport.status,
+                      supportReply: data.getSupport.supportReply,
                     }}
                     onSubmit={async (values, { setSubmitting }) => {
                       const response = await editSupport({
-                        supportId: data.getSupport?.support?.id as string,
-                        options: {
+                        supportId: data.getSupport?.id as string,
+                        input: {
                           status: values.status,
                           supportReply: values.supportReply,
                         },
                       })
 
-                      if (response.data?.editSupport?.errors) {
-                        addErrors(response.data.editSupport.errors)
+                      if (response.error) {
+                        addErrors(response.error.message)
                       } else {
                         router.push('/supports/pending')
                       }
@@ -236,7 +232,7 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
                               <Input
                                 className="bg-white form-control-alternative"
                                 value={moment
-                                  .unix(parseInt(data.getSupport?.support?.createdAt || '') / 1000)
+                                  .unix(parseInt(data.getSupport?.createdAt || '') / 1000)
                                   .format('DD-MM-YYYY HH:mm:ss')}
                                 id="input-issued"
                                 placeholder="Issue Date"
@@ -297,9 +293,10 @@ const SupportDetailsPage: NextPage<SupportDetailsPageProps> = ({ addErrors }) =>
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default withUrqlClient(createUrqlClient)(

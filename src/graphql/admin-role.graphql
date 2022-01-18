@@ -1,0 +1,52 @@
+fragment AdminRoleFragment on AdminRole {
+  id
+  roleName
+  roleDescription
+  roleSettings {
+    resource
+    canShowList
+    canShow
+    canCreate
+    canEdit
+    canDelete
+  }
+  createdAt
+  updatedAt
+  deletedAt
+}
+
+query GetAllAdminRoles($options: ConnectionArgs!) {
+  getAllAdminRoles(options: $options) {
+    data {
+      ...AdminRoleFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+
+query GetAdminRole($roleId: String!) {
+  getAdminRole(id: $roleId) {
+    ...AdminRoleFragment
+  }
+}
+
+mutation CreateAdminRole($input: NewAdminRoleInput!) {
+  createAdminRole(options: $input) {
+    ...AdminRoleFragment
+  }
+}
+
+mutation EditAdminRole($roleId: String!, $input: NewAdminRoleInput!) {
+  editAdminRole(id: $roleId, options: $input) {
+    ...AdminRoleFragment
+  }
+}
+
+mutation DeleteAdminRole($roleId: String!) {
+  deleteAdminRole(id: $roleId) {
+    ...AdminRoleFragment
+  }
+}

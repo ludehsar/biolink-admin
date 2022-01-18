@@ -23,9 +23,9 @@ import Link from 'next/link'
 const ViewTaxPage: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
-  const [{ data }] = useGetTaxQuery({ variables: { taxId: parseInt((id as string) || '0') } })
+  const [{ data }] = useGetTaxQuery({ variables: { taxId: id as string } })
 
-  return data?.getTax?.tax ? (
+  return data?.getTax ? (
     <AdminLayout>
       <AdminHeader />
       <Container className="mt--7" fluid>
@@ -38,13 +38,13 @@ const ViewTaxPage: NextPage = () => {
                     <h3 className="mb-0">Tax Details</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    <Link href={'/taxes/edit/' + data.getTax.tax.id}>
-                      <Button color="primary" href={'/taxes/edit/' + data.getTax.tax.id} size="sm">
+                    <Link href={'/taxes/edit/' + data.getTax.id}>
+                      <Button color="primary" href={'/taxes/edit/' + data.getTax.id} size="sm">
                         Edit
                       </Button>
                     </Link>
-                    <Link href={'/taxes/delete/' + data.getTax.tax.id}>
-                      <Button color="danger" href={'/taxes/delete/' + data.getTax.tax.id} size="sm">
+                    <Link href={'/taxes/delete/' + data.getTax.id}>
+                      <Button color="danger" href={'/taxes/delete/' + data.getTax.id} size="sm">
                         Delete
                       </Button>
                     </Link>
@@ -65,7 +65,7 @@ const ViewTaxPage: NextPage = () => {
                           name="internalName"
                           className="bg-white form-control-alternative"
                           id="internalName"
-                          value={data.getTax.tax.internalName || ''}
+                          value={data.getTax.internalName || ''}
                           placeholder="Internal Name"
                           readOnly
                         />
@@ -81,7 +81,7 @@ const ViewTaxPage: NextPage = () => {
                           name="name"
                           className="bg-white form-control-alternative"
                           id="name"
-                          value={data.getTax.tax.name || ''}
+                          value={data.getTax.name || ''}
                           placeholder="Full Name"
                           readOnly
                         />
@@ -100,7 +100,7 @@ const ViewTaxPage: NextPage = () => {
                           className="bg-white form-control-alternative"
                           id="description"
                           rows="4"
-                          value={data.getTax.tax.description || ''}
+                          value={data.getTax.description || ''}
                           placeholder="Description"
                           readOnly
                         />
@@ -118,7 +118,7 @@ const ViewTaxPage: NextPage = () => {
                           name="value"
                           className="bg-white form-control-alternative"
                           id="value"
-                          value={data.getTax.tax.value || 0}
+                          value={data.getTax.value || 0}
                           placeholder="Value"
                           readOnly
                         />
@@ -134,7 +134,7 @@ const ViewTaxPage: NextPage = () => {
                           name="valueType"
                           className="bg-white form-control-alternative"
                           id="valueType"
-                          value={data.getTax.tax.valueType || ''}
+                          value={data.getTax.valueType || ''}
                           placeholder="Value Type"
                           readOnly
                         />
@@ -152,7 +152,7 @@ const ViewTaxPage: NextPage = () => {
                           name="type"
                           className="bg-white form-control-alternative"
                           id="type"
-                          value={data.getTax.tax.type || ''}
+                          value={data.getTax.type || ''}
                           placeholder="Type"
                           readOnly
                         />
@@ -168,7 +168,7 @@ const ViewTaxPage: NextPage = () => {
                           name="billingFor"
                           className="bg-white form-control-alternative"
                           id="billingFor"
-                          value={data.getTax.tax.billingFor || ''}
+                          value={data.getTax.billingFor || ''}
                           placeholder="Type"
                           readOnly
                         />
@@ -182,7 +182,7 @@ const ViewTaxPage: NextPage = () => {
                           Countries
                         </label>
                         <div>
-                          {(data.getTax.tax.countries?.split(',') || []).map((country, id) => (
+                          {(data.getTax.countries?.split(',') || []).map((country, id) => (
                             <span className="badge badge-primary my-2 mr-2" key={id}>
                               {country}
                             </span>

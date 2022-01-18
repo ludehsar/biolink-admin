@@ -47,31 +47,39 @@ const PendingReportsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllPendingReportsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllPendingReports?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllPendingReports?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllPendingReports?.pageInfo?.startCursor])
+  }, [data?.getAllPendingReports?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllPendingReports?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllPendingReports?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllPendingReports?.pageInfo?.endCursor])
+  }, [data?.getAllPendingReports?.cursor.afterCursor])
 
   const userData =
-    data?.getAllPendingReports?.edges?.map((edge) => ({
-      firstName: edge.node.firstName,
-      lastName: edge.node.lastName,
-      email: edge.node.email,
-      reportedUrl: edge.node.reportedUrl,
+    data?.getAllPendingReports?.data.map((report) => ({
+      firstName: report.firstName,
+      lastName: report.lastName,
+      email: report.email,
+      reportedUrl: report.reportedUrl,
       reporter: (
-        <Link href={'/users/view/' + edge.node.reporter?.id}>
-          <a href={'/users/view/' + edge.node.reporter?.id}>{edge.node.reporter?.email}</a>
+        <Link href={'/users/view/' + report.reporter?.id}>
+          <a href={'/users/view/' + report.reporter?.id}>{report.reporter?.email}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(report.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -85,8 +93,8 @@ const PendingReportsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/reports/details/' + edge.node.id}>
-              <DropdownItem href={'/reports/details/' + edge.node.id}>Details</DropdownItem>
+            <Link href={'/reports/details/' + report.id}>
+              <DropdownItem href={'/reports/details/' + report.id}>Details</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -100,8 +108,8 @@ const PendingReportsIndexPage: NextPage = () => {
         title="Pending Reports"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllPendingReports?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllPendingReports?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllPendingReports?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllPendingReports?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

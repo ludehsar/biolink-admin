@@ -1,0 +1,71 @@
+fragment UsernameFragment on Username {
+  id
+  username
+  premiumType
+  expireDate
+  createdAt
+  updatedAt
+  deletedAt
+  owner {
+    id
+    name
+    email
+  }
+  biolink {
+    id
+    profilePhotoUrl
+  }
+}
+query GetAllUsernames($options: ConnectionArgs!) {
+  getAllUsernames(options: $options) {
+    data {
+      ...UsernameFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllPremiumUsernames($options: ConnectionArgs!) {
+  getAllPremiumUsernames(options: $options) {
+    data {
+      ...UsernameFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllTrademarkUsernames($options: ConnectionArgs!) {
+  getAllTrademarkUsernames(options: $options) {
+    data {
+      ...UsernameFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetUsername($usernameId: String!) {
+  getUsername(usernameId: $usernameId) {
+    ...UsernameFragment
+  }
+}
+mutation AddUsername($input: NewUsernameInput!) {
+  addUsername(options: $input) {
+    ...UsernameFragment
+  }
+}
+mutation EditUsername($usernameId: String!, $input: NewUsernameInput!) {
+  editUsername(usernameId: $usernameId, options: $input) {
+    ...UsernameFragment
+  }
+}
+mutation DeleteUsername($usernameId: String!) {
+  deleteUsername(usernameId: $usernameId) {
+    ...UsernameFragment
+  }
+}

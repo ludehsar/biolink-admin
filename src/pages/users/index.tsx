@@ -21,14 +21,6 @@ const columns = [
     selector: 'accountStatus',
   },
   {
-    name: 'Language',
-    selector: 'language',
-  },
-  {
-    name: 'IP Address',
-    selector: 'lastIpAddress',
-  },
-  {
     name: 'Country',
     selector: 'country',
   },
@@ -51,28 +43,34 @@ const UsersIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllUsersQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllUsers?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllUsers?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllUsers?.pageInfo?.startCursor])
+  }, [data?.getAllUsers?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllUsers?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllUsers?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllUsers?.pageInfo?.endCursor])
+  }, [data?.getAllUsers?.cursor.afterCursor])
 
   const userData =
-    data?.getAllUsers?.edges?.map((edge) => ({
-      email: edge.node.email,
+    data?.getAllUsers?.data.map((user) => ({
+      email: user.email,
       accountStatus: (
         <Badge color="" className="badge-dot mr-4">
-          {edge.node.lastActiveTill &&
-          moment(moment.now()).isBefore(
-            moment.unix(parseInt(edge.node.lastActiveTill || '') / 1000)
-          ) ? (
+          {user.lastActiveTill &&
+          moment(moment.now()).isBefore(moment.unix(parseInt(user.lastActiveTill || '') / 1000)) ? (
             <>
               <i className="bg-success" /> Active
             </>
@@ -83,11 +81,9 @@ const UsersIndexPage: NextPage = () => {
           )}
         </Badge>
       ),
-      language: edge.node.language,
-      lastIpAddress: edge.node.lastIPAddress,
-      country: edge.node.country,
-      plan: <Badge color="primary">{edge.node.plan?.name || 'Free'}</Badge>,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      country: user.country,
+      plan: <Badge color="primary">{user.plan?.name || 'Free'}</Badge>,
+      createdAt: moment.unix(parseInt(user.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -101,11 +97,11 @@ const UsersIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/users/view/' + edge.node.id}>
-              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            <Link href={'/users/view/' + user.id}>
+              <DropdownItem href={'/users/view/' + user.id}>View Details</DropdownItem>
             </Link>
-            <Link href={'/users/edit/' + edge.node.id}>
-              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/users/edit/' + user.id}>
+              <DropdownItem href={'/users/edit/' + user.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -121,8 +117,8 @@ const UsersIndexPage: NextPage = () => {
         newButtonLink={'/users/add'}
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllUsers?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllUsers?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllUsers?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllUsers?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

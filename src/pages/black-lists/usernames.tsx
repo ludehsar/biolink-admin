@@ -3,17 +3,17 @@ import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
 import moment from 'moment'
 
-import AdminHeader from '../../../components/Header/AdminHeader'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
-import { useGetAllBlackListedBadWordsQuery } from '../../../generated/graphql'
-import DataTable from '../../../components/DataTable/DataTable'
+import AdminHeader from '../../components/Header/AdminHeader'
+import AdminLayout from '../../layouts/Admin.layout'
+import { createUrqlClient } from '../../utils/createUrqlClient'
+import { useGetAllBlacklistedUsernamesQuery } from '../../generated/graphql'
+import DataTable from '../../components/DataTable/DataTable'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import Link from 'next/link'
 
 const columns = [
   {
-    name: 'Bad Words',
+    name: 'Username',
     selector: 'keyword',
   },
   {
@@ -34,25 +34,33 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
   const [after, setAfter] = useState<string>('')
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
-  const [{ data }] = useGetAllBlackListedBadWordsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+  const [{ data }] = useGetAllBlacklistedUsernamesQuery({
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllBlackListedBadWords?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllBlackListedUsernames?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllBlackListedBadWords?.pageInfo?.startCursor])
+  }, [data?.getAllBlackListedUsernames?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllBlackListedBadWords?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllBlackListedUsernames?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllBlackListedBadWords?.pageInfo?.endCursor])
+  }, [data?.getAllBlackListedUsernames?.cursor.afterCursor])
 
   const userData =
-    data?.getAllBlackListedBadWords?.edges?.map((edge) => ({
-      keyword: edge.node.keyword,
-      reason: edge.node.reason,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+    data?.getAllBlackListedUsernames?.data.map((username) => ({
+      keyword: username.keyword,
+      reason: username.reason,
+      createdAt: moment.unix(parseInt(username.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -66,8 +74,8 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/black-lists/edit/' + edge.node.id}>
-              <DropdownItem href={'/black-lists/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/black-lists/edit/' + username.id}>
+              <DropdownItem href={'/black-lists/edit/' + username.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -78,13 +86,13 @@ const BlackListedUsernamesIndexPage: NextPage = () => {
     <AdminLayout>
       <AdminHeader />
       <DataTable
-        title="Black Listed Bad Words"
+        title="Black Listed Usernames"
         newButton={true}
         newButtonLink="/black-lists/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllBlackListedBadWords?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllBlackListedBadWords?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllBlackListedUsernames?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllBlackListedUsernames?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

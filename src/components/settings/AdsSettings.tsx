@@ -2,19 +2,25 @@ import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
-import { useEditAdsSettingsMutation, useGetAdsSettingsQuery } from '../../generated/graphql'
+import {
+  AdsSystemSettings,
+  useEditAdsSettingsMutation,
+  useGetSettingsByKeyQuery,
+} from '../../generated/graphql'
 
 const AdsSettings: React.FC = () => {
-  const [{ data }] = useGetAdsSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'ads' },
+  })
   const [, editAdsSettings] = useEditAdsSettingsMutation()
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        header: data?.getAdsSettings.settings?.header || '',
-        footer: data?.getAdsSettings.settings?.footer || '',
-        biolinkPageHeader: data?.getAdsSettings.settings?.biolinkPageHeader || '',
-        biolinkPageFooter: data?.getAdsSettings.settings?.biolinkPageFooter || '',
+        header: (data?.getSettingsByKey as AdsSystemSettings)?.header || '',
+        footer: (data?.getSettingsByKey as AdsSystemSettings)?.footer || '',
+        biolinkPageHeader: (data?.getSettingsByKey as AdsSystemSettings)?.biolinkPageHeader || '',
+        biolinkPageFooter: (data?.getSettingsByKey as AdsSystemSettings)?.biolinkPageFooter || '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         const response = await editAdsSettings({
@@ -26,18 +32,15 @@ const AdsSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editAdsSettings.errors &&
-          response.data.editAdsSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editAdsSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editAdsSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited ads settings',
@@ -45,10 +48,12 @@ const AdsSettings: React.FC = () => {
           })
           resetForm({
             values: {
-              biolinkPageFooter: response.data.editAdsSettings.settings.biolinkPageFooter || '',
-              biolinkPageHeader: response.data.editAdsSettings.settings.biolinkPageHeader || '',
-              footer: response.data.editAdsSettings.settings.footer || '',
-              header: response.data.editAdsSettings.settings.header || '',
+              biolinkPageFooter:
+                (data?.getSettingsByKey as AdsSystemSettings)?.biolinkPageFooter || '',
+              biolinkPageHeader:
+                (data?.getSettingsByKey as AdsSystemSettings)?.biolinkPageHeader || '',
+              footer: (data?.getSettingsByKey as AdsSystemSettings)?.footer || '',
+              header: (data?.getSettingsByKey as AdsSystemSettings)?.header || '',
             },
           })
         }

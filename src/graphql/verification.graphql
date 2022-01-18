@@ -1,0 +1,110 @@
+fragment VerificationDetails on Verification {
+  id
+  verificationStatus
+  verifiedGovernmentId
+  verifiedEmail
+  verifiedPhoneNumber
+  verifiedWorkEmail
+  username
+  firstName
+  lastName
+  mobileNumber
+  workNumber
+  email
+  websiteLink
+  instagramUrl
+  twitterUrl
+  linkedinUrl
+  photoIdUrl
+  businessDocumentUrl
+  otherDocumentsUrl
+  createdAt
+  updatedAt
+  deletedAt
+  user {
+    id
+    name
+    email
+  }
+  biolink {
+    id
+    profilePhotoUrl
+  }
+  category {
+    id
+    categoryName
+  }
+}
+fragment VerificationListDetails on Verification {
+  id
+  verificationStatus
+  verifiedGovernmentId
+  verifiedEmail
+  verifiedPhoneNumber
+  verifiedWorkEmail
+  username
+  createdAt
+  updatedAt
+  deletedAt
+  user {
+    id
+    name
+    email
+  }
+  biolink {
+    id
+    profilePhotoUrl
+  }
+  category {
+    id
+    categoryName
+  }
+}
+query GetAllPendingVerifications($options: ConnectionArgs!) {
+  getAllPendingVerifications(options: $options) {
+    data {
+      ...VerificationListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllVerifiedVerifications($options: ConnectionArgs!) {
+  getAllVerifiedVerifications(options: $options) {
+    data {
+      ...VerificationListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllRejectedVerifications($options: ConnectionArgs!) {
+  getAllRejectedVerifications(options: $options) {
+    data {
+      ...VerificationListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetVerification($verificationId: String!) {
+  getVerification(verificationId: $verificationId) {
+    ...VerificationDetails
+  }
+}
+mutation ChangeVerificationStatus($verificationId: String!, $input: VerificationStatusInput!) {
+  changeVerificationStatus(verificationId: $verificationId, options: $input) {
+    ...VerificationDetails
+  }
+}
+mutation DeleteVerification($verificationId: String!) {
+  deleteVerification(verificationId: $verificationId) {
+    ...VerificationDetails
+  }
+}

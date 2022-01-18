@@ -5,11 +5,11 @@ import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 import Link from 'next/link'
 import moment from 'moment'
 
-import DataTable from '../../../components/DataTable/DataTable'
-import AdminHeader from '../../../components/Header/AdminHeader'
-import { useGetAllDiscountsQuery } from '../../../generated/graphql'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
+import DataTable from '../../components/DataTable/DataTable'
+import AdminHeader from '../../components/Header/AdminHeader'
+import { useGetAllDiscountsQuery } from '../../generated/graphql'
+import AdminLayout from '../../layouts/Admin.layout'
+import { createUrqlClient } from '../../utils/createUrqlClient'
 
 const columns = [
   {
@@ -51,32 +51,40 @@ const DiscountsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllDiscountsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllDiscounts?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllDiscounts?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllDiscounts?.pageInfo?.startCursor])
+  }, [data?.getAllDiscounts?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllDiscounts?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllDiscounts?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllDiscounts?.pageInfo?.endCursor])
+  }, [data?.getAllDiscounts?.cursor.afterCursor])
 
   const userData =
-    data?.getAllDiscounts?.edges?.map((edge) => ({
-      code: edge.node.code,
-      discount: edge.node.discount,
-      quantity: edge.node.quantity,
-      expireDate: moment(edge.node.expireDate).format('DD-MM-YYYY'),
+    data?.getAllDiscounts?.data.map((discount) => ({
+      code: discount.code,
+      discount: discount.discount,
+      quantity: discount.quantity,
+      expireDate: moment(discount.expireDate).format('DD-MM-YYYY'),
       email: (
-        <Link href={'/users/view/' + edge.node.referrer?.id}>
-          <a href={'/users/view/' + edge.node.referrer?.id}>{edge.node.referrer?.email}</a>
+        <Link href={'/users/view/' + discount.referrer?.id}>
+          <a href={'/users/view/' + discount.referrer?.id}>{discount.referrer?.email}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
-      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(discount.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(discount.updatedAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -90,8 +98,8 @@ const DiscountsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/codes/edit/' + edge.node.id}>
-              <DropdownItem href={'/codes/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/codes/edit/' + discount.id}>
+              <DropdownItem href={'/codes/edit/' + discount.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -107,8 +115,8 @@ const DiscountsIndexPage: NextPage = () => {
         newButtonLink="/codes/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllDiscounts?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllDiscounts?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllDiscounts?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllDiscounts?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

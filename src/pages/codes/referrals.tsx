@@ -5,11 +5,11 @@ import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 import Link from 'next/link'
 import moment from 'moment'
 
-import DataTable from '../../../components/DataTable/DataTable'
-import AdminHeader from '../../../components/Header/AdminHeader'
-import { useGetAllReferralsQuery } from '../../../generated/graphql'
-import AdminLayout from '../../../layouts/Admin.layout'
-import { createUrqlClient } from '../../../utils/createUrqlClient'
+import DataTable from '../../components/DataTable/DataTable'
+import AdminHeader from '../../components/Header/AdminHeader'
+import { useGetAllReferralsQuery } from '../../generated/graphql'
+import AdminLayout from '../../layouts/Admin.layout'
+import { createUrqlClient } from '../../utils/createUrqlClient'
 
 const columns = [
   {
@@ -51,32 +51,40 @@ const ReferralsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllReferralsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllReferrals?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllReferrals?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllReferrals?.pageInfo?.startCursor])
+  }, [data?.getAllReferrals?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllReferrals?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllReferrals?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllReferrals?.pageInfo?.endCursor])
+  }, [data?.getAllReferrals?.cursor.afterCursor])
 
   const userData =
-    data?.getAllReferrals?.edges?.map((edge) => ({
-      code: edge.node.code,
-      discount: edge.node.discount,
-      quantity: edge.node.quantity,
-      expireDate: moment(edge.node.expireDate).format('DD-MM-YYYY'),
+    data?.getAllReferrals?.data.map((referral) => ({
+      code: referral.code,
+      discount: referral.discount,
+      quantity: referral.quantity,
+      expireDate: moment(referral.expireDate).format('DD-MM-YYYY'),
       email: (
-        <Link href={'/users/view/' + edge.node.referrer?.id}>
-          <a href={'/users/view/' + edge.node.referrer?.id}>{edge.node.referrer?.email}</a>
+        <Link href={'/users/view/' + referral.referrer?.id}>
+          <a href={'/users/view/' + referral.referrer?.id}>{referral.referrer?.email}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
-      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(referral.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(referral.updatedAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -90,8 +98,8 @@ const ReferralsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/codes/edit/' + edge.node.id}>
-              <DropdownItem href={'/codes/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/codes/edit/' + referral.id}>
+              <DropdownItem href={'/codes/edit/' + referral.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -107,8 +115,8 @@ const ReferralsIndexPage: NextPage = () => {
         newButtonLink="/codes/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllReferrals?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllReferrals?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllReferrals?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllReferrals?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

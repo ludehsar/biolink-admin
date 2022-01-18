@@ -24,16 +24,12 @@ import {
 
 import AdminLayout from '../../../layouts/Admin.layout'
 import { createUrqlClient } from '../../../utils/createUrqlClient'
-import {
-  ErrorResponse,
-  useChangeReportStatusMutation,
-  useGetReportQuery,
-} from '../../../generated/graphql'
+import { useChangeReportStatusMutation, useGetReportQuery } from '../../../generated/graphql'
 import AdminHeader from '../../../components/Header/AdminHeader'
 import { ADD_ERRORS_REQUESTED } from '../../../redux/actions/errorAction'
 
 interface ReportDetailsPageProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 }
 
 const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
@@ -43,7 +39,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
 
   const [, changeReportStatus] = useChangeReportStatusMutation()
 
-  return data?.getReport?.report ? (
+  return data?.getReport ? (
     <AdminLayout>
       <AdminHeader />
       <Container className="mt--7" fluid>
@@ -67,8 +63,8 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                           User
                         </label>
                         <div>
-                          <Link href={'/users/view/' + data.getReport.report.reporter?.id}>
-                            <a>{data.getReport.report.reporter?.email}</a>
+                          <Link href={'/users/view/' + data.getReport.reporter?.id}>
+                            <a>{data.getReport.reporter?.email}</a>
                           </Link>
                         </div>
                       </FormGroup>
@@ -82,7 +78,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getReport.report.firstName || ''}
+                          value={data.getReport.firstName || ''}
                           id="input-first-name"
                           placeholder="First Name"
                           type="text"
@@ -97,7 +93,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getReport.report.lastName || ''}
+                          value={data.getReport.lastName || ''}
                           id="input-last-name"
                           placeholder="Last Name"
                           type="text"
@@ -114,7 +110,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getReport.report.email || ''}
+                          value={data.getReport.email || ''}
                           id="input-email"
                           placeholder="Email Address"
                           type="email"
@@ -135,7 +131,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getReport.report.reportedUrl || ''}
+                          value={data.getReport.reportedUrl || ''}
                           id="input-reported-url"
                           placeholder="URL"
                           type="url"
@@ -152,7 +148,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getReport.report.description || ''}
+                          value={data.getReport.description || ''}
                           id="input-description"
                           placeholder="Description"
                           rows="4"
@@ -174,7 +170,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getReport.report.status || ''}
+                          value={data.getReport.status || ''}
                           id="input-status"
                           placeholder="Report Status"
                           type="text"
@@ -189,7 +185,7 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                         <Input
                           className="bg-white form-control-alternative"
                           value={moment
-                            .unix(parseInt(data.getReport.report.createdAt || '') / 1000)
+                            .unix(parseInt(data.getReport.createdAt || '') / 1000)
                             .format('DD-MM-YYYY HH:mm:ss')}
                           id="input-issued"
                           placeholder="Issue Date"
@@ -206,18 +202,18 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
                   <Formik
                     enableReinitialize
                     initialValues={{
-                      status: data.getReport.report.status,
+                      status: data.getReport.status,
                     }}
                     onSubmit={async (values, { setSubmitting }) => {
                       const response = await changeReportStatus({
-                        reportId: data.getReport?.report?.id as string,
-                        options: {
+                        reportId: data.getReport?.id as string,
+                        input: {
                           status: values.status,
                         },
                       })
 
-                      if (response.data?.changeReportStatus?.errors) {
-                        addErrors(response.data.changeReportStatus.errors)
+                      if (response.error) {
+                        addErrors(response.error.message)
                       } else {
                         router.push('/reports/pending')
                       }
@@ -278,9 +274,10 @@ const ReportDetailsPage: NextPage<ReportDetailsPageProps> = ({ addErrors }) => {
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default withUrqlClient(createUrqlClient)(

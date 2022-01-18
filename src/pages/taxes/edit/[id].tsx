@@ -14,7 +14,7 @@ const EditTaxPage: NextPage = () => {
   return (
     <AdminLayout>
       <AdminHeader />
-      <AddOrEditTaxForm variant="Edit" id={parseInt((id as string) || '0')} />
+      <AddOrEditTaxForm variant="Edit" id={id as string} />
     </AdminLayout>
   )
 }

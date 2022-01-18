@@ -1,0 +1,113 @@
+fragment UserDetails on User {
+  id
+  name
+  email
+  emailVerifiedAt
+  billing {
+    type
+    name
+    address1
+    address2
+    city
+    state
+    country
+    zip
+    phone
+  }
+  lastActiveTill
+  planExpirationDate
+  planTrialDone
+  planType
+  usedReferralsToPurchasePlan
+  language
+  timezone
+  lastIPAddress
+  lastUserAgent
+  country
+  totalLogin
+  currentBiolinkId
+  availableBalance
+  createdAt
+  updatedAt
+  deletedAt
+  plan {
+    id
+    name
+  }
+  adminRole {
+    id
+    roleName
+  }
+}
+fragment UserListDetails on User {
+  id
+  name
+  email
+  emailVerifiedAt
+  lastActiveTill
+  planExpirationDate
+  planType
+  country
+  availableBalance
+  createdAt
+  updatedAt
+  deletedAt
+  plan {
+    id
+    name
+  }
+  adminRole {
+    id
+    roleName
+  }
+}
+query GetAllUsers($options: ConnectionArgs!) {
+  getAllUsers(options: $options) {
+    data {
+      ...UserListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllAdmins($options: ConnectionArgs!) {
+  getAllAdmins(options: $options) {
+    data {
+      ...UserListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetUser($userId: String!) {
+  getUser(id: $userId) {
+    ...UserDetails
+  }
+}
+query GetUserSummaryCounts($userId: String!) {
+  getUserSummaryCounts(userId: $userId) {
+    totalBiolinks
+    totalShortenedLinks
+    totalReferralCodes
+    totalPayed
+  }
+}
+mutation CreateUser($input: NewUserInput!) {
+  addNewUser(options: $input) {
+    ...UserDetails
+  }
+}
+mutation EditUser($userId: String!, $input: NewUserInput!) {
+  editUser(id: $userId, options: $input) {
+    ...UserDetails
+  }
+}
+mutation DeleteUser($userId: String!) {
+  deleteUser(id: $userId) {
+    ...UserDetails
+  }
+}
