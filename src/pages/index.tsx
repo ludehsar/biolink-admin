@@ -48,8 +48,8 @@ const IndexPage: NextPage = () => {
       {
         label: '# of Users and Admins',
         data: [
-          usersAdminsCountData?.getUsersAndAdminsCountData.result?.totalUsers,
-          usersAdminsCountData?.getUsersAndAdminsCountData.result?.totalAdmins,
+          usersAdminsCountData?.getUsersAndAdminsCountData.totalUsers,
+          usersAdminsCountData?.getUsersAndAdminsCountData.totalAdmins,
         ],
         backgroundColor: ['rgb(3, 83, 151)', 'rgb(255, 170, 76)'],
         borderColor: ['rgb(3, 83, 151)', 'rgb(255, 170, 76)'],
@@ -64,7 +64,7 @@ const IndexPage: NextPage = () => {
         <Row className="mb-4">
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalBiolinks || 0}
+              count={countData?.getDashboardTotalCounts.totalBiolinks || 0}
               title="Total Biolinks"
               icon="fas fa-book"
               iconBackgroundClassName="bg-default"
@@ -72,7 +72,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalShortenedLinks || 0}
+              count={countData?.getDashboardTotalCounts.totalShortenedLinks || 0}
               title="Shortened Links"
               icon="fas fa-link"
               iconBackgroundClassName="bg-warning"
@@ -80,7 +80,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalBiolinkPageViewsTracked || 0}
+              count={countData?.getDashboardTotalCounts.totalBiolinkPageViewsTracked || 0}
               title="Biolink Pageview"
               icon="fas fa-binoculars"
               iconBackgroundClassName="bg-danger"
@@ -88,7 +88,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalLinkClickViewsTracked || 0}
+              count={countData?.getDashboardTotalCounts.totalLinkClickViewsTracked || 0}
               title="Links Clicked"
               icon="fas fa-mouse"
               iconBackgroundClassName="bg-info"
@@ -98,7 +98,7 @@ const IndexPage: NextPage = () => {
         <Row>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalUsers || 0}
+              count={countData?.getDashboardTotalCounts.totalUsers || 0}
               title="Total Users"
               icon="fas fa-users"
               iconBackgroundClassName="bg-dark"
@@ -106,7 +106,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalReferralCodes || 0}
+              count={countData?.getDashboardTotalCounts.totalReferralCodes || 0}
               title="Referral Codes"
               icon="fas fa-qrcode"
               iconBackgroundClassName="bg-primary"
@@ -114,7 +114,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={countData?.getDashboardTotalCounts.result?.totalTransactionsMade || 0}
+              count={countData?.getDashboardTotalCounts.totalTransactionsMade || 0}
               title="Transactions"
               icon="fas fa-money-check-alt"
               iconBackgroundClassName="bg-success"
@@ -122,7 +122,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={(countData?.getDashboardTotalCounts.result?.totalEarned || 0) / 100}
+              count={(countData?.getDashboardTotalCounts.totalEarned || 0) / 100}
               title="Total Earned"
               icon="fas fa-dollar-sign"
               iconBackgroundClassName="bg-success"

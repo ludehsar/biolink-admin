@@ -3,14 +3,14 @@ import router from 'next/router'
 import React, { useCallback } from 'react'
 import { Card, CardHeader, Row, Col, Button, CardBody, Form, FormGroup, Input } from 'reactstrap'
 import Swal from 'sweetalert2'
-import { Biolink, useRemoveBiolinkMutation } from '../../generated/graphql'
+import { Biolink, useDeleteBiolinkMutation } from '../../generated/graphql'
 
 export interface BiolinkDetailsCardProps {
   biolink?: Biolink
 }
 
 const BiolinkDetailsCard: React.FC<BiolinkDetailsCardProps> = ({ biolink }) => {
-  const [, removeBiolink] = useRemoveBiolinkMutation()
+  const [, removeBiolink] = useDeleteBiolinkMutation()
 
   const showRemoveBiolinkConfirmBoxAndDeleteBiolink = useCallback(async () => {
     const result = await Swal.fire({
@@ -28,13 +28,7 @@ const BiolinkDetailsCard: React.FC<BiolinkDetailsCardProps> = ({ biolink }) => {
         id: biolink?.id || '',
       })
 
-      if (response.data?.removeBiolink?.errors && response.data.removeBiolink.errors.length > 0) {
-        Swal.fire({
-          title: 'Error!',
-          text: response.data.removeBiolink.errors[0].message,
-          icon: 'error',
-        })
-      } else if (response.error) {
+      if (response.error) {
         Swal.fire({
           title: 'Error!',
           text: response.error.message,

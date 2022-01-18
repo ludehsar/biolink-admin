@@ -27,16 +27,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
 
     if (result.isConfirmed) {
       const response = await deleteUser({
-        id: user?.id || '',
+        userId: user?.id || '',
       })
 
-      if (response.data?.deleteUser?.errors && response.data.deleteUser.errors.length > 0) {
-        Swal.fire({
-          title: 'Error!',
-          text: response.data.deleteUser.errors[0].message,
-          icon: 'error',
-        })
-      } else if (response.error) {
+      if (response.error) {
         Swal.fire({
           title: 'Error!',
           text: response.error.message,

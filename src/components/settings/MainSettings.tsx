@@ -2,27 +2,39 @@ import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
-import { useEditMainSettingsMutation, useGetMainSettingsQuery } from '../../generated/graphql'
+import {
+  MainSystemSettings,
+  useEditMainSettingsMutation,
+  useGetSettingsByKeyQuery,
+} from '../../generated/graphql'
 
 const MainSettings: React.FC = () => {
-  const [{ data }] = useGetMainSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'main' },
+  })
   const [, editMainSettings] = useEditMainSettingsMutation()
 
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        title: data?.getMainSettings.settings?.title || '',
-        defaultLanguage: data?.getMainSettings.settings?.defaultLanguage || 'english',
-        defaultTimezone: data?.getMainSettings.settings?.defaultTimezone || 'utc',
+        title: (data?.getSettingsByKey as MainSystemSettings)?.title || '',
+        defaultLanguage:
+          (data?.getSettingsByKey as MainSystemSettings)?.defaultLanguage || 'english',
+        defaultTimezone: (data?.getSettingsByKey as MainSystemSettings)?.defaultTimezone || 'utc',
         enableEmailConfirmation:
-          data?.getMainSettings.settings?.enableEmailConfirmation === true ? 'true' : 'false',
+          (data?.getSettingsByKey as MainSystemSettings)?.enableEmailConfirmation === true
+            ? 'true'
+            : 'false',
         enableNewUserRegistration:
-          data?.getMainSettings.settings?.enableNewUserRegistration === true ? 'true' : 'false',
-        termsAndConditionsUrl: data?.getMainSettings.settings?.termsAndConditionsUrl || '',
-        privacyPolicyUrl: data?.getMainSettings.settings?.privacyPolicyUrl || '',
+          (data?.getSettingsByKey as MainSystemSettings)?.enableNewUserRegistration === true
+            ? 'true'
+            : 'false',
+        termsAndConditionsUrl:
+          (data?.getSettingsByKey as MainSystemSettings)?.termsAndConditionsUrl || '',
+        privacyPolicyUrl: (data?.getSettingsByKey as MainSystemSettings)?.privacyPolicyUrl || '',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editMainSettings({
           options: {
             title: values.title || '',
@@ -35,41 +47,38 @@ const MainSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editMainSettings.errors &&
-          response.data.editMainSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editMainSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editMainSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              title: response.data.editMainSettings.settings.title || '',
-              defaultLanguage: response.data.editMainSettings.settings.defaultLanguage || '',
-              defaultTimezone: response.data.editMainSettings.settings.defaultTimezone || '',
-              enableEmailConfirmation:
-                response.data.editMainSettings.settings.enableEmailConfirmation === true
-                  ? 'true'
-                  : 'false',
-              enableNewUserRegistration:
-                response.data.editMainSettings.settings.enableNewUserRegistration === true
-                  ? 'true'
-                  : 'false',
-              termsAndConditionsUrl:
-                response.data.editMainSettings.settings.termsAndConditionsUrl || '',
-              privacyPolicyUrl: response.data.editMainSettings.settings.privacyPolicyUrl || '',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     title: response.data.editMainSettings.settings.title || '',
+          //     defaultLanguage: response.data.editMainSettings.settings.defaultLanguage || '',
+          //     defaultTimezone: response.data.editMainSettings.settings.defaultTimezone || '',
+          //     enableEmailConfirmation:
+          //       response.data.editMainSettings.settings.enableEmailConfirmation === true
+          //         ? 'true'
+          //         : 'false',
+          //     enableNewUserRegistration:
+          //       response.data.editMainSettings.settings.enableNewUserRegistration === true
+          //         ? 'true'
+          //         : 'false',
+          //     termsAndConditionsUrl:
+          //       response.data.editMainSettings.settings.termsAndConditionsUrl || '',
+          //     privacyPolicyUrl: response.data.editMainSettings.settings.privacyPolicyUrl || '',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

@@ -1,0 +1,45 @@
+fragment TaxFragment on Tax {
+  id
+  internalName
+  name
+  description
+  value
+  valueType
+  type
+  billingFor
+  countries
+  createdAt
+  updatedAt
+  deletedAt
+}
+query GetAllTaxes($options: ConnectionArgs!) {
+  getAllTaxes(options: $options) {
+    data {
+      ...TaxFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetTax($taxId: String!) {
+  getTax(taxId: $taxId) {
+    ...TaxFragment
+  }
+}
+mutation AddTax($input: NewTaxInput!) {
+  addTax(options: $input) {
+    ...TaxFragment
+  }
+}
+mutation EditTax($taxId: String!, $input: NewTaxInput!) {
+  editTax(taxId: $taxId, options: $input) {
+    ...TaxFragment
+  }
+}
+mutation DeleteTax($taxId: String!) {
+  deleteTax(taxId: $taxId) {
+    ...TaxFragment
+  }
+}

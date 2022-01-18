@@ -1,0 +1,62 @@
+fragment BlacklistFragment on BlackList {
+  id
+  blacklistType
+  keyword
+  reason
+  createdAt
+  updatedAt
+  deletedAt
+}
+query GetAllBlacklistedEmails($options: ConnectionArgs!) {
+  getAllBlackListedEmails(options: $options) {
+    data {
+      ...BlacklistFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllBlacklistedBadWords($options: ConnectionArgs!) {
+  getAllBlackListedBadWords(options: $options) {
+    data {
+      ...BlacklistFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllBlacklistedUsernames($options: ConnectionArgs!) {
+  getAllBlackListedUsernames(options: $options) {
+    data {
+      ...BlacklistFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetBlacklist($blacklistId: String!) {
+  getBlackList(blackListId: $blacklistId) {
+    ...BlacklistFragment
+  }
+}
+mutation AddBlacklist($input: NewBlackListInput!) {
+  addBlackList(options: $input) {
+    ...BlacklistFragment
+  }
+}
+mutation EditBlacklist($blacklistId: String!, $input: NewBlackListInput!) {
+  editBlackList(blackListId: $blacklistId, options: $input) {
+    ...BlacklistFragment
+  }
+}
+mutation DeleteBlacklist($blacklistId: String!) {
+  deleteBlackList(blackListId: $blacklistId) {
+    ...BlacklistFragment
+  }
+}

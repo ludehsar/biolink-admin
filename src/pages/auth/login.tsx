@@ -1,16 +1,14 @@
 import React from 'react'
 import { NextPage } from 'next'
-import { Col, Card, Button, CardBody, Form, Row } from 'reactstrap'
+import { Col, Card, Button, CardBody, Form } from 'reactstrap'
 import { Formik } from 'formik'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { withUrqlClient } from 'next-urql'
-import Link from 'next/link'
 
 import AuthLayout from '../../layouts/Auth.layout'
 import InputField from '../../components/InputField/InputField'
-import { ErrorResponse, LoginInput, useLoginMutation, User } from '../../generated/graphql'
-import { toErrorMap } from '../../utils/toErrorMap'
+import { LoginInput, useLoginAdminMutation, User } from '../../generated/graphql'
 import {
   AUTH_LOADING_REQUESTED,
   AUTH_LOGIN_REQUESTED,
@@ -24,7 +22,7 @@ interface LoginPageProps {
   loginCurrentUser: (user: User) => void
   startAuthenticationProcess: () => void
   logoutCurrentUser: () => void
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 }
 
 const LoginPage: NextPage<LoginPageProps> = ({
@@ -33,7 +31,7 @@ const LoginPage: NextPage<LoginPageProps> = ({
   logoutCurrentUser,
   addErrors,
 }) => {
-  const [, login] = useLoginMutation()
+  const [, login] = useLoginAdminMutation()
   const router = useRouter()
 
   return (
@@ -44,23 +42,20 @@ const LoginPage: NextPage<LoginPageProps> = ({
             <h3 className="text-center mb-4">Sign in to get access</h3>
             <Formik
               initialValues={{ email: '', password: '' } as LoginInput}
-              onSubmit={async (values, { setSubmitting, setErrors }) => {
+              onSubmit={async (values, { setSubmitting }) => {
                 startAuthenticationProcess()
                 const response = await login({ options: values })
 
-                if (response.data?.login.errors) {
-                  setErrors(toErrorMap(response.data.login.errors))
+                if (response.error) {
+                  addErrors(response.error.message)
+                  console.log(response.error?.message)
                   logoutCurrentUser()
-                } else if (response.data?.login.user) {
-                  loginCurrentUser(response.data.login.user)
+                } else if (response.data?.loginAdmin.user) {
+                  loginCurrentUser(response.data.loginAdmin.user)
+                  localStorage.setItem('token', response.data.loginAdmin.access?.token || '')
                   router.push('/')
                 } else {
-                  addErrors([
-                    {
-                      errorCode: 10000,
-                      message: 'Something went wrong!',
-                    },
-                  ])
+                  addErrors('Something went wrong!')
                   logoutCurrentUser()
                 }
                 setSubmitting(false)
@@ -98,15 +93,6 @@ const LoginPage: NextPage<LoginPageProps> = ({
             </Formik>
           </CardBody>
         </Card>
-        <Row className="mt-3">
-          <Col xs="6">
-            <Link href="/auth/forgot-password">
-              <a className="text-light">
-                <small>Forgot password?</small>
-              </a>
-            </Link>
-          </Col>
-        </Row>
       </Col>
     </AuthLayout>
   )
@@ -118,12 +104,13 @@ const mapDispatchToProps = (
   loginCurrentUser: (user: User) => void
   startAuthenticationProcess: () => void
   logoutCurrentUser: () => void
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
   startAuthenticationProcess: () => dispatch({ type: AUTH_LOADING_REQUESTED }),
   loginCurrentUser: (user: User) => dispatch({ type: AUTH_LOGIN_REQUESTED, payload: user }),
   logoutCurrentUser: () => dispatch({ type: AUTH_LOGOUT_REQUESTED }),
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default withUrqlClient(createUrqlClient)(connect(null, mapDispatchToProps)(LoginPage))

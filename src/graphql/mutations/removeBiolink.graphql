@@ -1,7 +1,0 @@
-mutation RemoveBiolink($id: String!) {
-  removeBiolink(id: $id) {
-    errors {
-      ...ReceivedErrors
-    }
-  }
-}

@@ -19,18 +19,13 @@ import router from 'next/router'
 import axios from 'axios'
 
 import { Formik } from 'formik'
-import {
-  ErrorResponse,
-  useAddTaxMutation,
-  useEditTaxMutation,
-  useGetTaxQuery,
-} from '../../generated/graphql'
+import { useAddTaxMutation, useEditTaxMutation, useGetTaxQuery } from '../../generated/graphql'
 import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 
 interface AddOrEditTaxFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
-  id?: number
+  id?: string
 }
 
 const AddOrEditTaxForm: React.FC<AddOrEditTaxFormProps> = ({ addErrors, id, variant }) => {
@@ -39,7 +34,7 @@ const AddOrEditTaxForm: React.FC<AddOrEditTaxFormProps> = ({ addErrors, id, vari
   const [availableCountries, setAvailableCountries] = useState<{ value: string; label: string }[]>(
     []
   )
-  const [{ data }] = useGetTaxQuery({ variables: { taxId: id || 0 } })
+  const [{ data }] = useGetTaxQuery({ variables: { taxId: id as string } })
 
   const fetchCountries = useCallback(async () => {
     const countryData = await axios.get('https://restcountries.eu/rest/v2/all')
@@ -57,29 +52,26 @@ const AddOrEditTaxForm: React.FC<AddOrEditTaxFormProps> = ({ addErrors, id, vari
     fetchCountries()
   }, [fetchCountries])
 
-  return variant === 'Add' || data?.getTax?.tax ? (
+  return variant === 'Add' || data?.getTax ? (
     <Container className="mt--7" fluid>
       <Row className="d-flex justify-content-center">
         <Col xl="9">
           <Formik
             enableReinitialize={true}
             initialValues={{
-              internalName: variant === 'Add' ? '' : (data?.getTax?.tax?.internalName as string),
-              name: variant === 'Add' ? '' : (data?.getTax?.tax?.name as string),
-              description: variant === 'Add' ? '' : (data?.getTax?.tax?.description as string),
-              value: variant === 'Add' ? 0 : (data?.getTax?.tax?.value as number),
-              valueType:
-                variant === 'Add' ? 'Percentage' : (data?.getTax?.tax?.valueType as string),
-              type: variant === 'Add' ? 'Inclusive' : (data?.getTax?.tax?.type as string),
-              billingFor:
-                variant === 'Add' ? 'Personal' : (data?.getTax?.tax?.billingFor as string),
-              countries:
-                variant === 'Add' ? [] : (data?.getTax?.tax?.countries as string).split(','),
+              internalName: variant === 'Add' ? '' : (data?.getTax?.internalName as string),
+              name: variant === 'Add' ? '' : (data?.getTax?.name as string),
+              description: variant === 'Add' ? '' : (data?.getTax?.description as string),
+              value: variant === 'Add' ? 0 : (data?.getTax?.value as number),
+              valueType: variant === 'Add' ? 'Percentage' : (data?.getTax?.valueType as string),
+              type: variant === 'Add' ? 'Inclusive' : (data?.getTax?.type as string),
+              billingFor: variant === 'Add' ? 'Personal' : (data?.getTax?.billingFor as string),
+              countries: variant === 'Add' ? [] : (data?.getTax?.countries as string).split(','),
             }}
             onSubmit={async (values, { setSubmitting }) => {
               if (variant === 'Add') {
                 const response = await addNewTax({
-                  options: {
+                  input: {
                     billingFor: values.billingFor,
                     countries: values.countries.join(','),
                     description: values.description,
@@ -91,15 +83,15 @@ const AddOrEditTaxForm: React.FC<AddOrEditTaxFormProps> = ({ addErrors, id, vari
                   },
                 })
 
-                if (response.data?.addTax?.errors) {
-                  addErrors(response.data.addTax.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/taxes')
                 }
               } else {
                 const response = await editTax({
-                  taxId: id as number,
-                  options: {
+                  taxId: id as string,
+                  input: {
                     billingFor: values.billingFor,
                     countries: values.countries.join(','),
                     description: values.description,
@@ -111,8 +103,8 @@ const AddOrEditTaxForm: React.FC<AddOrEditTaxFormProps> = ({ addErrors, id, vari
                   },
                 })
 
-                if (response.data?.editTax?.errors) {
-                  addErrors(response.data.editTax.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/taxes')
                 }
@@ -327,9 +319,10 @@ const AddOrEditTaxForm: React.FC<AddOrEditTaxFormProps> = ({ addErrors, id, vari
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditTaxForm)

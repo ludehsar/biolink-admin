@@ -1,0 +1,111 @@
+fragment LinkDetails on Link {
+	id
+  linkType
+  linkTitle
+  linkImageUrl
+  platform
+  iconColorful
+  iconMinimal
+  featured
+  url
+  shortenedUrl
+  startDate
+  endDate
+  enablePasswordProtection
+  note
+  createdAt
+  updatedAt
+  deletedAt
+  user {
+    id
+    name
+    email
+  }
+  biolink {
+    id
+    profilePhotoUrl
+    username {
+      id
+      username
+    }
+  }
+}
+fragment LinkListItems on Link {
+	id
+  linkType
+  linkTitle
+  linkImageUrl
+  platform
+  featured
+  url
+  shortenedUrl
+  createdAt
+  updatedAt
+  deletedAt
+  user {
+    id
+    name
+    email
+  }
+  biolink {
+    id
+    profilePhotoUrl
+    username {
+      id
+      username
+    }
+  }
+}
+query GetAllLinks($options: ConnectionArgs!) {
+  getAllLinks(options: $options) {
+    data {
+      ...LinkListItems
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllEmbeds($options: ConnectionArgs!) {
+  getAllEmbeds(options: $options) {
+    data {
+      ...LinkListItems
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllSocialLinks($options: ConnectionArgs!) {
+  getAllSocialLinks(options: $options) {
+    data {
+      ...LinkListItems
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetLink($linkId: String!) {
+  getLink(linkId: $linkId) {
+    ...LinkDetails
+  }
+}
+mutation CreateLink($input:LinkAdminInput!) {
+  createLink(options: $input) {
+    ...LinkDetails
+  }
+}
+mutation EditLink($id: String!, $input:LinkAdminInput!) {
+  editLink(linkId: $id, options: $input) {
+    ...LinkDetails
+  }
+}
+mutation DeleteLink($id: String!) {
+  deleteLink(linkId: $id) {
+    ...LinkDetails
+  }
+}

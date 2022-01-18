@@ -5,15 +5,18 @@ import React, { useCallback, useEffect, useState } from 'react'
 import Select from 'react-select'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form, Row, Col } from 'reactstrap'
 import {
+  BusinessSystemSettings,
   useEditBusinessSettingsMutation,
-  useGetBusinessSettingsQuery,
+  useGetSettingsByKeyQuery,
 } from '../../generated/graphql'
 
 const BusinessSettings: React.FC = () => {
   const [availableCountries, setAvailableCountries] = useState<{ value: string; label: string }[]>(
     []
   )
-  const [{ data }] = useGetBusinessSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'business' },
+  })
   const [, editBusinessSettings] = useEditBusinessSettingsMutation()
 
   const fetchCountries = useCallback(async () => {
@@ -37,18 +40,20 @@ const BusinessSettings: React.FC = () => {
       enableReinitialize={true}
       initialValues={{
         enableInvoice:
-          data?.getBusinessSettings.settings?.enableInvoice === true ? 'true' : 'false',
-        name: data?.getBusinessSettings.settings?.name || '',
-        address: data?.getBusinessSettings.settings?.address || '',
-        city: data?.getBusinessSettings.settings?.city || '',
-        zipCode: data?.getBusinessSettings.settings?.zipCode || '',
-        country: data?.getBusinessSettings.settings?.country || '',
-        email: data?.getBusinessSettings.settings?.email || '',
-        phone: data?.getBusinessSettings.settings?.phone || '',
-        taxType: data?.getBusinessSettings.settings?.taxType || '',
-        taxId: data?.getBusinessSettings.settings?.taxId || '',
+          (data?.getSettingsByKey as BusinessSystemSettings)?.enableInvoice === true
+            ? 'true'
+            : 'false',
+        name: (data?.getSettingsByKey as BusinessSystemSettings)?.name || '',
+        address: (data?.getSettingsByKey as BusinessSystemSettings)?.address || '',
+        city: (data?.getSettingsByKey as BusinessSystemSettings)?.city || '',
+        zipCode: (data?.getSettingsByKey as BusinessSystemSettings)?.zipCode || '',
+        country: (data?.getSettingsByKey as BusinessSystemSettings)?.country || '',
+        email: (data?.getSettingsByKey as BusinessSystemSettings)?.email || '',
+        phone: (data?.getSettingsByKey as BusinessSystemSettings)?.phone || '',
+        taxType: (data?.getSettingsByKey as BusinessSystemSettings)?.taxType || '',
+        taxId: (data?.getSettingsByKey as BusinessSystemSettings)?.taxId || '',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editBusinessSettings({
           options: {
             address: values.address,
@@ -64,40 +69,37 @@ const BusinessSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editBusinessSettings.errors &&
-          response.data.editBusinessSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editBusinessSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editBusinessSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited business settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              address: response.data.editBusinessSettings.settings.address || '',
-              city: response.data.editBusinessSettings.settings.city || '',
-              country: response.data.editBusinessSettings.settings.country || '',
-              email: response.data.editBusinessSettings.settings.email || '',
-              enableInvoice:
-                response.data.editBusinessSettings.settings.enableInvoice === true
-                  ? 'true'
-                  : 'false',
-              name: response.data.editBusinessSettings.settings.name || '',
-              phone: response.data.editBusinessSettings.settings.phone || '',
-              taxId: response.data.editBusinessSettings.settings.taxId || '',
-              taxType: response.data.editBusinessSettings.settings.taxType || '',
-              zipCode: response.data.editBusinessSettings.settings.zipCode || '',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     address: response.data.editBusinessSettings.value?.address || '',
+          //     city: response.data.editBusinessSettings.settings.city || '',
+          //     country: response.data.editBusinessSettings.settings.country || '',
+          //     email: response.data.editBusinessSettings.settings.email || '',
+          //     enableInvoice:
+          //       response.data.editBusinessSettings.settings.enableInvoice === true
+          //         ? 'true'
+          //         : 'false',
+          //     name: response.data.editBusinessSettings.settings.name || '',
+          //     phone: response.data.editBusinessSettings.settings.phone || '',
+          //     taxId: response.data.editBusinessSettings.settings.taxId || '',
+          //     taxType: response.data.editBusinessSettings.settings.taxType || '',
+          //     zipCode: response.data.editBusinessSettings.settings.zipCode || '',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

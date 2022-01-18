@@ -2,19 +2,25 @@ import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
-import { useEditEmailSettingsMutation, useGetEmailSettingsQuery } from '../../generated/graphql'
+import {
+  EmailSystemSettings,
+  useEditEmailSettingsMutation,
+  useGetSettingsByKeyQuery,
+} from '../../generated/graphql'
 
 const EmailSettings: React.FC = () => {
-  const [{ data }] = useGetEmailSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'email' },
+  })
   const [, editEmailSettings] = useEditEmailSettingsMutation()
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        fromName: data?.getEmailSettings.settings?.fromName || '',
-        fromEmail: data?.getEmailSettings.settings?.fromEmail || '',
+        fromName: (data?.getSettingsByKey as EmailSystemSettings)?.fromName || '',
+        fromEmail: (data?.getSettingsByKey as EmailSystemSettings)?.fromEmail || '',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editEmailSettings({
           options: {
             fromEmail: values.fromEmail,
@@ -22,29 +28,26 @@ const EmailSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editEmailSettings.errors &&
-          response.data.editEmailSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editEmailSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editEmailSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              fromEmail: response.data.editEmailSettings.settings.fromEmail || '',
-              fromName: response.data.editEmailSettings.settings.fromName || '',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     fromEmail: response.data.editEmailSettings.settings.fromEmail || '',
+          //     fromName: response.data.editEmailSettings.settings.fromName || '',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

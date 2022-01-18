@@ -60,10 +60,6 @@ const links: ILink[] = [
         name: 'Admins',
         href: '/users/admins',
       },
-      {
-        name: 'Deleted Accounts',
-        href: '/users/trash',
-      },
     ],
   },
   {
@@ -165,15 +161,9 @@ const links: ILink[] = [
     ],
   },
   {
-    name: 'Manage Payments',
-    href: '#payments',
+    name: 'Payments',
+    href: '/payments',
     icon: 'ni ni-money-coins',
-    children: [
-      {
-        name: 'Stripe Payments',
-        href: '/payments/stripe',
-      },
-    ],
   },
   {
     name: 'Manage Reports',

@@ -1,0 +1,142 @@
+mutation EditAdsSettings($options: AdsSettingsInput!) {
+  editAdsSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditBusinessSettings($options: BusinessSettingsInput!) {
+  editBusinessSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditCaptchaSettings($options: CaptchaSettingsInput!) {
+  editCaptchaSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditEmailSettings($options: EmailSettingsInput!) {
+  editEmailSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditFacebookSettings($options: FacebookSettingsInput!) {
+  editFacebookSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditLinkSettings($options: LinkSettingsInput!) {
+  editLinkSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditMainSettings($options: MainSettingsInput!) {
+  editMainSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditNotificationSettings($options: NotificationSettingsInput!) {
+  editNotificationSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditPaymentSettings($options: PaymentSettingsInput!) {
+  editPaymentSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+mutation EditSocialSettings($options: SocialSettingsInput!) {
+  editSocialSettings(options: $options) {
+    id
+    key
+    value
+  }
+}
+query GetSettingsByKey($key: String!) {
+  getSettingsByKey(key: $key) {
+    ... on AdsSystemSettings {
+      header
+      footer
+      biolinkPageHeader
+      biolinkPageFooter
+    }
+    ... on LinkSystemSettings {
+      branding
+      enableLinkShortenerSystem
+      enablePhishtank
+      enableGoogleSafeBrowsing
+    }
+    ... on MainSystemSettings {
+      title
+      defaultLanguage
+      defaultTimezone
+      enableEmailConfirmation
+      enableNewUserRegistration
+      termsAndConditionsUrl
+      privacyPolicyUrl
+    }
+    ... on EmailSystemSettings {
+      fromName
+      fromEmail
+    }
+    ... on SocialSystemSettings {
+      youtube
+      facebook
+      twitter
+      instagram
+    }
+    ... on CaptchaSystemSettings {
+      captchaType
+      enableCaptchaOnLoginPage
+      enableCaptchaOnRegisterPage
+      enableCaptchaOnLostPasswordPage
+      enableCaptchaOnResendActivationPage
+    }
+    ... on PaymentSystemSettings {
+      enablePaymentSystem
+      enabledAcceptingPaymentType
+      brandName
+      currency
+      enableDiscountOrRedeemableCode
+      enableTaxesAndBilling
+      enablePaypal
+      enableStripe
+    }
+    ... on BusinessSystemSettings {
+      enableInvoice
+      name
+      address
+      city
+      country
+      zipCode
+      email
+      phone
+      taxType
+      taxId
+    }
+    ... on FacebookSystemSettings {
+      enableFacebookLogin
+    }
+    ... on NotificationSystemSettings {
+      emailsToBeNotified
+      emailOnNewUser
+      emailOnNewPayment
+    }
+  }
+}

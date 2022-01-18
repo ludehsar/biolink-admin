@@ -14,7 +14,7 @@ const EditPlanPage: NextPage = () => {
   return (
     <AdminLayout>
       <AdminHeader />
-      <AddOrEditPlanForm variant="Edit" id={parseInt(id as string)} />
+      <AddOrEditPlanForm variant="Edit" id={id as string} />
     </AdminLayout>
   )
 }

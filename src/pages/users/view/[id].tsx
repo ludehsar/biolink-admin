@@ -16,18 +16,18 @@ import BillingDetails from '../../../components/users/BillingDetails'
 const ViewUsersPage: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
-  const [{ data }] = useGetUserQuery({ variables: { id: (id as string) || '' } })
+  const [{ data }] = useGetUserQuery({ variables: { userId: (id as string) || '' } })
   const [{ data: userSummaryData }] = useGetUserSummaryCountsQuery({
     variables: { userId: (id as string) || '' },
   })
 
-  return data?.getUser?.user ? (
+  return data?.getUser ? (
     <AdminLayout>
       <AdminHeader>
         <Row>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={userSummaryData?.getUserSummaryCounts?.result?.totalBiolinks || 0}
+              count={userSummaryData?.getUserSummaryCounts?.totalBiolinks || 0}
               title="Biolink"
               icon="fas fa-book"
               iconBackgroundClassName="bg-default"
@@ -35,7 +35,7 @@ const ViewUsersPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={userSummaryData?.getUserSummaryCounts?.result?.totalShortenedLinks || 0}
+              count={userSummaryData?.getUserSummaryCounts?.totalShortenedLinks || 0}
               title="Shortened Links"
               icon="fas fa-link"
               iconBackgroundClassName="bg-warning"
@@ -43,7 +43,7 @@ const ViewUsersPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={userSummaryData?.getUserSummaryCounts?.result?.totalPayed || 0}
+              count={userSummaryData?.getUserSummaryCounts?.totalPayed || 0}
               title="Paid"
               icon="fas fa-dollar-sign"
               iconBackgroundClassName="bg-success"
@@ -51,7 +51,7 @@ const ViewUsersPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={userSummaryData?.getUserSummaryCounts?.result?.totalReferralCodes || 0}
+              count={userSummaryData?.getUserSummaryCounts?.totalReferralCodes || 0}
               title="Codes"
               icon="fas fa-qrcode"
               iconBackgroundClassName="bg-info"
@@ -62,7 +62,7 @@ const ViewUsersPage: NextPage = () => {
       <Container className="mt--7" fluid>
         <Row>
           <div className="col">
-            <UserDetails user={data.getUser.user} />
+            <UserDetails user={data.getUser} />
           </div>
         </Row>
       </Container>
@@ -70,7 +70,7 @@ const ViewUsersPage: NextPage = () => {
       <Container className="mt-4" fluid>
         <Row>
           <div className="col">
-            <BillingDetails billing={data.getUser.user.billing || undefined} />
+            <BillingDetails billing={data.getUser.billing || undefined} />
           </div>
         </Row>
       </Container>

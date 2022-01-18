@@ -2,22 +2,28 @@ import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
-import { useEditSocialSettingsMutation, useGetSocialSettingsQuery } from '../../generated/graphql'
+import {
+  SocialSettingsInput,
+  useEditSocialSettingsMutation,
+  useGetSettingsByKeyQuery,
+} from '../../generated/graphql'
 
 const SocialSettings: React.FC = () => {
-  const [{ data }] = useGetSocialSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'socials' },
+  })
   const [, editSocialSettings] = useEditSocialSettingsMutation()
 
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
-        youtube: data?.getSocialSettings.settings?.youtube || '',
-        facebook: data?.getSocialSettings.settings?.facebook || '',
-        twitter: data?.getSocialSettings.settings?.twitter || '',
-        instagram: data?.getSocialSettings.settings?.instagram || '',
+        youtube: (data?.getSettingsByKey as SocialSettingsInput)?.youtube || '',
+        facebook: (data?.getSettingsByKey as SocialSettingsInput)?.facebook || '',
+        twitter: (data?.getSettingsByKey as SocialSettingsInput)?.twitter || '',
+        instagram: (data?.getSettingsByKey as SocialSettingsInput)?.instagram || '',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editSocialSettings({
           options: {
             facebook: values.facebook,
@@ -27,31 +33,28 @@ const SocialSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editSocialSettings.errors &&
-          response.data.editSocialSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editSocialSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editSocialSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              youtube: response.data.editSocialSettings.settings.youtube || '',
-              facebook: response.data.editSocialSettings.settings.facebook || '',
-              twitter: response.data.editSocialSettings.settings.twitter || '',
-              instagram: response.data.editSocialSettings.settings.instagram || '',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     youtube: response.data.editSocialSettings.settings.youtube || '',
+          //     facebook: response.data.editSocialSettings.settings.facebook || '',
+          //     twitter: response.data.editSocialSettings.settings.twitter || '',
+          //     instagram: response.data.editSocialSettings.settings.instagram || '',
+          //   },
+          // })
         }
         setSubmitting(false)
         return

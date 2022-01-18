@@ -14,7 +14,7 @@ const EditCategoryPage: NextPage = () => {
   return (
     <AdminLayout>
       <AdminHeader />
-      <AddOrEditCategoryForm variant="Edit" id={parseInt(id as string)} />
+      <AddOrEditCategoryForm variant="Edit" id={id as string} />
     </AdminLayout>
   )
 }

@@ -1,0 +1,62 @@
+fragment SupportFragment on Support {
+  id
+  fullName
+  email
+  phoneNumber
+  company
+  subject
+  message
+  status
+  supportReply
+  createdAt
+  updatedAt
+  deletedAt
+  user {
+    id
+    name
+    email
+  }
+}
+query GetAllPendingSupports($options: ConnectionArgs!) {
+  getAllPendingSupports(options: $options) {
+    data {
+      ...SupportFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllResolvedSupports($options: ConnectionArgs!) {
+  getAllResolvedSupports(options: $options) {
+    data {
+      ...SupportFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllDismissedSupports($options: ConnectionArgs!) {
+  getAllDismissedSupports(options: $options) {
+    data {
+      ...SupportFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetSupport($supportId: String!) {
+  getSupport(supportId: $supportId) {
+    ...SupportFragment
+  }
+}
+mutation ReplyToSupport($supportId: String!, $input: SupportAdminInput!) {
+  replyToSupport(supportId: $supportId, options: $input) {
+    ...SupportFragment
+  }
+}

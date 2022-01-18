@@ -1,7 +1,0 @@
-mutation EditUser($id: String!, $options: EditUserInput!) {
-  editUser(id: $id, options: $options) {
-    errors {
-      ...ReceivedErrors
-    }
-  }
-}

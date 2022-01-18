@@ -9,7 +9,7 @@ import AdminLayout from '../../../layouts/Admin.layout'
 import { createUrqlClient } from '../../../utils/createUrqlClient'
 import { useGetPaymentQuery } from '../../../generated/graphql'
 import AdminHeader from '../../../components/Header/AdminHeader'
-import StripePaymentDetails from '../../../components/payments/StripePaymentDetails'
+import PaymentDetails from '../../../components/payments/PaymentDetails'
 
 const PaymentDetailsPage: NextPage = () => {
   const router = useRouter()
@@ -18,15 +18,13 @@ const PaymentDetailsPage: NextPage = () => {
     variables: { paymentId: (id as string) || '' },
   })
 
-  return data?.getPayment?.payment ? (
+  return data?.getPayment ? (
     <AdminLayout>
       <AdminHeader />
       <Container className="mt--7" fluid>
         <Row className="d-flex justify-content-center">
           <Col xl="9">
-            {data.getPayment.payment.paymentType === 'Stripe' && (
-              <StripePaymentDetails payment={data.getPayment.payment} />
-            )}
+            <PaymentDetails payment={data.getPayment} />
           </Col>
         </Row>
       </Container>

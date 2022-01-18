@@ -18,7 +18,6 @@ import router from 'next/router'
 
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
   useAddUsernameMutation,
   useEditUsernameMutation,
   useGetAllUsersQuery,
@@ -28,7 +27,7 @@ import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 import SelectField from '../SelectField/SelectField'
 
 interface AddOrEditUsernameFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
   id?: string
 }
@@ -43,60 +42,58 @@ const AddOrEditUsernameForm: React.FC<AddOrEditUsernameFormProps> = ({
   const [, editUsername] = useEditUsernameMutation()
   const [{ data }] = useGetUsernameQuery({ variables: { usernameId: id || '' } })
   const [{ data: users }] = useGetAllUsersQuery({
-    variables: { options: { first: 5, query: userInput } },
+    variables: { options: { limit: 5, query: userInput } },
   })
 
-  const userOptions = users?.getAllUsers?.edges?.map((edge) => ({
-    value: edge.node.id || '',
-    label: edge.node.email || '',
+  const userOptions = users?.getAllUsers?.data.map((user) => ({
+    value: user.id || '',
+    label: user.email || '',
   }))
 
   useEffect(() => {
-    if (variant === 'Edit' && data?.getUsername?.username) {
-      setUserInput(data.getUsername.username.owner?.email || '')
+    if (variant === 'Edit' && data?.getUsername) {
+      setUserInput(data.getUsername.owner?.email || '')
     }
-  }, [data?.getUsername?.username, variant])
+  }, [data?.getUsername, variant])
 
-  return variant === 'Add' || data?.getUsername?.username ? (
+  return variant === 'Add' || data?.getUsername ? (
     <Container className="mt--7" fluid>
       <Row className="d-flex justify-content-center">
         <Col xl="9">
           <Formik
             enableReinitialize={true}
             initialValues={{
-              premiumType:
-                variant === 'Add' ? 'None' : (data?.getUsername?.username?.premiumType as string),
-              username: variant === 'Add' ? '' : (data?.getUsername?.username?.username as string),
-              ownerId:
-                variant === 'Add' ? null : (data?.getUsername?.username?.owner?.id as string),
+              premiumType: variant === 'Add' ? 'None' : (data?.getUsername?.premiumType as string),
+              username: variant === 'Add' ? '' : (data?.getUsername?.username as string),
+              ownerId: variant === 'Add' ? null : (data?.getUsername?.owner?.id as string),
             }}
             onSubmit={async (values, { setSubmitting }) => {
               if (variant === 'Add') {
                 const response = await addNewUsername({
-                  options: {
+                  input: {
                     ownerId: values.ownerId,
                     premiumType: values.premiumType,
                     username: values.username,
                   },
                 })
 
-                if (response.data?.addUsername?.errors) {
-                  addErrors(response.data.addUsername.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/usernames')
                 }
               } else {
                 const response = await editUsername({
                   usernameId: id as string,
-                  options: {
+                  input: {
                     ownerId: values.ownerId,
                     premiumType: values.premiumType,
                     username: values.username,
                   },
                 })
 
-                if (response.data?.editUsername?.errors) {
-                  addErrors(response.data.editUsername.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/usernames')
                 }
@@ -206,9 +203,10 @@ const AddOrEditUsernameForm: React.FC<AddOrEditUsernameFormProps> = ({
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditUsernameForm)

@@ -2,34 +2,51 @@ import Swal from 'sweetalert2'
 import { Formik } from 'formik'
 import React from 'react'
 import { Card, CardBody, CardFooter, Button, Input, FormGroup, Form } from 'reactstrap'
-import { useEditPaymentSettingsMutation, useGetPaymentSettingsQuery } from '../../generated/graphql'
+import {
+  PaymentSystemSettings,
+  useEditPaymentSettingsMutation,
+  useGetSettingsByKeyQuery,
+} from '../../generated/graphql'
 
 const PaymentSettings: React.FC = () => {
-  const [{ data }] = useGetPaymentSettingsQuery()
+  const [{ data }] = useGetSettingsByKeyQuery({
+    variables: { key: 'payments' },
+  })
   const [, editPaymentSettings] = useEditPaymentSettingsMutation()
   return (
     <Formik
       enableReinitialize={true}
       initialValues={{
         enablePaymentSystem:
-          data?.getPaymentSettings.settings?.enablePaymentSystem === true ? 'true' : 'false',
-        enabledPaymentType: data?.getPaymentSettings.settings?.enabledPaymentType || 'Both',
-        brandName: data?.getPaymentSettings.settings?.brandName || '',
-        currency: data?.getPaymentSettings.settings?.currency || 'usd',
+          (data?.getSettingsByKey as PaymentSystemSettings)?.enablePaymentSystem === true
+            ? 'true'
+            : 'false',
+        enabledAcceptingPaymentType:
+          (data?.getSettingsByKey as PaymentSystemSettings)?.enabledAcceptingPaymentType || 'Both',
+        brandName: (data?.getSettingsByKey as PaymentSystemSettings)?.brandName || '',
+        currency: (data?.getSettingsByKey as PaymentSystemSettings)?.currency || 'usd',
         enableDiscountOrRedeemableCode:
-          data?.getPaymentSettings.settings?.enableDiscountOrRedeemableCode === true
+          (data?.getSettingsByKey as PaymentSystemSettings)?.enableDiscountOrRedeemableCode === true
             ? 'true'
             : 'false',
         enableTaxesAndBilling:
-          data?.getPaymentSettings.settings?.enableTaxesAndBilling === true ? 'true' : 'false',
-        enablePaypal: data?.getPaymentSettings.settings?.enablePaypal === true ? 'true' : 'false',
-        enableStripe: data?.getPaymentSettings.settings?.enableStripe === true ? 'true' : 'false',
+          (data?.getSettingsByKey as PaymentSystemSettings)?.enableTaxesAndBilling === true
+            ? 'true'
+            : 'false',
+        enablePaypal:
+          (data?.getSettingsByKey as PaymentSystemSettings)?.enablePaypal === true
+            ? 'true'
+            : 'false',
+        enableStripe:
+          (data?.getSettingsByKey as PaymentSystemSettings)?.enableStripe === true
+            ? 'true'
+            : 'false',
       }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         const response = await editPaymentSettings({
           options: {
             enablePaymentSystem: values.enablePaymentSystem === 'true',
-            enabledPaymentType: values.enabledPaymentType || 'Both',
+            enabledAcceptingPaymentType: values.enabledAcceptingPaymentType || 'Both',
             brandName: values.brandName || '',
             currency: values.currency || 'usd',
             enableDiscountOrRedeemableCode: values.enableDiscountOrRedeemableCode === 'true',
@@ -39,47 +56,44 @@ const PaymentSettings: React.FC = () => {
           },
         })
 
-        if (
-          response.data?.editPaymentSettings.errors &&
-          response.data.editPaymentSettings.errors.length > 0
-        ) {
+        if (response.error) {
           Swal.fire({
             title: 'Error!',
-            text: response.data.editPaymentSettings.errors[0].message,
+            text: response.error.message,
             icon: 'error',
           })
         }
 
-        if (response.data?.editPaymentSettings.settings) {
+        if (response.data) {
           Swal.fire({
             title: 'Success!',
             text: 'Successfully edited email settings',
             icon: 'success',
           })
-          resetForm({
-            values: {
-              enablePaymentSystem:
-                response.data.editPaymentSettings.settings.enablePaymentSystem === true
-                  ? 'true'
-                  : 'false',
-              enabledPaymentType:
-                response.data.editPaymentSettings.settings.enabledPaymentType || 'Both',
-              brandName: response.data.editPaymentSettings.settings.brandName || '',
-              currency: response.data.editPaymentSettings.settings.currency || 'usd',
-              enableDiscountOrRedeemableCode:
-                response.data.editPaymentSettings.settings.enableDiscountOrRedeemableCode === true
-                  ? 'true'
-                  : 'false',
-              enableTaxesAndBilling:
-                response.data.editPaymentSettings.settings.enableTaxesAndBilling === true
-                  ? 'true'
-                  : 'false',
-              enablePaypal:
-                response.data.editPaymentSettings.settings.enablePaypal === true ? 'true' : 'false',
-              enableStripe:
-                response.data.editPaymentSettings.settings.enableStripe === true ? 'true' : 'false',
-            },
-          })
+          // resetForm({
+          //   values: {
+          //     enablePaymentSystem:
+          //       response.data.editPaymentSettings.settings.enablePaymentSystem === true
+          //         ? 'true'
+          //         : 'false',
+          //     enabledAcceptingPaymentType:
+          //       response.data.editPaymentSettings.settings.enabledAcceptingPaymentType || 'Both',
+          //     brandName: response.data.editPaymentSettings.settings.brandName || '',
+          //     currency: response.data.editPaymentSettings.settings.currency || 'usd',
+          //     enableDiscountOrRedeemableCode:
+          //       response.data.editPaymentSettings.settings.enableDiscountOrRedeemableCode === true
+          //         ? 'true'
+          //         : 'false',
+          //     enableTaxesAndBilling:
+          //       response.data.editPaymentSettings.settings.enableTaxesAndBilling === true
+          //         ? 'true'
+          //         : 'false',
+          //     enablePaypal:
+          //       response.data.editPaymentSettings.settings.enablePaypal === true ? 'true' : 'false',
+          //     enableStripe:
+          //       response.data.editPaymentSettings.settings.enableStripe === true ? 'true' : 'false',
+          //   },
+          // })
         }
         setSubmitting(false)
         return
@@ -105,14 +119,14 @@ const PaymentSettings: React.FC = () => {
               </FormGroup>
 
               <FormGroup>
-                <label htmlFor="enabledPaymentType">Enabled Payment Type</label>
+                <label htmlFor="enabledAcceptingPaymentType">Enabled Payment Type</label>
                 <Input
                   type="select"
-                  name="enabledPaymentType"
-                  id="enabledPaymentType"
+                  name="enabledAcceptingPaymentType"
+                  id="enabledAcceptingPaymentType"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.enabledPaymentType}
+                  value={values.enabledAcceptingPaymentType}
                 >
                   <option value="OneTime">One Time</option>
                   <option value="Recurring">Recurring</option>

@@ -58,43 +58,51 @@ const BiolinksIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllBiolinksQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllBiolinks?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllBiolinks?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllBiolinks?.pageInfo?.startCursor])
+  }, [data?.getAllBiolinks?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllBiolinks?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllBiolinks?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllBiolinks?.pageInfo?.endCursor])
+  }, [data?.getAllBiolinks?.cursor.afterCursor])
 
   const biolinkData =
-    data?.getAllBiolinks?.edges?.map((edge) => ({
+    data?.getAllBiolinks?.data.map((biolink) => ({
       usernameWithProfilePhoto: (
         <Media className="align-items-center">
           <Link href="#">
             <a className="avatar rounded-circle mr-3" href="#" onClick={(e) => e.preventDefault()}>
-              <img alt="Biolink Profile" src={edge.node.profilePhotoUrl as string} />
+              <img alt="Biolink Profile" src={biolink.profilePhotoUrl as string} />
             </a>
           </Link>
           <Media>
-            <span className="mb-0 text-sm">{edge.node.username?.username}</span>
+            <span className="mb-0 text-sm">{biolink.username?.username}</span>
           </Media>
         </Media>
       ),
-      displayName: edge.node.displayName,
+      displayName: biolink.displayName,
       email: (
-        <Link href={'/users/view/' + edge.node.user?.id}>
-          <a href={'/users/view/' + edge.node.user?.id}>{edge.node.user?.email}</a>
+        <Link href={'/users/view/' + biolink.user?.id}>
+          <a href={'/users/view/' + biolink.user?.id}>{biolink.user?.email}</a>
         </Link>
       ),
-      category: edge.node.category?.categoryName,
-      country: edge.node.country,
-      verificationStatus: <Badge color="primary">{edge.node.verificationStatus}</Badge>,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      category: biolink.category?.categoryName,
+      country: biolink.country,
+      verificationStatus: <Badge color="primary">{biolink.verificationStatus}</Badge>,
+      createdAt: moment.unix(parseInt(biolink.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -108,11 +116,11 @@ const BiolinksIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/biolinks/view/' + edge.node.id}>
-              <DropdownItem href={'/users/view/' + edge.node.id}>View Details</DropdownItem>
+            <Link href={'/biolinks/view/' + biolink.id}>
+              <DropdownItem href={'/users/view/' + biolink.id}>View Details</DropdownItem>
             </Link>
-            <Link href={'/biolinks/edit/' + edge.node.id}>
-              <DropdownItem href={'/users/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/biolinks/edit/' + biolink.id}>
+              <DropdownItem href={'/users/edit/' + biolink.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -126,8 +134,8 @@ const BiolinksIndexPage: NextPage = () => {
         title="Biolinks"
         columns={columns}
         data={biolinkData}
-        hasNextPage={data?.getAllBiolinks?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllBiolinks?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllBiolinks?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllBiolinks?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

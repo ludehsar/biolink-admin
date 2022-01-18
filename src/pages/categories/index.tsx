@@ -6,7 +6,7 @@ import moment from 'moment'
 import AdminHeader from '../../components/Header/AdminHeader'
 import AdminLayout from '../../layouts/Admin.layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
-import { useGetAlLCategoriesQuery } from '../../generated/graphql'
+import { useGetAllCategoriesQuery } from '../../generated/graphql'
 import DataTable from '../../components/DataTable/DataTable'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import Link from 'next/link'
@@ -38,26 +38,34 @@ const CategoriesIndexPage: NextPage = () => {
   const [after, setAfter] = useState<string>('')
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
-  const [{ data }] = useGetAlLCategoriesQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+  const [{ data }] = useGetAllCategoriesQuery({
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllCategories?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllCategories?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllCategories?.pageInfo?.startCursor])
+  }, [data?.getAllCategories?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllCategories?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllCategories?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllCategories?.pageInfo?.endCursor])
+  }, [data?.getAllCategories?.cursor.afterCursor])
 
   const userData =
-    data?.getAllCategories?.edges?.map((edge) => ({
-      id: edge.node.id,
-      categoryName: edge.node.categoryName,
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
-      updatedAt: moment.unix(parseInt(edge.node.updatedAt || '') / 1000).format('DD-MM-YYYY'),
+    data?.getAllCategories?.data.map((category) => ({
+      id: category.id,
+      categoryName: category.categoryName,
+      createdAt: moment.unix(parseInt(category.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      updatedAt: moment.unix(parseInt(category.updatedAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -71,8 +79,8 @@ const CategoriesIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/categories/edit/' + edge.node.id}>
-              <DropdownItem href={'/categories/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/categories/edit/' + category.id}>
+              <DropdownItem href={'/categories/edit/' + category.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -88,8 +96,8 @@ const CategoriesIndexPage: NextPage = () => {
         newButtonLink="/categories/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllCategories?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllCategories?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllCategories?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllCategories?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

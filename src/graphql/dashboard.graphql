@@ -1,0 +1,26 @@
+query GetDashboardTotalCounts {
+  getDashboardTotalCounts {
+    totalBiolinkPageViewsTracked
+    totalBiolinks
+    totalEarned
+    totalLinkClickViewsTracked
+    totalReferralCodes
+    totalShortenedLinks
+    totalTransactionsMade
+    totalUsers
+  }
+}
+query GetLast30DaysEarningChartData {
+  getLast30DaysEarningChartData {
+    result {
+      earned
+      date
+    }
+  }
+}
+query GetUsersAndAdminsCountData {
+  getUsersAndAdminsCountData {
+    totalUsers
+    totalAdmins
+  }
+}

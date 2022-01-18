@@ -44,51 +44,59 @@ const LinksIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllLinksQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllLinks?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllLinks?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllLinks?.pageInfo?.startCursor])
+  }, [data?.getAllLinks?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllLinks?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllLinks?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllLinks?.pageInfo?.endCursor])
+  }, [data?.getAllLinks?.cursor.afterCursor])
 
   const biolinkData =
-    data?.getAllLinks?.edges?.map((edge) => ({
+    data?.getAllLinks?.data.map((link) => ({
       linkTitleWithLinkImage: (
         <Media className="align-items-center">
           <Link href="#">
             <a className="avatar rounded-circle mr-3" href="#" onClick={(e) => e.preventDefault()}>
-              <img alt="Link" src={edge.node.linkImageUrl as string} />
+              <img alt="Link" src={link.linkImageUrl as string} />
             </a>
           </Link>
           <Media>
-            <span className="mb-0 text-sm">{edge.node.linkTitle}</span>
+            <span className="mb-0 text-sm">{link.linkTitle}</span>
           </Media>
         </Media>
       ),
       email: (
-        <Link href={'/users/view/' + edge.node.user?.id}>
-          <a href={'/users/view/' + edge.node.user?.id}>{edge.node.user?.email}</a>
+        <Link href={'/users/view/' + link.user?.id}>
+          <a href={'/users/view/' + link.user?.id}>{link.user?.email}</a>
         </Link>
       ),
       url: (
-        <Link href={edge.node.url || '#'}>
-          <a href={edge.node.url || '#'}>{edge.node.url}</a>
+        <Link href={link.url || '#'}>
+          <a href={link.url || '#'}>{link.url}</a>
         </Link>
       ),
       shortenedUrl: (
-        <Link href={FRONTEND_APP_URL + '/' + edge.node.shortenedUrl || '#'}>
-          <a href={FRONTEND_APP_URL + '/' + edge.node.shortenedUrl || '#'}>
-            {FRONTEND_APP_URL + '/' + edge.node.shortenedUrl}
+        <Link href={FRONTEND_APP_URL + '/' + link.shortenedUrl || '#'}>
+          <a href={FRONTEND_APP_URL + '/' + link.shortenedUrl || '#'}>
+            {FRONTEND_APP_URL + '/' + link.shortenedUrl}
           </a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      createdAt: moment.unix(parseInt(link.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -102,8 +110,8 @@ const LinksIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/links/edit/' + edge.node.id}>
-              <DropdownItem href={'/links/edit/' + edge.node.id}>Edit</DropdownItem>
+            <Link href={'/links/edit/' + link.id}>
+              <DropdownItem href={'/links/edit/' + link.id}>Edit</DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -117,8 +125,8 @@ const LinksIndexPage: NextPage = () => {
         title="Links"
         columns={columns}
         data={biolinkData}
-        hasNextPage={data?.getAllLinks?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllLinks?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllLinks?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllLinks?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

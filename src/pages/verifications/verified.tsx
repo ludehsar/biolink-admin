@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { NextPage } from 'next'
 import { withUrqlClient } from 'next-urql'
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap'
 import Link from 'next/link'
 import moment from 'moment'
 
@@ -13,36 +13,12 @@ import { createUrqlClient } from '../../utils/createUrqlClient'
 
 const columns = [
   {
+    name: 'Id',
+    selector: 'id',
+  },
+  {
     name: 'Username',
     selector: 'username',
-  },
-  {
-    name: 'Category',
-    selector: 'category',
-  },
-  {
-    name: 'First Name',
-    selector: 'firstName',
-  },
-  {
-    name: 'Last Name',
-    selector: 'lastName',
-  },
-  {
-    name: 'Mobile Number',
-    selector: 'mobileNumber',
-  },
-  {
-    name: 'Work Number',
-    selector: 'workNumber',
-  },
-  {
-    name: 'Email',
-    selector: 'email',
-  },
-  {
-    name: 'Website Link',
-    selector: 'websiteLink',
   },
   {
     name: 'User',
@@ -51,6 +27,30 @@ const columns = [
   {
     name: 'Biolink',
     selector: 'biolink',
+  },
+  {
+    name: 'Category',
+    selector: 'category',
+  },
+  {
+    name: 'Verification Status',
+    selector: 'verificationStatus',
+  },
+  {
+    name: 'Verified Email',
+    selector: 'verifiedEmail',
+  },
+  {
+    name: 'Verified Government ID',
+    selector: 'verifiedGovernmentId',
+  },
+  {
+    name: 'Verified Phone',
+    selector: 'verifiedPhoneNumber',
+  },
+  {
+    name: 'Verified Work Email',
+    selector: 'verifiedWorkEmail',
   },
   {
     name: 'Created',
@@ -67,42 +67,48 @@ const VerifiedVerificationsIndexPage: NextPage = () => {
   const [before, setBefore] = useState<string>('')
   const [searchText, setSearchText] = useState<string>('')
   const [{ data }] = useGetAllVerifiedVerificationsQuery({
-    variables: { options: { first: 10, after, before, query: searchText } },
+    variables: {
+      options: {
+        limit: 10,
+        afterCursor: after,
+        beforeCursor: before,
+        query: searchText,
+        order: 'ASC',
+      },
+    },
   })
 
   const gotoPrevPage = useCallback(() => {
-    setBefore(data?.getAllVerifiedVerifications?.pageInfo?.startCursor || '')
+    setBefore(data?.getAllVerifiedVerifications?.cursor.beforeCursor || '')
     setAfter('')
-  }, [data?.getAllVerifiedVerifications?.pageInfo?.startCursor])
+  }, [data?.getAllVerifiedVerifications?.cursor.beforeCursor])
 
   const gotoNextPage = useCallback(() => {
-    setAfter(data?.getAllVerifiedVerifications?.pageInfo?.endCursor || '')
+    setAfter(data?.getAllVerifiedVerifications?.cursor.afterCursor || '')
     setBefore('')
-  }, [data?.getAllVerifiedVerifications?.pageInfo?.endCursor])
+  }, [data?.getAllVerifiedVerifications?.cursor.afterCursor])
 
   const userData =
-    data?.getAllVerifiedVerifications?.edges?.map((edge) => ({
-      username: edge.node.username,
-      category: edge.node.category?.categoryName,
-      firstName: edge.node.firstName,
-      lastName: edge.node.lastName,
-      mobileNumber: edge.node.mobileNumber,
-      workNumber: edge.node.workNumber,
-      email: edge.node.email,
-      websiteLink: edge.node.websiteLink,
+    data?.getAllVerifiedVerifications?.data.map((verification) => ({
+      id: verification.id,
+      username: verification.username,
       user: (
-        <Link href={'/users/view/' + edge.node.user?.id}>
-          <a href={'/users/view/' + edge.node.user?.id}>{edge.node.user?.email}</a>
+        <Link href={'/users/view/' + verification.user?.id}>
+          <a href={'/users/view/' + verification.user?.id}>{verification.user?.email}</a>
         </Link>
       ),
       biolink: (
-        <Link href={'/biolinks/view/' + edge.node.biolink?.id}>
-          <a href={'/biolinks/view/' + edge.node.biolink?.id}>
-            {edge.node.biolink?.username?.username}
-          </a>
+        <Link href={'/biolinks/view/' + verification.biolink?.id}>
+          <a href={'/biolinks/view/' + verification.biolink?.id}>{verification.username}</a>
         </Link>
       ),
-      createdAt: moment.unix(parseInt(edge.node.createdAt || '') / 1000).format('DD-MM-YYYY'),
+      category: verification.category?.categoryName,
+      verificationStatus: <Badge color="primary">{verification.verificationStatus}</Badge>,
+      verifiedEmail: <Badge color="primary">{verification.verifiedEmail}</Badge>,
+      verifiedGovernmentId: <Badge color="primary">{verification.verifiedGovernmentId}</Badge>,
+      verifiedPhoneNumber: <Badge color="primary">{verification.verifiedPhoneNumber}</Badge>,
+      verifiedWorkEmail: <Badge color="primary">{verification.verifiedWorkEmail}</Badge>,
+      createdAt: moment.unix(parseInt(verification.createdAt || '') / 1000).format('DD-MM-YYYY'),
       action: (
         <UncontrolledDropdown>
           <DropdownToggle
@@ -116,8 +122,10 @@ const VerifiedVerificationsIndexPage: NextPage = () => {
             <i className="fas fa-ellipsis-v" />
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu-arrow" right>
-            <Link href={'/verifications/details/' + edge.node.id}>
-              <DropdownItem href={'/verifications/details/' + edge.node.id}>Details</DropdownItem>
+            <Link href={'/verifications/details/' + verification.id}>
+              <DropdownItem href={'/verifications/details/' + verification.id}>
+                Details
+              </DropdownItem>
             </Link>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -133,8 +141,8 @@ const VerifiedVerificationsIndexPage: NextPage = () => {
         newButtonLink="/categories/add"
         columns={columns}
         data={userData}
-        hasNextPage={data?.getAllVerifiedVerifications?.pageInfo?.hasNextPage || false}
-        hasPreviousPage={data?.getAllVerifiedVerifications?.pageInfo?.hasPreviousPage || false}
+        hasNextPage={!!data?.getAllVerifiedVerifications?.cursor.afterCursor}
+        hasPreviousPage={!!data?.getAllVerifiedVerifications?.cursor.beforeCursor}
         nextButtonAction={gotoNextPage}
         prevButtonAction={gotoPrevPage}
         setSearchText={(text) => setSearchText(text)}

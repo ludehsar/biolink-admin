@@ -1,0 +1,142 @@
+fragment BiolinkDetails on Biolink {
+	id
+  profilePhotoUrl
+  coverPhotoUrl
+  displayName
+  city
+  state
+  country
+  latitude
+  longitude
+  bio
+  settings {
+    enableDarkMode
+    showEmail
+    email
+    showPhone
+    phone
+    enableColoredContactButtons
+    addedToDirectory
+    directoryBio
+    enableColoredSocialMediaIcons
+    socialAccountStyleType
+    enableFacebookPixel
+    facebookPixelId
+    enableGoogleAnalytics
+    googleAnalyticsCode
+    enableEmailCapture
+    emailCaptureId
+    enableUtmParameters
+    utmSource
+    utmMedium
+    utmCampaign
+    blockSearchEngineIndexing
+    pageTitle
+    metaDescription
+    opengraphImageUrl
+    removeDefaultBranding
+    enableCustomBranding
+    customBrandingName
+    customBrandingUrl
+    enablePasswordProtection
+    enableSensitiveContentWarning
+    paypalLink
+    venmoLink
+    payoneerLink
+  }
+  verificationStatus
+  verifiedGovernmentId
+  verifiedEmail
+  verifiedPhoneNumber
+  verifiedWorkEmail
+  featured
+  changedUsername
+  createdAt
+  updatedAt
+  deletedAt
+  username {
+    id
+    username
+  }
+  user {
+    id
+    name
+    email
+  }
+  category {
+    id
+    categoryName
+  }
+}
+fragment BiolinkListItems on Biolink {
+	id
+  profilePhotoUrl
+  displayName
+  city
+  state
+  country
+  verificationStatus
+  verifiedGovernmentId
+  verifiedEmail
+  verifiedPhoneNumber
+  verifiedWorkEmail
+  featured
+  createdAt
+  updatedAt
+  deletedAt
+  username {
+    id
+    username
+  }
+  user {
+    id
+    name
+    email
+  }
+  category {
+    id
+    categoryName
+  }
+}
+query GetAllBiolinks($options: ConnectionArgs!) {
+  getAllBiolinks(options: $options) {
+    data {
+      ...BiolinkListItems
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllDirectories($options: ConnectionArgs!) {
+  getAllDirectories(options: $options) {
+    data {
+      ...BiolinkListItems
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetBiolink($biolinkId: String!) {
+  getBiolink(id: $biolinkId) {
+    ...BiolinkDetails
+  }
+}
+mutation CreateBiolink($input:BiolinkAdminInput!) {
+  createBiolink(options: $input) {
+    ...BiolinkDetails
+  }
+}
+mutation EditBiolink($id: String!, $input:BiolinkAdminInput!) {
+  editBiolink(id: $id, options: $input) {
+    ...BiolinkDetails
+  }
+}
+mutation DeleteBiolink($id: String!) {
+  removeBiolink(id: $id) {
+    ...BiolinkDetails
+  }
+}

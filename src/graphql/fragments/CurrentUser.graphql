@@ -1,4 +1,0 @@
-fragment CurrentUser on User {
-  id
-  email
-}

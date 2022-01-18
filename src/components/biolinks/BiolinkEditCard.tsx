@@ -8,18 +8,13 @@ import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { Card, CardHeader, Row, Col, Button, CardBody, Form, FormGroup, Input } from 'reactstrap'
 
-import {
-  Biolink,
-  ErrorResponse,
-  useEditBiolinkMutation,
-  useGetAlLCategoriesQuery,
-} from '../../generated/graphql'
+import { Biolink, useEditBiolinkMutation, useGetAllCategoriesQuery } from '../../generated/graphql'
 import SelectField from '../SelectField/SelectField'
 import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 
 export interface BiolinkEditCardProps {
   biolink?: Biolink
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 }
 
 const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors }) => {
@@ -28,13 +23,13 @@ const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors })
     []
   )
   const [categoryInput, setCategoryInput] = useState<string>('')
-  const [{ data: categories }] = useGetAlLCategoriesQuery({
-    variables: { options: { first: 5, query: categoryInput } },
+  const [{ data: categories }] = useGetAllCategoriesQuery({
+    variables: { options: { limit: 5, query: categoryInput } },
   })
 
-  const categoryOptions = categories?.getAllCategories?.edges?.map((edge) => ({
-    value: edge.node.id || 0,
-    label: edge.node.categoryName || '',
+  const categoryOptions = categories?.getAllCategories?.data.map((category) => ({
+    value: category.id || 0,
+    label: category.categoryName || '',
   }))
 
   const fetchCountries = useCallback(async () => {
@@ -61,7 +56,7 @@ const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors })
       enableReinitialize={true}
       initialValues={{
         displayName: biolink?.displayName || '',
-        categoryId: biolink?.category?.id || 0,
+        categoryId: biolink?.category?.id || '0',
         city: biolink?.city || '',
         state: biolink?.state || '',
         country: biolink?.country || '',
@@ -70,7 +65,7 @@ const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors })
       onSubmit={async (values, { setSubmitting }) => {
         const response = await editBiolink({
           id: biolink?.id || '',
-          options: {
+          input: {
             bio: values.bio,
             categoryId: values.categoryId,
             city: values.city,
@@ -80,8 +75,8 @@ const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors })
           },
         })
 
-        if (response.data?.editBiolink?.errors) {
-          addErrors(response.data.editBiolink.errors)
+        if (response.error) {
+          addErrors(response.error.message)
         } else {
           router.push('/biolinks')
         }
@@ -154,7 +149,7 @@ const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors })
                         options={categoryOptions}
                         handleInputChange={(value) => setCategoryInput(value)}
                         onChange={(value) => setFieldValue('categoryId', value?.value)}
-                        value={values.categoryId as number}
+                        value={values.categoryId}
                       />
                     </FormGroup>
                   </Col>
@@ -266,9 +261,10 @@ const BiolinkEditCard: React.FC<BiolinkEditCardProps> = ({ biolink, addErrors })
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(BiolinkEditCard)

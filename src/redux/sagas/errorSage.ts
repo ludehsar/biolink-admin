@@ -1,6 +1,5 @@
 import { put, takeEvery } from 'redux-saga/effects'
 
-import { ErrorResponse } from '../../generated/graphql'
 import {
   ADD_ERRORS,
   ADD_ERRORS_REQUESTED,
@@ -9,7 +8,7 @@ import {
 } from '../actions/errorAction'
 
 type ErrorParams = {
-  payload: ErrorResponse[] | number
+  payload: string | number
   type: string
 }
 

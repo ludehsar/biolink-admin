@@ -4,10 +4,8 @@ import { Container, Row, Card, CardHeader, Col, Button, CardFooter, Form, Label 
 import InputField from '../InputField/InputField'
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
-  useAddNewUserMutation,
+  useCreateUserMutation,
   useGetAllAdminRolesQuery,
-  useGetAlLCategoriesQuery,
   useGetAllPlansQuery,
   useEditUserMutation,
   useGetUserQuery,
@@ -20,38 +18,35 @@ import router from 'next/router'
 import SelectField from '../SelectField/SelectField'
 
 interface AddOrEditUsersFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
   id?: string
 }
 
 const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
-  const [categoryInput, setCategoryInput] = useState<string>('')
-  const [, addNewUser] = useAddNewUserMutation()
+  const [planInput, setPlanInput] = useState<string>('')
+  const [roleInput, setRoleInput] = useState<string>('')
+  const [, addNewUser] = useCreateUserMutation()
   const [, editUser] = useEditUserMutation()
-  const [{ data: categories }] = useGetAlLCategoriesQuery({
-    variables: { options: { first: 5, query: categoryInput } },
+  const [{ data: plans }] = useGetAllPlansQuery({
+    variables: { options: { limit: 5, query: planInput } },
   })
-  const [{ data: plans }] = useGetAllPlansQuery()
-  const [{ data: adminRoles }] = useGetAllAdminRolesQuery()
-  const [{ data: userData }] = useGetUserQuery({ variables: { id: id || '' } })
+  const [{ data: adminRoles }] = useGetAllAdminRolesQuery({
+    variables: { options: { limit: 5, query: roleInput } },
+  })
+  const [{ data: userData }] = useGetUserQuery({ variables: { userId: id as string } })
 
-  const categoryOptions = categories?.getAllCategories?.edges?.map((edge) => ({
-    value: edge.node.id || '',
-    label: edge.node.categoryName || '',
-  }))
-
-  const planOptions = plans?.getAllPlans.plans?.map((plan) => ({
+  const planOptions = plans?.getAllPlans.data.map((plan) => ({
     value: plan.id,
     label: plan.name,
   }))
 
-  const adminRoleOptions = adminRoles?.getAllAdminRoles.adminRoles?.map((role) => ({
-    value: role.id as number,
-    label: role.roleName as string,
+  const adminRoleOptions = adminRoles?.getAllAdminRoles.data.map((role) => ({
+    value: role.id,
+    label: role.roleName,
   }))
 
-  return variant === 'Add' || userData?.getUser?.user ? (
+  return variant === 'Add' || userData?.getUser ? (
     <Container className="mt--7" fluid>
       <Row>
         <div className="col">
@@ -75,43 +70,37 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
             <Formik
               enableReinitialize={true}
               initialValues={{
-                email: variant === 'Add' ? '' : (userData?.getUser?.user?.email as string),
-                username: '',
-                displayName: '',
-                adminRoleId: variant === 'Add' ? 0 : userData?.getUser?.user?.adminRole?.id,
-                categoryId: 0,
-                planId: variant === 'Add' ? 0 : userData?.getUser?.user?.plan?.id,
+                email: variant === 'Add' ? '' : (userData?.getUser?.email as string),
+                adminRoleId: variant === 'Add' ? '' : userData?.getUser?.adminRole?.id,
+                planId: variant === 'Add' ? '' : userData?.getUser?.plan?.id,
               }}
               onSubmit={async (values, { setSubmitting }) => {
                 if (variant === 'Add') {
                   const response = await addNewUser({
-                    options: {
+                    input: {
                       email: values.email,
-                      username: values.username,
                       adminRoleId: values.adminRoleId,
-                      categoryId: values.categoryId,
-                      displayName: values.displayName,
                       planId: values.planId,
                     },
                   })
 
-                  if (response.data?.addNewUser?.errors) {
-                    addErrors(response.data.addNewUser.errors)
+                  if (response.error) {
+                    addErrors(response.error.message)
                   } else {
                     router.push('/users')
                   }
                 } else {
                   const response = await editUser({
-                    id: id as string,
-                    options: {
+                    userId: id as string,
+                    input: {
                       email: values.email,
                       adminRoleId: values.adminRoleId,
                       planId: values.planId,
                     },
                   })
 
-                  if (response.data?.editUser?.errors) {
-                    addErrors(response.data.editUser.errors)
+                  if (response.error) {
+                    addErrors(response.error.message)
                   } else {
                     router.push('/users')
                   }
@@ -132,59 +121,26 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
                           placeholder="Enter email address"
                         />
                       </Col>
-                      {variant === 'Add' && (
-                        <Col md={4}>
-                          <InputField
-                            name="displayName"
-                            type="text"
-                            label="Name"
-                            className="mb-3"
-                            placeholder="Enter name"
-                          />
-                        </Col>
-                      )}
-                      {variant === 'Add' && (
-                        <Col md={4}>
-                          <InputField
-                            name="username"
-                            type="text"
-                            label="Username"
-                            className="mb-3"
-                            placeholder="Enter username"
-                          />
-                        </Col>
-                      )}
-                      {variant === 'Add' && (
-                        <Col md={4}>
-                          <Label for="categoryId">Category</Label>
-                          <SelectField
-                            name="categoryId"
-                            id="categoryId"
-                            options={categoryOptions}
-                            handleInputChange={(value) => setCategoryInput(value)}
-                            onChange={(value) => setFieldValue('categoryId', value?.value)}
-                            value={values.categoryId as number}
-                          />
-                        </Col>
-                      )}
                       <Col md={4}>
-                        <Label for="plan">Plan</Label>
+                        <Label for="planId">Plan</Label>
                         <SelectField
-                          name="plan"
-                          id="plan"
+                          name="planId"
+                          id="planId"
                           options={planOptions}
+                          handleInputChange={(value) => setPlanInput(value)}
                           onChange={(value) => setFieldValue('planId', value?.value)}
-                          value={values.planId as number}
+                          value={values.planId as string}
                         />
                       </Col>
                       <Col md={4}>
-                        <Label for="adminRole">Admin Role</Label>
+                        <Label for="adminRoleId">Admin Role</Label>
                         <SelectField
-                          name="adminRole"
-                          id="adminRole"
+                          name="adminRoleId"
+                          id="adminRoleId"
                           options={adminRoleOptions}
+                          handleInputChange={(value) => setRoleInput(value)}
                           onChange={(value) => setFieldValue('adminRoleId', value?.value)}
-                          value={values.adminRoleId as number}
+                          value={values.adminRoleId as string}
                         />
                       </Col>
                     </Row>
@@ -215,9 +171,10 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditUsersForm)

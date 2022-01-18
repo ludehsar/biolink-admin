@@ -14,7 +14,7 @@ const EditBlackListPage: NextPage = () => {
   return (
     <AdminLayout>
       <AdminHeader />
-      <AddOrEditBlackListForm variant="Edit" id={parseInt((id as string) || '0')} />
+      <AddOrEditBlackListForm variant="Edit" id={id as string} />
     </AdminLayout>
   )
 }

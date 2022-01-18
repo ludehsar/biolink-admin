@@ -24,7 +24,6 @@ import {
 import AdminLayout from '../../../layouts/Admin.layout'
 import { createUrqlClient } from '../../../utils/createUrqlClient'
 import {
-  ErrorResponse,
   useChangeVerificationStatusMutation,
   useGetVerificationQuery,
 } from '../../../generated/graphql'
@@ -32,7 +31,7 @@ import AdminHeader from '../../../components/Header/AdminHeader'
 import { ADD_ERRORS_REQUESTED } from '../../../redux/actions/errorAction'
 
 interface VerificationDetailsPageProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 }
 
 const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addErrors }) => {
@@ -43,7 +42,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
   })
   const [, changeVerificationStatus] = useChangeVerificationStatusMutation()
 
-  return data?.getVerification?.verification ? (
+  return data?.getVerification ? (
     <AdminLayout>
       <AdminHeader />
       <Container className="mt--7" fluid>
@@ -67,28 +66,18 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                           Biolink
                         </label>
                         <div>
-                          <Link
-                            href={'/biolinks/view/' + data.getVerification.verification.biolink?.id}
-                          >
-                            <a
-                              href={
-                                '/biolinks/view/' + data.getVerification.verification.biolink?.id
-                              }
-                            >
+                          <Link href={'/biolinks/view/' + data.getVerification.biolink?.id}>
+                            <a href={'/biolinks/view/' + data.getVerification.biolink?.id}>
                               <Media className="align-items-center">
                                 <a className="avatar rounded-circle mr-3" href="#">
                                   <img
                                     alt="Biolink Profile"
-                                    src={
-                                      data.getVerification.verification.biolink?.profilePhotoUrl ||
-                                      ''
-                                    }
+                                    src={data.getVerification.biolink?.profilePhotoUrl || ''}
                                   />
                                 </a>
                                 <Media>
                                   <span className="mb-0 text-sm">
-                                    {data.getVerification.verification.biolink?.username
-                                      ?.username || ''}
+                                    {data.getVerification.username || ''}
                                   </span>
                                 </Media>
                               </Media>
@@ -103,8 +92,8 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                           User
                         </label>
                         <div>
-                          <Link href={'/users/view/' + data.getVerification.verification.user?.id}>
-                            <a>{data.getVerification.verification.user?.email}</a>
+                          <Link href={'/users/view/' + data.getVerification.user?.id}>
+                            <a>{data.getVerification.user?.email}</a>
                           </Link>
                         </div>
                       </FormGroup>
@@ -122,7 +111,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.firstName || ''}
+                          value={data.getVerification.firstName || ''}
                           id="input-first-name"
                           placeholder="First Name"
                           type="text"
@@ -137,7 +126,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.lastName || ''}
+                          value={data.getVerification.lastName || ''}
                           id="input-last-name"
                           placeholder="Last Name"
                           type="text"
@@ -154,7 +143,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.category?.categoryName || ''}
+                          value={data.getVerification.category?.categoryName || ''}
                           id="input-category"
                           placeholder="Category"
                           type="text"
@@ -171,7 +160,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.username || ''}
+                          value={data.getVerification.username || ''}
                           id="input-username"
                           placeholder="Username"
                           type="text"
@@ -186,7 +175,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.email || ''}
+                          value={data.getVerification.email || ''}
                           id="input-email"
                           placeholder="Email"
                           type="email"
@@ -203,7 +192,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.mobileNumber || ''}
+                          value={data.getVerification.mobileNumber || ''}
                           id="input-mobile-number"
                           placeholder="Mobile Number"
                           type="tel"
@@ -218,7 +207,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.workNumber || ''}
+                          value={data.getVerification.workNumber || ''}
                           id="input-work-number"
                           placeholder="Work Number"
                           type="tel"
@@ -239,7 +228,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.websiteLink || ''}
+                          value={data.getVerification.websiteLink || ''}
                           id="input-website-link"
                           placeholder="Website Link"
                           type="url"
@@ -254,7 +243,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.instagramUrl || ''}
+                          value={data.getVerification.instagramUrl || ''}
                           id="input-instagram-link"
                           placeholder="Instagram URL"
                           type="url"
@@ -271,7 +260,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.twitterUrl || ''}
+                          value={data.getVerification.twitterUrl || ''}
                           id="input-twitter-link"
                           placeholder="Twitter URL"
                           type="url"
@@ -286,7 +275,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         </label>
                         <Input
                           className="bg-white form-control-alternative"
-                          value={data.getVerification.verification.linkedinUrl || ''}
+                          value={data.getVerification.linkedinUrl || ''}
                           id="input-linkedin-link"
                           placeholder="Linkedin URL"
                           type="url"
@@ -306,7 +295,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                           Photo ID
                         </label>
                         <div>
-                          <Link href={data.getVerification.verification.photoIdUrl || ''}>
+                          <Link href={data.getVerification.photoIdUrl || ''}>
                             <Button color="primary" size="sm">
                               Download
                             </Button>
@@ -320,7 +309,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                           Business Documents
                         </label>
                         <div>
-                          <Link href={data.getVerification.verification.businessDocumentUrl || ''}>
+                          <Link href={data.getVerification.businessDocumentUrl || ''}>
                             <Button color="primary" size="sm">
                               Download
                             </Button>
@@ -334,7 +323,7 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                           Other Documents
                         </label>
                         <div>
-                          <Link href={data.getVerification.verification.otherDocumentsUrl || ''}>
+                          <Link href={data.getVerification.otherDocumentsUrl || ''}>
                             <Button color="primary" size="sm">
                               Download
                             </Button>
@@ -350,27 +339,19 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                   <Formik
                     enableReinitialize
                     initialValues={{
-                      verificationStatus:
-                        data.getVerification.verification.verificationStatus || 'Pending',
+                      verificationStatus: data.getVerification.verificationStatus || 'Pending',
                       verifiedGovernmentId:
-                        data.getVerification.verification.verifiedGovernmentId === true
-                          ? 'true'
-                          : 'false',
-                      verifiedEmail:
-                        data.getVerification.verification.verifiedEmail === true ? 'true' : 'false',
+                        data.getVerification.verifiedGovernmentId === true ? 'true' : 'false',
+                      verifiedEmail: data.getVerification.verifiedEmail === true ? 'true' : 'false',
                       verifiedPhoneNumber:
-                        data.getVerification.verification.verifiedPhoneNumber === true
-                          ? 'true'
-                          : 'false',
+                        data.getVerification.verifiedPhoneNumber === true ? 'true' : 'false',
                       verifiedWorkEmail:
-                        data.getVerification.verification.verifiedWorkEmail === true
-                          ? 'true'
-                          : 'false',
+                        data.getVerification.verifiedWorkEmail === true ? 'true' : 'false',
                     }}
                     onSubmit={async (values, { setSubmitting }) => {
                       const response = await changeVerificationStatus({
                         verificationId: id as string,
-                        options: {
+                        input: {
                           status: values.verificationStatus,
                           verifiedEmail: values.verifiedEmail === 'true' ? true : false,
                           verifiedGovernmentId:
@@ -380,8 +361,8 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
                         },
                       })
 
-                      if (response.data?.changeVerificationStatus?.errors) {
-                        addErrors(response.data.changeVerificationStatus.errors)
+                      if (response.error) {
+                        addErrors(response.error.message)
                       } else {
                         router.push('/supports/pending')
                       }
@@ -538,9 +519,10 @@ const VerificationDetailsPage: NextPage<VerificationDetailsPageProps> = ({ addEr
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default withUrqlClient(createUrqlClient)(

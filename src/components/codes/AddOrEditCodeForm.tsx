@@ -18,8 +18,7 @@ import router from 'next/router'
 
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
-  useAddCodeMutation,
+  useCreateCodeMutation,
   useEditCodeMutation,
   useGetAllUsersQuery,
   useGetCodeQuery,
@@ -28,49 +27,49 @@ import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 import SelectField from '../SelectField/SelectField'
 
 interface AddOrEditCodeFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
   id?: string
 }
 
 const AddOrEditCodeForm: React.FC<AddOrEditCodeFormProps> = ({ addErrors, id, variant }) => {
   const [userInput, setUserInput] = useState<string>('')
-  const [, addNewCode] = useAddCodeMutation()
+  const [, addNewCode] = useCreateCodeMutation()
   const [, editCode] = useEditCodeMutation()
   const [{ data }] = useGetCodeQuery({ variables: { codeId: id || '' } })
   const [{ data: users }] = useGetAllUsersQuery({
-    variables: { options: { first: 5, query: userInput } },
+    variables: { options: { limit: 5, query: userInput } },
   })
 
-  const userOptions = users?.getAllUsers?.edges?.map((edge) => ({
-    value: edge.node.id || '',
-    label: edge.node.email || '',
+  const userOptions = users?.getAllUsers?.data.map((user) => ({
+    value: user.id || '',
+    label: user.email || '',
   }))
 
   useEffect(() => {
-    if (variant === 'Edit' && data?.getCode?.code) {
-      setUserInput(data.getCode.code.referrer?.email || '')
+    if (variant === 'Edit' && data?.getCode) {
+      setUserInput(data.getCode.referrer?.email || '')
     }
-  }, [data?.getCode?.code, variant])
+  }, [data?.getCode, data?.getCode?.referrer?.email, variant])
 
-  return variant === 'Add' || data?.getCode?.code ? (
+  return variant === 'Add' || data?.getCode ? (
     <Container className="mt--7" fluid>
       <Row className="d-flex justify-content-center">
         <Col xl="9">
           <Formik
             enableReinitialize={true}
             initialValues={{
-              type: variant === 'Add' ? 'Discount' : (data?.getCode?.code?.type as string),
-              code: variant === 'Add' ? '' : (data?.getCode?.code?.code as string),
-              discount: variant === 'Add' ? 0 : (data?.getCode?.code?.discount as number),
-              quantity: variant === 'Add' ? 0 : (data?.getCode?.code?.quantity as number),
-              expireDate: variant === 'Add' ? null : (data?.getCode?.code?.expireDate as string),
-              referrerId: variant === 'Add' ? '' : (data?.getCode?.code?.referrer?.id as string),
+              type: variant === 'Add' ? 'Discount' : (data?.getCode?.type as string),
+              code: variant === 'Add' ? '' : (data?.getCode?.code as string),
+              discount: variant === 'Add' ? 0 : (data?.getCode?.discount as number),
+              quantity: variant === 'Add' ? 0 : (data?.getCode?.quantity as number),
+              expireDate: variant === 'Add' ? null : (data?.getCode?.expireDate as string),
+              referrerId: variant === 'Add' ? '' : (data?.getCode?.referrer?.id as string),
             }}
             onSubmit={async (values, { setSubmitting }) => {
               if (variant === 'Add') {
                 const response = await addNewCode({
-                  options: {
+                  input: {
                     code: values.code,
                     discount: values.discount,
                     expireDate: values.expireDate,
@@ -80,15 +79,15 @@ const AddOrEditCodeForm: React.FC<AddOrEditCodeFormProps> = ({ addErrors, id, va
                   },
                 })
 
-                if (response.data?.addCode?.errors) {
-                  addErrors(response.data.addCode.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/codes/discounts')
                 }
               } else {
                 const response = await editCode({
                   codeId: id as string,
-                  options: {
+                  input: {
                     code: values.code,
                     discount: values.discount,
                     expireDate: values.expireDate,
@@ -98,8 +97,8 @@ const AddOrEditCodeForm: React.FC<AddOrEditCodeFormProps> = ({ addErrors, id, va
                   },
                 })
 
-                if (response.data?.editCode?.errors) {
-                  addErrors(response.data.editCode.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/codes/discounts')
                 }
@@ -259,9 +258,10 @@ const AddOrEditCodeForm: React.FC<AddOrEditCodeFormProps> = ({ addErrors, id, va
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditCodeForm)

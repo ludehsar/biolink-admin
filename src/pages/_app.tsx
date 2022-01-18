@@ -1,6 +1,6 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import { AppProps } from 'next/app'
-import { Provider as ReactReduxProvider } from 'react-redux'
 
 import store from '../redux/store'
 
@@ -10,9 +10,9 @@ import '../assets/css/argon-dashboard-react.min.css'
 import '../assets/css/custom.css'
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
-  <ReactReduxProvider {...{ store }}>
+  <Provider store={store}>
     <Component {...pageProps} />
-  </ReactReduxProvider>
+  </Provider>
 )
 
 export default MyApp

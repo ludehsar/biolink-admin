@@ -1,0 +1,58 @@
+fragment ReportFragment on Report {
+  id
+  firstName
+  lastName
+  email
+  reportedUrl
+  description
+  status
+  createdAt
+  reporter {
+    id
+    name
+    email
+  }
+}
+query GetAllPendingReports($options: ConnectionArgs!) {
+  getAllPendingReports(options: $options) {
+    data {
+      ...ReportFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllResolvedReports($options: ConnectionArgs!) {
+  getAllResolvedReports(options: $options) {
+    data {
+      ...ReportFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetAllDismissedReports($options: ConnectionArgs!) {
+  getAllDismissedReports(options: $options) {
+    data {
+      ...ReportFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetReport($reportId: String!) {
+  getReport(reportId: $reportId) {
+    ...ReportFragment
+  }
+}
+mutation ChangeReportStatus($reportId: String!, $input: ReportStatusInput!) {
+  changeReportStatus(reportId: $reportId, options: $input) {
+    ...ReportFragment
+  }
+}

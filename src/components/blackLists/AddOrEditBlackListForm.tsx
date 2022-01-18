@@ -18,17 +18,16 @@ import router from 'next/router'
 
 import { Formik } from 'formik'
 import {
-  ErrorResponse,
-  useAddBlackListMutation,
-  useEditBlackListMutation,
-  useGetBlackListQuery,
+  useAddBlacklistMutation,
+  useEditBlacklistMutation,
+  useGetBlacklistQuery,
 } from '../../generated/graphql'
 import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 
 interface AddOrEditBlackListFormProps {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
-  id?: number
+  id?: string
 }
 
 const AddOrEditBlackListForm: React.FC<AddOrEditBlackListFormProps> = ({
@@ -36,11 +35,11 @@ const AddOrEditBlackListForm: React.FC<AddOrEditBlackListFormProps> = ({
   id,
   variant,
 }) => {
-  const [, addNewBlackList] = useAddBlackListMutation()
-  const [, editBlackList] = useEditBlackListMutation()
-  const [{ data }] = useGetBlackListQuery({ variables: { blackListId: id || 0 } })
+  const [, addNewBlackList] = useAddBlacklistMutation()
+  const [, editBlackList] = useEditBlacklistMutation()
+  const [{ data }] = useGetBlacklistQuery({ variables: { blacklistId: id || '' } })
 
-  return variant === 'Add' || data?.getBlackList?.blackList ? (
+  return variant === 'Add' || data?.getBlackList ? (
     <Container className="mt--7" fluid>
       <Row className="d-flex justify-content-center">
         <Col xl="9">
@@ -48,39 +47,37 @@ const AddOrEditBlackListForm: React.FC<AddOrEditBlackListFormProps> = ({
             enableReinitialize={true}
             initialValues={{
               blackListType:
-                variant === 'Add'
-                  ? 'BadWord'
-                  : (data?.getBlackList?.blackList?.blacklistType as string),
-              keyword: variant === 'Add' ? '' : (data?.getBlackList?.blackList?.keyword as string),
-              reason: variant === 'Add' ? '' : (data?.getBlackList?.blackList?.reason as string),
+                variant === 'Add' ? 'BadWord' : (data?.getBlackList?.blacklistType as string),
+              keyword: variant === 'Add' ? '' : (data?.getBlackList?.keyword as string),
+              reason: variant === 'Add' ? '' : (data?.getBlackList?.reason as string),
             }}
             onSubmit={async (values, { setSubmitting }) => {
               if (variant === 'Add') {
                 const response = await addNewBlackList({
-                  options: {
+                  input: {
                     blacklistType: values.blackListType,
                     keyword: values.keyword,
                     reason: values.reason,
                   },
                 })
 
-                if (response.data?.addBlackList?.errors) {
-                  addErrors(response.data.addBlackList.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/black-lists/bad-words')
                 }
               } else {
                 const response = await editBlackList({
-                  blackListId: id as number,
-                  options: {
+                  blacklistId: id || '',
+                  input: {
                     blacklistType: values.blackListType,
                     keyword: values.keyword,
                     reason: values.reason,
                   },
                 })
 
-                if (response.data?.editBlackList?.errors) {
-                  addErrors(response.data.editBlackList.errors)
+                if (response.error) {
+                  addErrors(response.error.message)
                 } else {
                   router.push('/black-lists/bad-words')
                 }
@@ -193,9 +190,10 @@ const AddOrEditBlackListForm: React.FC<AddOrEditBlackListFormProps> = ({
 const mapDispatchToProps = (
   dispatch: Dispatch
 ): {
-  addErrors: (errors: ErrorResponse[]) => void
+  addErrors: (errorMessage: string) => void
 } => ({
-  addErrors: (errors: ErrorResponse[]) => dispatch({ type: ADD_ERRORS_REQUESTED, payload: errors }),
+  addErrors: (errorMessage: string) =>
+    dispatch({ type: ADD_ERRORS_REQUESTED, payload: errorMessage }),
 })
 
 export default connect(null, mapDispatchToProps)(AddOrEditBlackListForm)

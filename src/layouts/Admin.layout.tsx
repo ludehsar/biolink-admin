@@ -42,7 +42,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
         loginCurrentUser(data.me)
       }
     }
-  }, [data?.me, fetching, loginCurrentUser, logoutCurrentUser, router, startAuthenticationProcess])
+  }, [data, fetching, loginCurrentUser, logoutCurrentUser, router, startAuthenticationProcess])
 
   return (
     <>

@@ -1,0 +1,271 @@
+fragment PaymentDetails on Payment {
+  id
+  paymentType
+  paymentProvider
+  amountPaid
+  paymentCurrency
+  paymentDetails {
+    ... on StripeInvoiceObject {
+      id
+      object
+      account_country
+      account_name
+      account_tax_ids
+      amount_due
+      amount_paid
+      amount_remaining
+      application_fee_amount
+      attempt_count
+      attempted
+      auto_advance
+      automatic_tax {
+        enabled
+        status
+      }
+      billing_reason
+      charge
+      collection_method
+      created
+      currency
+      custom_fields
+      customer
+      customer_address
+      customer_email
+      customer_name
+      customer_phone
+      customer_address
+      customer_shipping
+      customer_tax_exempt
+      customer_tax_ids
+      default_payment_method
+      default_source
+      default_tax_rates
+      description
+      discount
+      discounts
+      due_date
+      ending_balance
+      footer
+      hosted_invoice_url
+      invoice_pdf
+      last_finalization_error
+      lines {
+        object
+        data {
+          id
+          object
+          amount
+          currency
+          description
+          discount_amounts
+          discountable
+          discounts
+          livemode
+          period {
+            end
+            start
+          }
+          plan {
+            id
+            object
+            active
+            aggregate_usage
+            amount
+            amount_decimal
+            billing_scheme
+            created
+            currency
+            interval
+            interval_count
+            livemode
+            nickname
+            product
+            tiers_mode
+            transform_usage
+            trial_period_days
+            usage_type
+          }
+          price {
+            id
+            object
+            active
+            billing_scheme
+            created
+            currency
+            livemode
+            lookup_key
+            nickname
+            product
+            recurring {
+              aggregate_usage
+              interval
+              interval_count
+              trial_period_days
+              usage_type
+            }
+            tax_behavior
+            tiers_mode
+            transform_quantity
+            type
+            unit_amount
+            unit_amount_decimal
+          }
+          proration
+          quantity
+          subscription
+          subscription_item
+          tax_amounts
+          tax_rates
+          type
+        }
+        has_more
+        total_count
+        url
+      }
+      livemode
+      next_payment_attempt
+      number
+      on_behalf_of
+      paid
+      payment_intent
+      payment_settings {
+        payment_method_options
+        payment_method_types
+      }
+      period_end
+      period_start
+      post_payment_credit_notes_amount
+      pre_payment_credit_notes_amount
+      quote
+      receipt_number
+      starting_balance
+      statement_descriptor
+      status
+      status_transitions {
+        finalized_at
+        marked_uncollectible_at
+        paid_at
+        voided_at
+      }
+      subscription
+      subtotal
+      tax
+      total
+      total_discount_amounts
+      total_tax_amounts
+      transfer_data
+      webhooks_delivered_at
+    }
+    ... on PaypalPaymentRecord {
+      id
+      status
+      payer {
+        name {
+          given_name
+          surname
+        }
+        email_address
+        payer_id
+      }
+      purchase_units {
+        reference_id
+        shipping {
+          address {
+            address_line_1
+            address_line_2
+            admin_area_2
+            admin_area_1
+            postal_code
+            country_code
+          }
+        }
+        payments {
+          captures {
+            id
+            status
+            amount {
+              currency_code
+              value
+            }
+            seller_protection {
+              status
+              dispute_categories
+            }
+            final_capture
+            disbursement_mode
+            seller_receivable_breakdown {
+              gross_amount {
+                currency_code
+                value
+              }
+              paypal_fee {
+                currency_code
+                value
+              }
+              net_amount {
+                currency_code
+                value
+              }
+            }
+            create_time
+            update_time
+            links {
+              href
+              rel
+              method
+            }
+          }
+        }
+      }
+      links {
+        href
+        rel
+        method
+      }
+    }
+  }
+  createdAt
+  user {
+    id
+    name
+    email
+  }
+  order {
+    id
+    description
+    price
+  }
+  plan {
+    id
+    name
+  }
+}
+fragment PaymentListDetails on Payment {
+  id
+  paymentType
+  paymentProvider
+  amountPaid
+  paymentCurrency
+  createdAt
+  user {
+    id
+    name
+    email
+  }
+}
+query GetAllPayments($options: ConnectionArgs!) {
+  getAllPayments(options: $options) {
+    data {
+      ...PaymentListDetails
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+query GetPayment($paymentId: String!) {
+  getPayment(paymentId: $paymentId) {
+    ...PaymentDetails
+  }
+}
