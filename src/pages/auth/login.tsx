@@ -53,7 +53,7 @@ const LoginPage: NextPage<LoginPageProps> = ({
                 } else if (response.data?.loginAdmin.user) {
                   loginCurrentUser(response.data.loginAdmin.user)
                   localStorage.setItem('token', response.data.loginAdmin.access?.token || '')
-                  router.push('/')
+                  router.replace('/')
                 } else {
                   addErrors('Something went wrong!')
                   logoutCurrentUser()

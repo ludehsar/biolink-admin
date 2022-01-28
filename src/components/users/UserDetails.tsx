@@ -180,7 +180,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 type="datetime"
                 name="planExpirationDate"
                 id="planExpirationDate"
-                value={user?.planExpirationDate || ''}
+                value={moment
+                  .unix(parseInt(user?.planExpirationDate || '') / 1000)
+                  .format('DD-MM-YYYY')}
                 readOnly
                 className="bg-white form-control-alternative"
               />

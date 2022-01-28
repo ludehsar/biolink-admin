@@ -33,7 +33,7 @@ const IndexPage: NextPage = () => {
         // maxBarThickness: 32,
         data:
           last30DaysEarningData?.getLast30DaysEarningChartData.result?.map(
-            (data) => (data.earned || 0) / 100
+            (data) => data.earned || 0
           ) || [],
         backgroundColor: ['rgb(80, 137, 198)'],
         borderColor: ['rgb(80, 137, 198)'],
@@ -122,7 +122,7 @@ const IndexPage: NextPage = () => {
           </Col>
           <Col lg="6" xl="3">
             <SummaryCard
-              count={(countData?.getDashboardTotalCounts.totalEarned || 0) / 100}
+              count={countData?.getDashboardTotalCounts.totalEarned || 0}
               title="Total Earned"
               icon="fas fa-dollar-sign"
               iconBackgroundClassName="bg-success"

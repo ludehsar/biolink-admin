@@ -1203,6 +1203,7 @@ export type Query = {
   getCategory?: Maybe<Category>;
   getAllDiscounts?: Maybe<PaginatedCodeResponse>;
   getAllReferrals?: Maybe<PaginatedCodeResponse>;
+  getAllCodes?: Maybe<PaginatedCodeResponse>;
   getCode?: Maybe<Code>;
   getDashboardTotalCounts: DashboardTotalCounts;
   getLast30DaysEarningChartData: EarningChartResponse;
@@ -1303,6 +1304,11 @@ export type QueryGetAllDiscountsArgs = {
 
 
 export type QueryGetAllReferralsArgs = {
+  options: ConnectionArgs;
+};
+
+
+export type QueryGetAllCodesArgs = {
   options: ConnectionArgs;
 };
 
@@ -1737,6 +1743,7 @@ export type User = {
   deletedAt?: Maybe<Scalars['String']>;
   plan?: Maybe<Plan>;
   adminRole?: Maybe<AdminRole>;
+  registeredByCode?: Maybe<Code>;
 };
 
 export type UserTotalCountsResponse = {
@@ -2308,6 +2315,25 @@ export type GetAllReferralsQueryVariables = Exact<{
 export type GetAllReferralsQuery = (
   { __typename?: 'Query' }
   & { getAllReferrals?: Maybe<(
+    { __typename?: 'PaginatedCodeResponse' }
+    & { data: Array<(
+      { __typename?: 'Code' }
+      & CodeFragmentFragment
+    )>, cursor: (
+      { __typename?: 'Cursor' }
+      & Pick<Cursor, 'beforeCursor' | 'afterCursor'>
+    ) }
+  )> }
+);
+
+export type GetAllCodesQueryVariables = Exact<{
+  options: ConnectionArgs;
+}>;
+
+
+export type GetAllCodesQuery = (
+  { __typename?: 'Query' }
+  & { getAllCodes?: Maybe<(
     { __typename?: 'PaginatedCodeResponse' }
     & { data: Array<(
       { __typename?: 'Code' }
@@ -3223,6 +3249,9 @@ export type UserDetailsFragment = (
   )>, adminRole?: Maybe<(
     { __typename?: 'AdminRole' }
     & Pick<AdminRole, 'id' | 'roleName'>
+  )>, registeredByCode?: Maybe<(
+    { __typename?: 'Code' }
+    & Pick<Code, 'id' | 'code'>
   )> }
 );
 
@@ -4240,6 +4269,10 @@ export const UserDetailsFragmentDoc = gql`
     id
     roleName
   }
+  registeredByCode {
+    id
+    code
+  }
 }
     `;
 export const UserListDetailsFragmentDoc = gql`
@@ -4731,6 +4764,23 @@ export const GetAllReferralsDocument = gql`
 
 export function useGetAllReferralsQuery(options: Omit<Urql.UseQueryArgs<GetAllReferralsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllReferralsQuery>({ query: GetAllReferralsDocument, ...options });
+};
+export const GetAllCodesDocument = gql`
+    query GetAllCodes($options: ConnectionArgs!) {
+  getAllCodes(options: $options) {
+    data {
+      ...CodeFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+    ${CodeFragmentFragmentDoc}`;
+
+export function useGetAllCodesQuery(options: Omit<Urql.UseQueryArgs<GetAllCodesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllCodesQuery>({ query: GetAllCodesDocument, ...options });
 };
 export const GetCodeDocument = gql`
     query GetCode($codeId: String!) {

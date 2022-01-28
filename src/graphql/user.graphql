@@ -38,6 +38,10 @@ fragment UserDetails on User {
     id
     roleName
   }
+  registeredByCode {
+    id
+    code
+  }
 }
 fragment UserListDetails on User {
   id

@@ -36,6 +36,17 @@ query GetAllReferrals($options: ConnectionArgs!) {
     }
   }
 }
+query GetAllCodes($options: ConnectionArgs!) {
+  getAllCodes(options: $options) {
+    data {
+      ...CodeFragment
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
 query GetCode($codeId: String!) {
   getCode(codeId: $codeId) {
     ...CodeFragment
