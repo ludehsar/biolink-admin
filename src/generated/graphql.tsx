@@ -128,8 +128,6 @@ export type BiolinkAdminInput = {
   coverPhoto?: Maybe<Scalars['Upload']>;
   displayName?: Maybe<Scalars['String']>;
   featured?: Maybe<Scalars['Boolean']>;
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
   profilePhoto?: Maybe<Scalars['Upload']>;
   removeDefaultBranding?: Maybe<Scalars['Boolean']>;
   enableCustomBranding?: Maybe<Scalars['Boolean']>;
@@ -1965,7 +1963,7 @@ export type RefreshTokenMutation = (
 
 export type BiolinkDetailsFragment = (
   { __typename?: 'Biolink' }
-  & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'coverPhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'latitude' | 'longitude' | 'bio' | 'verificationStatus' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'featured' | 'changedUsername' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+  & Pick<Biolink, 'id' | 'profilePhotoUrl' | 'coverPhotoUrl' | 'displayName' | 'city' | 'state' | 'country' | 'bio' | 'verificationStatus' | 'verifiedGovernmentId' | 'verifiedEmail' | 'verifiedPhoneNumber' | 'verifiedWorkEmail' | 'featured' | 'changedUsername' | 'createdAt' | 'updatedAt' | 'deletedAt'>
   & { settings?: Maybe<(
     { __typename?: 'BiolinkSettings' }
     & Pick<BiolinkSettings, 'enableDarkMode' | 'showEmail' | 'email' | 'showPhone' | 'phone' | 'enableColoredContactButtons' | 'addedToDirectory' | 'directoryBio' | 'enableColoredSocialMediaIcons' | 'socialAccountStyleType' | 'enableFacebookPixel' | 'facebookPixelId' | 'enableGoogleAnalytics' | 'googleAnalyticsCode' | 'enableEmailCapture' | 'emailCaptureId' | 'enableUtmParameters' | 'utmSource' | 'utmMedium' | 'utmCampaign' | 'blockSearchEngineIndexing' | 'pageTitle' | 'metaDescription' | 'opengraphImageUrl' | 'removeDefaultBranding' | 'enableCustomBranding' | 'customBrandingName' | 'customBrandingUrl' | 'enablePasswordProtection' | 'enableSensitiveContentWarning' | 'paypalLink' | 'venmoLink' | 'payoneerLink'>
@@ -3667,8 +3665,6 @@ export const BiolinkDetailsFragmentDoc = gql`
   city
   state
   country
-  latitude
-  longitude
   bio
   settings {
     enableDarkMode

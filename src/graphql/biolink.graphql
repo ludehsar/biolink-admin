@@ -6,8 +6,6 @@ fragment BiolinkDetails on Biolink {
   city
   state
   country
-  latitude
-  longitude
   bio
   settings {
     enableDarkMode
