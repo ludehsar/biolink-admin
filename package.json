@@ -14,7 +14,7 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@urql/exchange-auth": "^0.1.7",
     "@urql/exchange-graphcache": "^4.1.1",
-    "@urql/exchange-multipart-fetch": "^0.1.12",
+    "@urql/exchange-multipart-fetch": "^0.1.14",
     "axios": "^0.21.1",
     "chart.js": "^3.5.0",
     "formik": "^2.2.8",

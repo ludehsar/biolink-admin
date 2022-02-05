@@ -132,6 +132,8 @@ const BiolinksIndexPage: NextPage = () => {
       <AdminHeader />
       <DataTable
         title="Biolinks"
+        newButton={true}
+        newButtonLink={'/biolinks/add'}
         columns={columns}
         data={biolinkData}
         hasNextPage={!!data?.getAllBiolinks?.cursor.afterCursor}

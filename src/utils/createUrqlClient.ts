@@ -1,4 +1,4 @@
-import { ClientOptions, dedupExchange, fetchExchange, makeOperation } from 'urql'
+import { ClientOptions, dedupExchange, makeOperation } from 'urql'
 import { cacheExchange } from '@urql/exchange-graphcache'
 import { multipartFetchExchange } from '@urql/exchange-multipart-fetch'
 
@@ -126,7 +126,6 @@ export const createUrqlClient = (ssrExchange: any): ClientOptions => ({
       },
     }),
     ssrExchange,
-    fetchExchange,
     multipartFetchExchange,
   ],
 })
