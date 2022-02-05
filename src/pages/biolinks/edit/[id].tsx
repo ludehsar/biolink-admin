@@ -6,6 +6,7 @@ import AddOrEditBiolinksForm from '../../../components/biolinks/AddOrEditBiolink
 import AdminLayout from '../../../layouts/Admin.layout'
 import { createUrqlClient } from '../../../utils/createUrqlClient'
 import { useRouter } from 'next/router'
+import { Container } from 'reactstrap'
 
 const EditBiolinksPage: NextPage = () => {
   const router = useRouter()
@@ -14,7 +15,9 @@ const EditBiolinksPage: NextPage = () => {
   return (
     <AdminLayout>
       <AdminHeader />
-      <AddOrEditBiolinksForm variant="Edit" id={id as string} />
+      <Container className="mt--7" fluid>
+        <AddOrEditBiolinksForm variant="Edit" id={id as string} />
+      </Container>
     </AdminLayout>
   )
 }

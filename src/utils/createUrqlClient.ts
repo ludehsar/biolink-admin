@@ -33,7 +33,6 @@ export const createUrqlClient = (ssrExchange: any): ClientOptions => ({
               }
             )
           },
-
           logout: (result, _, cache) => {
             betterUpdateQuery<LogoutMutation, MeQuery>(cache, { query: MeDocument }, result, () => {
               if (typeof window !== 'undefined') {

@@ -25,16 +25,24 @@ import { ADD_ERRORS_REQUESTED } from '../../redux/actions/errorAction'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import Link from 'next/link'
-import router from 'next/router'
 import SelectField from '../SelectField/SelectField'
+import router from 'next/router'
 
 interface AddOrEditUsersFormProps {
   addErrors: (errorMessage: string) => void
   variant: 'Add' | 'Edit'
+  setStep?: React.Dispatch<React.SetStateAction<number>>
+  setUserId?: React.Dispatch<React.SetStateAction<string>>
   id?: string
 }
 
-const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, variant }) => {
+const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({
+  addErrors,
+  id,
+  setStep,
+  setUserId,
+  variant,
+}) => {
   const [planInput, setPlanInput] = useState<string>('')
   const [roleInput, setRoleInput] = useState<string>('')
   const [codeInput, setCodeInput] = useState<string>('')
@@ -72,12 +80,12 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
   }))
 
   useEffect(() => {
-    if (userData?.getUser) {
-      setPlanInput(userData.getUser.plan?.name || '')
-      setRoleInput(userData.getUser.adminRole?.roleName || '')
-      setCodeInput(userData.getUser.registeredByCode?.code || '')
+    if (variant === 'Add' && userData) {
+      setPlanInput(userData.getUser?.plan?.name || '')
+      setRoleInput(userData.getUser?.adminRole?.roleName || '')
+      setCodeInput(userData.getUser?.registeredByCode?.code || '')
     }
-  }, [userData?.getUser])
+  }, [userData, variant])
 
   return variant === 'Add' || userData?.getUser ? (
     <Container className="mt--7" fluid>
@@ -142,7 +150,8 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
                 if (response.error) {
                   addErrors(response.error.message)
                 } else {
-                  router.push('/users')
+                  setStep && setStep(2)
+                  setUserId && setUserId(response.data?.addNewUser?.id || '')
                 }
               } else {
                 const response = await editUser({
@@ -540,7 +549,7 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
                               <i className="fa fa-spinner fa-spin"></i> Saving
                             </>
                           ) : (
-                            <>Save</>
+                            <>Save and Go Next</>
                           )}
                         </Button>
                       </Col>
