@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ErrorPage from 'next/error'
 import {
   Container,
@@ -70,6 +70,14 @@ const AddOrEditUsersForm: React.FC<AddOrEditUsersFormProps> = ({ addErrors, id, 
     value: role.id,
     label: role.code,
   }))
+
+  useEffect(() => {
+    if (userData?.getUser) {
+      setPlanInput(userData.getUser.plan?.name || '')
+      setRoleInput(userData.getUser.adminRole?.roleName || '')
+      setCodeInput(userData.getUser.registeredByCode?.code || '')
+    }
+  }, [userData?.getUser])
 
   return variant === 'Add' || userData?.getUser ? (
     <Container className="mt--7" fluid>
